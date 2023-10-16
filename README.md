@@ -1,0 +1,2 @@
+# Wordle
+ SE Projekt
