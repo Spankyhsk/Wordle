@@ -1,5 +1,4 @@
 package wordle
-
 object wordle {
 
   import scala.util.Random
