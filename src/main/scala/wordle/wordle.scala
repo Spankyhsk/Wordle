@@ -1,4 +1,4 @@
-// Datei: WordleApp.scala
+
 package wordle
 
 object wordle {

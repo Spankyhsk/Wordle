@@ -1,4 +1,4 @@
-// Datei: WordleController.scala
+
 package wordle
 
 class controll {
@@ -9,11 +9,20 @@ class controll {
 
     println("Willkommen zu Wordle!")
     input(loesungsword)(0)
+
+    val eingabe = scala.io.StdIn.readLine("Noch eine Runde?[Y]: ")
+    if(eingabe == "Y"){
+      start()
+    }else{
+      println("Auf Wiedersehen")
+    }
+
   }
 
   def input(loesung: String)(n: Int): Unit = {
     if (n < 1) {
       val eingabe = scala.io.StdIn.readLine("Versuch eingeben: ")
+      //methode um zu prüfen ob eingabe im array ist
       filter(loesung, eingabe, n)
     } else {
       println(loesung)
@@ -28,6 +37,8 @@ class controll {
       println("Gewonnen")
       // Zurück zur Main oder beenden
     } else {
+      //methode für richtige buchstaben
+      //methode für
       println("Versuch nicht erfolgreich. Nochmal versuchen.")
       input(loesung)(versuche + 1)
     }
