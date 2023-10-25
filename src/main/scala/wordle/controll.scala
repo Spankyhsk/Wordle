@@ -1,21 +1,29 @@
 
 package wordle
 
+
 class controll {
   import scala.util.Random
-  def start(): Unit = {
-    val array1Buchstab: Array[String] = Array("A", "B", "C", "D")
-    val loesungsword = array1Buchstab(Random.nextInt(array1Buchstab.length))
+
+  
+  //Random rausgenommen wegen Testbarkeit
+  def zufall(): Unit = {
+      val array1Buchstab: Array[String] = Array("A", "B", "C", "D")
+      val zufallword = array1Buchstab(Random.nextInt(array1Buchstab.length))
+    }
+
+  def start(zuloesendesword: String): Unit = {
+    val loesungsword = zuloesendesword
 
     println("Willkommen zu Wordle!")
     input(loesungsword)(0)
-
+/*
     val eingabe = scala.io.StdIn.readLine("Noch eine Runde?[Y]: ")
     if(eingabe == "Y"){
-      start()
+      start("A")    //Nächste Runde beginnt wieder mit "A" als Lösung --> nur zum testen erstmal
     }else{
       println("Auf Wiedersehen")
-    }
+    }*/
 
   }
 
