@@ -12,20 +12,20 @@ object Testo {
       5 -> Array("abcde", "bcdef", "cdefg", "defgh", "efghi")
     )
 
-    val wordLength = promptForWordLength()
-    val maxAttempts = promptForMaxAttempts()
+    val wordLength = askForWordLength()
+    val maxAttempts = askForMaxAttempts()
 
     val targetWord = selectRandomWord(wordsByLength(wordLength))
     val initialDisplay = "_" * wordLength
     playWordle(targetWord, initialDisplay, maxAttempts)
   }
 
-  def promptForWordLength(): Int = {
+  def askForWordLength(): Int = {
     println("Wähle eine Wortlänge: (1 bis 5): ")
     scala.io.StdIn.readInt()
   }
 
-  def promptForMaxAttempts(): Int = {
+  def askForMaxAttempts(): Int = {
     println("Wähle die Anzahl deiner Versuche: ")
     scala.io.StdIn.readInt()
   }

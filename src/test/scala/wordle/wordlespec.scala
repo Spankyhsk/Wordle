@@ -2,71 +2,73 @@ package wordle
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-
+import scala.io.StdIn
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 
 class wordlespec extends AnyWordSpec with Matchers {
 
-  "Wordle" should {
-    "start a game with a given secret word and handle winning" in {
-      val controller = new controll()
+  "Testo" should {
 
-      val testSecretWord = "A"
-      val winningOutput = captureConsoleOutputWithInput(testSecretWord) {
-        controller.start(testSecretWord)
-      }
-
-      winningOutput should include("Willkommen zu Wordle!")
-      winningOutput should include("Gewonnen")
-      
-
-      val testSecretWord2 = "B"
-      val losingOutput = captureConsoleOutputWithInput(testSecretWord2) {
-        controller.start(testSecretWord2)
-      }
-      losingOutput should include("Willkommen zu Wordle!")
-      losingOutput should include("Verloren")
-
-    }
-  }
-
-
-  //Dient um Konsole Ausgabe zu lesen und Input zu simulieren
-  def captureConsoleOutputWithInput(input: String)(block: => Unit): String = {
-    val outputBuffer = new java.io.ByteArrayOutputStream
-    val inputBuffer = new java.io.ByteArrayInputStream(input.getBytes)
-    Console.withOut(outputBuffer) {
-      Console.withIn(inputBuffer) {
+    // Konsolenausgaben kommen in Puffer und wird als Zeichenkette ausgegebn
+    def erfassenKonsoleOutput(block: => Unit): String = {
+      val outputStream = new ByteArrayOutputStream()
+      Console.withOut(outputStream) {
         block
       }
-    }
-    outputBuffer.toString
-
-}}
-
-
-
-/*import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
-
-
-
-class wordlespec extends AnyWordSpec {
-
-  "Wordle" should {
-
-
-    val array1Buchstab: Array[String] = Array("A", "B", "C", "D")
-    val loesungsword = "B"
-
-      "have an array and a solution word" in {
-        array1Buchstab.mkString(", ") should be ("A, B, C, D")  //.mkString(", ") --> "A, B, C, D"
-        loesungsword should be("B")
+      outputStream.toString
     }
 
+    "ask for word length" in {
+      val input = "3\n"
+      val output = erfassenKonsoleOutput {
+        Console.withIn(new ByteArrayInputStream(input.getBytes("UTF-8"))) {
+          Testo.askForWordLength()
+        }
+      }
+      output.trim should be("Wähle eine Wortlänge: (1 bis 5):")
     }
 
+    "ask for max attempts" in {
+      val input = "5\n"
+      val output = erfassenKonsoleOutput {
+        Console.withIn(new ByteArrayInputStream(input.getBytes("UTF-8"))) {
+          Testo.askForMaxAttempts()
+        }
+      }
+      output.trim should be("Wähle die Anzahl deiner Versuche:")
+    }
 
+    "select a random word" in {
+      val wordsByLength = Map(
+        3 -> Array("abc", "bcd", "cde", "def", "efg")
+      )
+      val word = Testo.selectRandomWord(wordsByLength(3))
+      wordsByLength(3) should contain(word)
+    }
 
+    "evaluate guess and display feedback" in {
+      val targetWord = "abc"
+      val display = "___"
+      val guess = "abc"
+      val feedback = erfassenKonsoleOutput {
+        Testo.evaluateGuess(targetWord, display, guess)
+      }
+      feedback.trim should be("Dein Tipp: \u001B[32ma\u001B[0m\u001B[32mb\u001B[0m\u001B[32mc\u001B[0m")
+    }
 
+    "play Wordle" in {
+      val input = "abc\n"
+      val output = erfassenKonsoleOutput {
+        val targetWord = "abc"
+        val display = "___"
+        val maxAttempts = 5
+        Console.withIn(new ByteArrayInputStream(input.getBytes("UTF-8"))) {
+          Testo.playWordle(targetWord, display, maxAttempts)
+        }
+      }
+      output.trim should include("Glückwunsch! Du hast das Wort erraten: abc")
+    }
+
+  }
 }
-*/
