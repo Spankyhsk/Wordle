@@ -10,6 +10,7 @@ class controll {
   def zufall(): Unit = {
       val array1Buchstab: Array[String] = Array("A", "B", "C", "D")
       val zufallword = array1Buchstab(Random.nextInt(array1Buchstab.length))
+    
     }
 
   def start(zuloesendesword: String): Unit = {

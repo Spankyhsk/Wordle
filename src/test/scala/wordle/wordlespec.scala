@@ -17,10 +17,7 @@ class wordlespec extends AnyWordSpec with Matchers {
 
       winningOutput should include("Willkommen zu Wordle!")
       winningOutput should include("Gewonnen")
-
-
-
-
+      
 
       val testSecretWord2 = "B"
       val losingOutput = captureConsoleOutputWithInput(testSecretWord2) {
