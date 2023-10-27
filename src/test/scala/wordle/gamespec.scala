@@ -6,9 +6,9 @@ import scala.io.StdIn
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
-class wordlespec extends AnyWordSpec with Matchers {
+class gamespec extends AnyWordSpec with Matchers {
 
-  "Testo" should {
+  "game" should {
 
     // Konsolenausgaben kommen in Puffer und wird als Zeichenkette ausgegebn
     def erfassenKonsoleOutput(block: => Unit): String = {
@@ -23,7 +23,7 @@ class wordlespec extends AnyWordSpec with Matchers {
       val input = "3\n"
       val output = erfassenKonsoleOutput {
         Console.withIn(new ByteArrayInputStream(input.getBytes("UTF-8"))) {
-          Testo.askForWordLength()
+          game.askForWordLength()
         }
       }
       output.trim should be("Wähle eine Wortlänge: (1 bis 5):")
@@ -33,7 +33,7 @@ class wordlespec extends AnyWordSpec with Matchers {
       val input = "5\n"
       val output = erfassenKonsoleOutput {
         Console.withIn(new ByteArrayInputStream(input.getBytes("UTF-8"))) {
-          Testo.askForMaxAttempts()
+          game.askForMaxAttempts()
         }
       }
       output.trim should be("Wähle die Anzahl deiner Versuche:")
@@ -43,7 +43,7 @@ class wordlespec extends AnyWordSpec with Matchers {
       val wordsByLength = Map(
         3 -> Array("abc", "bcd", "cde", "def", "efg")
       )
-      val word = Testo.selectRandomWord(wordsByLength(3))
+      val word = game.selectRandomWord(wordsByLength(3))
       wordsByLength(3) should contain(word)
     }
 
@@ -52,7 +52,7 @@ class wordlespec extends AnyWordSpec with Matchers {
       val display = "___"
       val guess = "abc"
       val feedback = erfassenKonsoleOutput {
-        Testo.evaluateGuess(targetWord, display, guess)
+        game.evaluateGuess(targetWord, display, guess)
       }
       feedback.trim should be("Dein Tipp: \u001B[32ma\u001B[0m\u001B[32mb\u001B[0m\u001B[32mc\u001B[0m")
     }
@@ -63,7 +63,7 @@ class wordlespec extends AnyWordSpec with Matchers {
       val display = "___"
       val guess = "xyz"
       val feedback = erfassenKonsoleOutput {
-        Testo.evaluateGuess(targetWord, display, guess)
+        game.evaluateGuess(targetWord, display, guess)
       }
       feedback.trim should be("Dein Tipp: xyz")
     }
@@ -76,7 +76,7 @@ class wordlespec extends AnyWordSpec with Matchers {
         val display = "___"
         val maxAttempts = 5
         Console.withIn(new ByteArrayInputStream(input.getBytes("UTF-8"))) {
-          Testo.playWordle(targetWord, display, maxAttempts)
+          game.playWordle(targetWord, display, maxAttempts)
         }
       }
       output.trim should include("Glückwunsch! Du hast das Wort erraten: abc")
@@ -92,7 +92,7 @@ class wordlespec extends AnyWordSpec with Matchers {
           Testo.playWordle(targetWord, display, maxAttempts)
         }
       }
-      output.trim should include("Sorry, du hast kein Versuch mehr. Das Wort war: abc")
+      output.trim should include("Sorry, du hast kein versuch mehr. Das Wort war: abc")
     }*/
 
   }

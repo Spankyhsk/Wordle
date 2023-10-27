@@ -1,6 +1,6 @@
 package wordle
 
-object Testo {
+object game {
   import scala.util.Random
 
   def main(args: Array[String]): Unit = {
