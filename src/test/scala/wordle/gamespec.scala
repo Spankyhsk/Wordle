@@ -29,6 +29,19 @@ class gamespec extends AnyWordSpec with Matchers {
       output.trim should be("Wähle eine Wortlänge: (1 bis 5):")
     }
 
+    "select a random word for different word lengths" in {
+      val wordsByLength = Map(
+        1 -> Array("a", "b", "c", "d", "e"),
+        2 -> Array("ab", "bc", "cd", "de", "ef"),
+        3 -> Array("abc", "bcd", "cde", "def", "efg")
+      )
+
+      for ((length, wordArray) <- wordsByLength) {
+        val word = game.selectRandomWord(wordArray)
+        wordsByLength(length) should contain(word)
+      }
+    }
+
     "ask for max attempts" in {
       val input = "5\n"
       val output = erfassenKonsoleOutput {
@@ -81,7 +94,7 @@ class gamespec extends AnyWordSpec with Matchers {
       }
       output.trim should include("Glückwunsch! Du hast das Wort erraten: abc")
     }
-    /*
+
     "play Wordle and handle game loss" in {
       val input = "xyz\n"
       val output = erfassenKonsoleOutput {
@@ -89,11 +102,11 @@ class gamespec extends AnyWordSpec with Matchers {
         val display = "___"
         val maxAttempts = 1
         Console.withIn(new ByteArrayInputStream(input.getBytes("UTF-8"))) {
-          Testo.playWordle(targetWord, display, maxAttempts)
+          game.playWordle(targetWord, display, maxAttempts)
         }
       }
-      output.trim should include("Sorry, du hast kein versuch mehr. Das Wort war: abc")
-    }*/
+      output.trim should include("Sorry, du hast kein Versuch mehr. Das Wort war: abc")
+    }
 
   }
 }

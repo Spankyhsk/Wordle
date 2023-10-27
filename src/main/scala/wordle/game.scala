@@ -38,7 +38,7 @@ object game {
     if (display == targetWord) {
       println(s"Glückwunsch! Du hast das Wort erraten: $targetWord")
     } else if (attemptsLeft == 0) {
-      println(s"Sorry, du hast kein versuch mehr. Das Wort war: $targetWord")
+      println(s"Sorry, du hast kein Versuch mehr. Das Wort war: $targetWord")
     } else {
       val hiddenWord = "_" * targetWord.length
       println(s"Wortlänge: $hiddenWord")

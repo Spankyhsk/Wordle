@@ -1,5 +1,5 @@
 
-package wordle
+/*package wordle
 
 
 class controll {
@@ -53,3 +53,4 @@ class controll {
     }
   }
 }
+*/

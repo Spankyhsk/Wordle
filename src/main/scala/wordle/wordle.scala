@@ -1,4 +1,4 @@
-
+/*
 package wordle
 
 object wordle {
@@ -9,3 +9,4 @@ object wordle {
   }
 }
 
+*/
