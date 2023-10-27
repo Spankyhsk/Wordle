@@ -47,7 +47,7 @@ class wordlespec extends AnyWordSpec with Matchers {
       wordsByLength(3) should contain(word)
     }
 
-    "evaluate guess and display feedback" in {
+    "evaluate guess and display feedback (green letter)" in {
       val targetWord = "abc"
       val display = "___"
       val guess = "abc"
@@ -57,7 +57,19 @@ class wordlespec extends AnyWordSpec with Matchers {
       feedback.trim should be("Dein Tipp: \u001B[32ma\u001B[0m\u001B[32mb\u001B[0m\u001B[32mc\u001B[0m")
     }
 
-    "play Wordle" in {
+
+    "handle incorrect guess" in {
+      val targetWord = "abc"
+      val display = "___"
+      val guess = "xyz"
+      val feedback = erfassenKonsoleOutput {
+        Testo.evaluateGuess(targetWord, display, guess)
+      }
+      feedback.trim should be("Dein Tipp: xyz")
+    }
+
+
+    "play Wordle and win" in {
       val input = "abc\n"
       val output = erfassenKonsoleOutput {
         val targetWord = "abc"
@@ -69,6 +81,19 @@ class wordlespec extends AnyWordSpec with Matchers {
       }
       output.trim should include("Glückwunsch! Du hast das Wort erraten: abc")
     }
+    /*
+    "play Wordle and handle game loss" in {
+      val input = "xyz\n"
+      val output = erfassenKonsoleOutput {
+        val targetWord = "abc"
+        val display = "___"
+        val maxAttempts = 1
+        Console.withIn(new ByteArrayInputStream(input.getBytes("UTF-8"))) {
+          Testo.playWordle(targetWord, display, maxAttempts)
+        }
+      }
+      output.trim should include("Sorry, du hast kein Versuch mehr. Das Wort war: abc")
+    }*/
 
   }
 }
