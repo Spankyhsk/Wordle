@@ -1,55 +1,31 @@
 
 package controller
+import model.attempt
+import scala.util.Random
 
+case class controll(val attempt: attempt) {
 
-class controll {
-  import scala.util.Random
+  val versuch = attempt.x
+  val targetword = attempt.targetword
 
-  
-  //Random rausgenommen wegen Testbarkeit
-  def zufall(): Unit = {
-      val array1Buchstab: Array[String] = Array("A", "B", "C", "D")
-      val zufallword = array1Buchstab(Random.nextInt(array1Buchstab.length))
-    
-    }
+  def count(n:Int):Boolean={
 
-  def start(zuloesendesword: String): Unit = {
-    val loesungsword = zuloesendesword
-
-    println("Willkommen zu Wordle!")
-    input(loesungsword)(0)
-/*
-    val eingabe = scala.io.StdIn.readLine("Noch eine Runde?[Y]: ")
-    if(eingabe == "Y"){
-      start("A")    //Nächste Runde beginnt wieder mit "A" als Lösung --> nur zum testen erstmal
-    }else{
-      println("Auf Wiedersehen")
-    }*/
+    if(n < versuch) true else false
 
   }
 
-  def input(loesung: String)(n: Int): Unit = {
-    if (n < 1) {
-      val eingabe = scala.io.StdIn.readLine("Versuch eingeben: ")
-      //methode um zu prüfen ob eingabe im array ist
-      filter(loesung, eingabe, n)
-    } else {
-      println(loesung)
-      println("Verloren")
-      // Zurück zur Main oder beenden
-    }
+
+  def evaluateGuess(targetWord: String, guess: String): Unit = {
+    val feedback = guess.zipWithIndex.map {
+      case (g, i) if g == targetWord(i) => "\u001B[32m" + g + "\u001B[0m" //Tupel mit (buchstabe, index)
+      case (g, _) if targetWord.contains(g) => "\u001B[33m" + g + "\u001B[0m"
+      case (g, _) => g.toString
+    }.mkString("")
+
+    println(s"Dein Tipp: $feedback")
   }
 
-  def filter(loesung: String, eingabe: String, versuche: Int): Unit = {
-    if (loesung == eingabe) {
-      println(loesung)
-      println("Gewonnen")
-      // Zurück zur Main oder beenden
-    } else {
-      //methode für richtige buchstaben
-      //methode für
-      println("Versuch nicht erfolgreich. Nochmal versuchen.")
-      input(loesung)(versuche + 1)
-    }
-  }
+
+
+
 }
