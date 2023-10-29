@@ -1,5 +1,6 @@
-/*
-package wordle
+package src
+package util
+import controller.controll
 
 object wordle {
   def main(args: Array[String]): Unit = {
@@ -9,4 +10,3 @@ object wordle {
   }
 }
 
-*/

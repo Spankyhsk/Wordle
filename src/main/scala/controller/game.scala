@@ -1,4 +1,5 @@
-package wordle
+
+package controller
 
 object game {
   import scala.util.Random

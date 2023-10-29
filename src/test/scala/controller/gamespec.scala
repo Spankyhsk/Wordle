@@ -1,10 +1,14 @@
-package wordle
+
+package controller
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+
+
 import scala.io.StdIn
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+
 
 class gamespec extends AnyWordSpec with Matchers {
 
