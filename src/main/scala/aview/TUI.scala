@@ -11,13 +11,12 @@ class TUI (controller: controll):
   val targetword= controller.targetword//string
 
   def run():Unit ={
-    val n = 0
-
+    val n = 1
     println("Errate Wort:")
     println("_" * targetword.length)
     inputLoop(n)
-    if (continue) lose() else println("Auf Wiedersehen")
-
+    if (continue) println(s"Verloren! Versuche aufbegraucht. Lösung: $targetword") else println(s"Du hast gewonnen! Lösung: $targetword")
+    wordle.game()
   }
   def inputLoop(n:Int):Unit ={// do while schleife
     println(s"Versuch $n:")
@@ -27,21 +26,14 @@ class TUI (controller: controll):
 
   def scanInput(input: String): Unit ={
       input match
-        case "quit" => continue = false;
+        case "quit" => {
+          println("Wiedersehen")
+          System.exit(0)
+        }
         case default =>{
           val guess = input
-          if(guess == targetword) win() else controller.evaluateGuess(targetword, guess)//Fehler ist drin geht wenn man beendet nach Sieg in das jewals ältere spiel
+          if(guess == targetword) continue = false else controller.evaluateGuess(targetword, guess)//Fehler ist drin geht wenn man beendet nach Sieg in das jewals ältere spiel
         }
   }
 
-  def win():Unit={
-    println(s"Du hast gewonnen! Lösung: $targetword")
-    wordle.game()
-    System.exit(0)
-  }
-
-  def lose():Unit={
-    println(s"Verloren! Versuche aufbegraucht. Lösung: $targetword")
-    wordle.game()
-  }
 
