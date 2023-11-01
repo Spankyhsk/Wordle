@@ -15,7 +15,7 @@ class TUI (controller: controll):
     println("_" * targetword.length)
     inputLoop(n)
     if (continue) println(s"Verloren! Versuche aufbegraucht. Lösung: $targetword") else println(s"Du hast gewonnen! Lösung: $targetword")
-    wordle.game()
+    
   }
   def inputLoop(n:Int):Unit ={// do while schleife
     println(s"Versuch $n:")
