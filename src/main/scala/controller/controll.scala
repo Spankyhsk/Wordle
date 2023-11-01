@@ -5,12 +5,12 @@ import scala.util.Random
 
 case class controll(val attempt: attempt) {
 
-  val versuch = attempt.x
+  val limit = attempt.x
   val targetword = attempt.targetword
 
   def count(n:Int):Boolean={
 
-    if(n < versuch) true else false
+    if(n < limit) true else false
 
   }
 
