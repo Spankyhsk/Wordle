@@ -14,7 +14,7 @@ class controllspec extends AnyWordSpec {
     }
 
     "Count compares. number of attempt smaller as limit" in{
-      val controller  = new controller(new attempt("fisch", 1))
+      val controller  = new controll(new attempt("fisch", 1))
 
     }
   }
