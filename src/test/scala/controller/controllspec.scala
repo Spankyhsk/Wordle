@@ -5,16 +5,17 @@ import model.attempt
 
 class controllspec extends AnyWordSpec {
   "The Controller" should{
-    val contoller = new controll("fisch", 1)
+    val contoller = new controll(new attempt("fisch", 1))
     "Controller should initialize versuch and targetword from parameter" in{
-      val limit = 1
-      val targetword = "fisch"
+      val limit = attempt.x
+      val targetword = attempt.targetword
       limit should be(1)
       targetword should be("fisch")
     }
-    
-    "Count compares number of attempt with limit" in{
-      
+
+    "Count compares. number of attempt smaller as limit" in{
+      val controller  = new controller(new attempt())
+
     }
   }
 }
