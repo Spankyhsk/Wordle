@@ -1,5 +1,5 @@
 
-package controller
+/*package controller
 
 object game {
   import scala.util.Random
@@ -63,4 +63,4 @@ object game {
 
     println(s"Dein Tipp: $feedback")
   }
-}
+}*/

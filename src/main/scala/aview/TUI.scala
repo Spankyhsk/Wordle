@@ -1,6 +1,5 @@
 package aview
 import controller.controll
-import model.attempt
 import src.util.wordle
 
 import scala.io.StdIn.readLine
