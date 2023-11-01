@@ -1,0 +1,5 @@
+package aview
+
+class tuispec {
+
+}
