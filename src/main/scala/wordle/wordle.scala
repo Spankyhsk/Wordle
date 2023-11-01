@@ -10,10 +10,6 @@ import scala.util.Random
 
 object wordle {
   def main(args:Array[String]): Unit = {
-    game()
-  }
-
-  def game():Unit ={
     println("Willkommen zu Wordle")
     //Lösungswort raussuchen
     val wordObjekt = new word()
