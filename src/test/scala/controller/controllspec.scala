@@ -7,12 +7,14 @@ class controllspec extends AnyWordSpec {
   "The Controller" should{
     val contoller = new controll("fisch", 1)
     "Controller should initialize versuch and targetword from parameter" in{
-      val versuch = 1
+      val limit = 1
       val targetword = "fisch"
-      controller.versuch should be(1)
-      controller.targetword should be("fisch")
+      limit should be(1)
+      targetword should be("fisch")
     }
     
-    "Count compares "
+    "Count compares number of attempt with limit" in{
+      
+    }
   }
 }

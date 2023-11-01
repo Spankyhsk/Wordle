@@ -6,7 +6,7 @@ import scala.io.StdIn.readLine
 
 class TUI (controller: controll):
   var continue = true;
-  val versuch = controller.versuch//int
+  val versuch = controller.limit//int
   val targetword= controller.targetword//string
 
   def run():Unit ={
@@ -15,7 +15,7 @@ class TUI (controller: controll):
     println("_" * targetword.length)
     inputLoop(n)
     if (continue) println(s"Verloren! Versuche aufbegraucht. Lösung: $targetword") else println(s"Du hast gewonnen! Lösung: $targetword")
-    
+
   }
   def inputLoop(n:Int):Unit ={// do while schleife
     println(s"Versuch $n:")
