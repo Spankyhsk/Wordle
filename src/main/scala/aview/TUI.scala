@@ -14,7 +14,7 @@ class TUI (controller: controll):
     println("Errate Wort:")
     println("_" * targetword.length)
     inputLoop(n)
-    if (continue) println(s"Verloren! Versuche aufbegraucht. Lösung: $targetword") else println(s"Du hast gewonnen! Lösung: $targetword")
+    if (continue) println(s"Verloren! Versuche aufgebraucht. Lösung: $targetword") else println(s"Du hast gewonnen! Lösung: $targetword")
 
   }
   def inputLoop(n:Int):Unit ={// do while schleife
