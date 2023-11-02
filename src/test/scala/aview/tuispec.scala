@@ -68,7 +68,7 @@ class tuispec extends AnyWordSpec {
       "exit the program when 'quit' is entered" in {
         val controller = new MockController(3, "word")
         val tui = new TUI(controller)
-        val input = "quit\n"
+        val input = "quit"
 
         val output = captureOutputWithInput(input) {
           tui.scanInput(input)
