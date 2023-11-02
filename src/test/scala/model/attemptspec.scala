@@ -2,6 +2,7 @@ package model
 
 import org.scalatest.matchers.should.Matchers._
 import org.scalatest.wordspec.AnyWordSpec
+import model.attempt
 
 class attemptspec extends AnyWordSpec{
   "A attempt" should{
