@@ -13,7 +13,7 @@ object wordle {
     println("Willkommen zu Wordle")
     //Lösungswort raussuchen
     val wordObjekt = new word()
-    val attempt = new attempt(selectRandomWord(wordObjekt.wordsByLength(2)), 2) //Skalierbar (Wortlänge, Versuche)
+    val attempt = new attempt(selectRandomWord(wordObjekt.wordsByLength(2)), 3) //Skalierbar (Wortlänge, Versuche)
     val controller = controll(attempt)
     val tui = TUI(controller)
     tui.run()

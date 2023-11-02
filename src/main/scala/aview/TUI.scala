@@ -14,7 +14,7 @@ class TUI (controller: controll):
     println("Errate Wort:")
     println("_" * targetword.length)
     inputLoop(n)
-    if (continue) println(s"Verloren! Versuche aufgebraucht. Lösung: $targetword") else println(s"Du hast gewonnen! Lösung: $targetword")
+    if (continue) println(s"Verloren! Versuche aufgebraucht. Lösung: $targetword")
 
   }
   def inputLoop(n:Int):Unit ={// do while schleife
@@ -26,13 +26,21 @@ class TUI (controller: controll):
   def scanInput(input: String): Unit ={
       input match
         case "quit" => {
-          println("Wiedersehen")
-          System.exit(0)
+
+          println(s"Wiedersehen")
+          continue = false
+          
         }
         case default =>{
           val guess = input
-          if(guess == targetword) continue = false else controller.evaluateGuess(targetword, guess)//Fehler ist drin geht wenn man beendet nach Sieg in das jewals ältere spiel
+          if(guess == targetword){
+            continue = false
+            println("Du hast gewonnen!")
+          } else controller.evaluateGuess(targetword, guess)//Fehler ist drin geht wenn man beendet nach Sieg in das jewals ältere spiel
         }
   }
+
+
+
 
 
