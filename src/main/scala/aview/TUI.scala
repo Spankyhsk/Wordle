@@ -12,6 +12,7 @@ class TUI (controller: controll):
   def run():Unit ={
     val n = 1
     println("Errate Wort:")
+    println(s"Anzahl der Versuche: $numberTrys")
     println("_" * targetword.length)
     inputLoop(n)
     if (continue) println(s"Verloren! Versuche aufgebraucht. Lösung: $targetword")
