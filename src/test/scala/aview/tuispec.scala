@@ -43,7 +43,7 @@ class tuispec extends AnyWordSpec {
           tui.run()
         }
         output should include("Du hast gewonnen!")
-        //output should include("Lösung: word")
+        
       }
     }
 
@@ -58,8 +58,7 @@ class tuispec extends AnyWordSpec {
         output should include("Versuch 1:")
         output should include("Versuch 2:")
         output should include("Versuch 3:")
-        //output should include("Du hast gewonnen!")
-        //output should include("Lösung: word")
+        
       }
     }
 
