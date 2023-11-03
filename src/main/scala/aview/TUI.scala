@@ -6,7 +6,7 @@ import scala.io.StdIn.readLine
 
 class TUI (controller: controll):
   var continue = true;
-  val versuch = controller.limit//int
+  val numberTrys = controller.limit//int
   val targetword= controller.targetword//string
 
   def run():Unit ={

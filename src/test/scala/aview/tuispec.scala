@@ -8,7 +8,6 @@ import controller.controll
 import model.attempt
 
 
-
 class tuispec extends AnyWordSpec {
 
   "TUI" when {
@@ -82,8 +81,6 @@ class tuispec extends AnyWordSpec {
   }
     
     }
-
-
 
   def captureOutputWithInput(input: String)(block: => Unit): String = {
     val stream = new ByteArrayOutputStream()
