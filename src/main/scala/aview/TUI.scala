@@ -35,7 +35,7 @@ class TUI (controller: controll):
           val guess = input
           if(guess == targetword){
             continue = false
-            println("Du hast gewonnen!")
+            println(s"Du hast gewonnen! Lösung: $targetword")
           } else controller.evaluateGuess(targetword, guess)//Fehler ist drin geht wenn man beendet nach Sieg in das jewals ältere spiel
         }
   }
