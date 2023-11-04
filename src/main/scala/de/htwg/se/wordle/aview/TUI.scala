@@ -1,4 +1,4 @@
-package de.htwg.se.wordle
+package de.htwg.se.wordle.aview
 
 import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.util.Observer

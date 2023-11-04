@@ -2,7 +2,7 @@ package de.htwg.se.wordle.aview
 
 import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.model.attempt
-import de.htwg.se.wordle.{MockController, TUI}
+import de.htwg.se.wordle.MockController
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 

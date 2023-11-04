@@ -2,6 +2,7 @@ package de.htwg.se.wordle
 
 import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.model.{attempt, word}
+import de.htwg.se.wordle.aview.TUI
 
 import scala.util.Random
 
