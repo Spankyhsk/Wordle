@@ -33,11 +33,11 @@ class TUI (controller: controll):
           
         }
         case default =>{
-          val guess = input
+          val guess = input.toUpperCase//ändert alle klein buchstaben in großbuchstaben
           if(guess == targetword){
             continue = false
             println(s"Du hast gewonnen! Lösung: $targetword")
-          } else controller.evaluateGuess(targetword, guess)//Fehler ist drin geht wenn man beendet nach Sieg in das jewals ältere spiel
+          } else controller.evaluateGuess(targetword, guess)
         }
   }
 
