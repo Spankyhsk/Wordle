@@ -1,10 +1,7 @@
-package src
-package util
-import controller.controll
-import model.attempt
-import model.word
-import aview.TUI
+package de.htwg.se.wordle
 
+import de.htwg.se.wordle.controller.controll
+import de.htwg.se.wordle.model.{attempt, word}
 
 import scala.util.Random
 

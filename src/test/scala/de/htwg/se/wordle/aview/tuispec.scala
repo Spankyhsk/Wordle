@@ -1,11 +1,12 @@
-package aview
+package de.htwg.se.wordle.aview
 
-
-import org.scalatest.matchers.should.Matchers._
+import de.htwg.se.wordle.controller.controll
+import de.htwg.se.wordle.model.attempt
+import de.htwg.se.wordle.{MockController, TUI}
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
+
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
-import controller.controll
-import model.attempt
 
 
 class tuispec extends AnyWordSpec {

@@ -1,8 +1,8 @@
-package model
+package de.htwg.se.wordle.model
 
+import de.htwg.se.wordle.model.attempt
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import model.attempt
 import org.scalatest.matchers.should.Matchers
 
 class attemptspec extends AnyWordSpec with Matchers{

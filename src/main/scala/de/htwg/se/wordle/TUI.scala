@@ -1,10 +1,12 @@
-package aview
-import controller.controll
-import src.util.wordle
+package de.htwg.se.wordle
+
+import de.htwg.se.wordle.controller.controll
+import de.htwg.se.wordle.util.Observer
 
 import scala.io.StdIn.readLine
 
-class TUI (controller: controll):
+class TUI (controller: controll)extends Observer:
+
   var continue = true;
   val numberTrys = controller.limit//int
   val targetword= controller.targetword//string
@@ -37,8 +39,10 @@ class TUI (controller: controll):
           if(guess == targetword){
             continue = false
             println(s"Du hast gewonnen! Lösung: $targetword")
-          } else controller.evaluateGuess(targetword, guess)
+          } else println(controller.evaluateGuess(targetword, guess))
         }
+        
+        override def update:Unit = println(controller.evaluateGuess(targetword, guess))
   }
 
 

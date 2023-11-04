@@ -1,4 +1,4 @@
-package model
+package de.htwg.se.wordle.model
 
 case class word(){
 

@@ -1,8 +1,9 @@
-package controller
+package de.htwg.se.wordle.controller
+
+import de.htwg.se.wordle.controller.controll
+import de.htwg.se.wordle.model.attempt
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import model.attempt
-
 
 import java.io.ByteArrayOutputStream
 
