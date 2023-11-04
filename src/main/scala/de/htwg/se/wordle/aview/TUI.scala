@@ -42,8 +42,9 @@ class TUI (controller: controll)extends Observer:
           } else println(controller.evaluateGuess(targetword, guess))
         }
         
-        override def update:Unit = println(controller.evaluateGuess(targetword, guess))
+        
   }
+  override def update:Unit = println(controller.evaluateGuess(targetword, guess))
 
 
 
