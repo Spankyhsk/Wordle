@@ -6,27 +6,26 @@ import de.htwg.se.wordle.util.Observer
 import scala.io.StdIn.readLine
 
 class TUI (controller: controll)extends Observer:
-
+  controller.add(this)
   var continue = true;
   val numberTrys = controller.limit//int
   val targetword= controller.targetword//string
 
   def run():Unit ={
     val n = 1
-    println("Errate Wort:")
-    println(s"Anzahl der Versuche: $numberTrys")
-    println("_" * targetword.length)
+    println("Errate Wort:")//guess
+    controller.createGamefield()
     inputLoop(n)
     if (continue) println(s"Verloren! Versuche aufgebraucht. Lösung: $targetword")
 
   }
   def inputLoop(n:Int):Unit ={// do while schleife
-    println(s"Versuch $n:")
-    scanInput(readLine)
+    controller.toString
+    scanInput(readLine, n)
     if continue && controller.count(n) then inputLoop(n+1)
   }
 
-  def scanInput(input: String): Unit ={
+  def scanInput(input: String, n:Int): Unit ={
       input match
         case "quit" => {
 
@@ -39,12 +38,12 @@ class TUI (controller: controll)extends Observer:
           if(guess == targetword){
             continue = false
             println(s"Du hast gewonnen! Lösung: $targetword")
-          } else println(controller.evaluateGuess(targetword, guess))
+          } else controller.set(n, controller.evaluateGuess(targetword, guess))
         }
         
         
   }
-  override def update:Unit = println(controller.evaluateGuess(targetword, guess))
+  override def update:Unit = println(controller.toString)
 
 
 
