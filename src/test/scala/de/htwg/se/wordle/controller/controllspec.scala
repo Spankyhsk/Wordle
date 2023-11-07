@@ -46,7 +46,7 @@ class controllspec extends AnyWordSpec {
       val guess = "abc"
       val feedback = controller.evaluateGuess(targetWord, guess)
 
-      feedback.trim should be("\u001B[32ma\u001B[0m\u001B[32mb\u001B[0m\u001B[32mc\u001B[0m")
+      feedback should be("\u001B[32ma\u001B[0m\u001B[32mb\u001B[0m\u001B[32mc\u001B[0m")
     }
 
     "evaluate guess handle incorrect guess" in {
