@@ -2,17 +2,17 @@ package de.htwg.se.wordle.model
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import de.htwg.se.wordle
+import de.htwg.se.wordle.wordle
 
 class wordspec extends AnyWordSpec with Matchers{
   "word" should{
     "select a random word" in {
       val wordsByLength = Map(
-        1 -> Array("a", "b", "c", "d", "e"),
-        2 -> Array("ab", "bc", "cd", "de", "ef"),
-        3 -> Array("abc", "bcd", "cde", "def", "efg"),
-        4 -> Array("abcd", "bcde", "cdef", "defg", "efgh"),
-        5 -> Array("abcde", "bcdef", "cdefg", "defgh", "efghi")
+        1 -> Array("A", "B", "C", "D", "E"),
+        2 -> Array("AB", "BC", "CD", "DE", "EF"),
+        3 -> Array("ABC", "BCD", "CDE", "DEF", "EFG"),
+        4 -> Array("ABCD", "BCDE", "CDEF", "DEFG", "EFGH"),
+        5 -> Array("ABCDE", "BCDEF", "CDEFG", "DEFGH", "EFGHI")
       )
 
       val word = wordle.selectRandomWord(wordsByLength(3))

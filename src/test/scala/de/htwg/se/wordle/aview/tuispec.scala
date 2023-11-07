@@ -1,4 +1,5 @@
 package de.htwg.se.wordle.aview
+import de.htwg.se.wordle.aview.TUI
 
 import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.model.attempt
@@ -37,15 +38,17 @@ class tuispec extends AnyWordSpec {
       }
 
       "end the game with a win when the correct word is guessed" in {
-        val controller = new MockController(3, "word")
+        val controller = new MockController(3, "WORD")
         val tui = new TUI(controller)
-        val input = "word\nquit\n"
+
+        val input = "word\n"
         val output = captureOutputWithInput(input) {
           tui.run()
         }
         output should include("Du hast gewonnen!")
-        
+
       }
+
     }
 
     "inputLoop" should {
@@ -56,10 +59,10 @@ class tuispec extends AnyWordSpec {
         val output = captureOutputWithInput(input) {
           tui.inputLoop(1)
         }
-        output should include("Versuch 1:")
-        output should include("Versuch 2:")
-        output should include("Versuch 3:")
-        
+        output should include("WRONG")
+        output should include("WRONG\nWRONG")
+        output should include("WRONG\nWRONG\nWRONG")
+
       }
     }
 
@@ -70,7 +73,7 @@ class tuispec extends AnyWordSpec {
         val input = "quit"
 
         val output = captureOutputWithInput(input) {
-          tui.scanInput(input)
+          tui.scanInput(input, 1)
         }
 
         output should include("Wiedersehen")
@@ -79,43 +82,48 @@ class tuispec extends AnyWordSpec {
     }
 
   }
-    
-    }
 
-  def captureOutputWithInput(input: String)(block: => Unit): String = {
-    val stream = new ByteArrayOutputStream()
-    Console.withOut(stream) {
-      Console.withIn(new ByteArrayInputStream(input.getBytes()))(block)
+}
+
+def captureOutputWithInput(input: String)(block: => Unit): String = {
+  val stream = new ByteArrayOutputStream()
+  Console.withOut(stream) {
+    Console.withIn(new ByteArrayInputStream(input.getBytes()))(block)
+  }
+  stream.toString
+}
+
+
+class MockController(attempts: Int, target: String) extends controll(attempt(targetword = target, x = attempts)) {
+  var continue = true
+
+  override def count(n: Int): Boolean = {
+    if (n >= attempts) {
+      continue = false
     }
-    stream.toString
+    continue
+  }
+
+  override def evaluateGuess(targetWord: String, guess: String): String = {
+    val minLen = Math.min(targetWord.length, guess.length) //Vergleicht nur so lange wie kurze Wort Indexfehler beim testen
+    val feedback = guess.zipWithIndex.map {
+      case (g, i) if i < minLen && g == targetWord(i) => "\u001B[32m" + g + "\u001B[0m" //Tupel mit (buchstabe, index)
+      case (g, _) if targetWord.contains(g) => "\u001B[33m" + g + "\u001B[0m"
+      case (g, _) => g.toString
+    }.mkString("")
+
+    feedback
+  }
+
+  var exitCalled: Boolean = false // Eine Variable, um das Programmende nachzuverfolgen
+
+  def quit(): Unit = {
+    exitCalled = true // Diese Methode wird aufgerufen, wenn das Programm beendet werden soll
   }
 
 
-  class MockController(attempts: Int, target: String) extends controll(attempt(targetword = target, x = attempts)) {
-    var continue = true
-
-    override def count(n: Int): Boolean = {
-      if (n >= attempts) {
-        continue = false
-      }
-      continue
-    }
-
-    override def evaluateGuess(target: String, guess: String): Unit = {
-      if (guess == target) {
-        continue = false
-      }
-    }
-
-    var exitCalled: Boolean = false // Eine Variable, um das Programmende nachzuverfolgen
-
-    def quit(): Unit = {
-      exitCalled = true // Diese Methode wird aufgerufen, wenn das Programm beendet werden soll
-    }
-
-
-    override val limit: Int = attempts
-    override val targetword: String = target
+  override val limit: Int = attempts
+  override val targetword: String = target
 
 
 }
