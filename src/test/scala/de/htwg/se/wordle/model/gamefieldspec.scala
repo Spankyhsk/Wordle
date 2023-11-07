@@ -9,8 +9,8 @@ class gamefieldspec extends AnyWordSpec {
       val gamefield = new gamefield()
       gamefield.buildGamefield(1, 1, "_")
       gamefield.map.size should be(1)
-      gamefield.map.keys should be(1)
-      gamefield.map.values should be("_")
+      gamefield.map.head._1 should be(1)
+      gamefield.map(1) should be("_")
 
     }
 
@@ -31,7 +31,7 @@ class gamefieldspec extends AnyWordSpec {
       val gamefield = new gamefield()
       gamefield.buildGamefield(1,1,"_")
       val s = gamefield.toString
-      s should be("_")
+      s should be("_\n")
     }
   }
 

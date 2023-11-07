@@ -41,23 +41,21 @@ class controllspec extends AnyWordSpec {
     }
 
     "evaluate guess and display feedback (green letter)" in {
-      val controller = new controll(new attempt("fisch", 2))
+      val controller = new controll(new attempt("abc", 2))
       val targetWord = "abc"
       val guess = "abc"
-      val feedback = captureOutput{
-        controller.evaluateGuess(targetWord, guess)
-      }
-      feedback.trim should be("Dein Tipp: \u001B[32ma\u001B[0m\u001B[32mb\u001B[0m\u001B[32mc\u001B[0m")
+      val feedback = controller.evaluateGuess(targetWord, guess)
+
+      feedback.trim should be("\u001B[32ma\u001B[0m\u001B[32mb\u001B[0m\u001B[32mc\u001B[0m")
     }
 
     "evaluate guess handle incorrect guess" in {
       val controller = new controll(new attempt("fisch", 2))
-      val targetWord = "abc"
-      val guess = "xyz"
-      val feedback = captureOutput {
-        controller.evaluateGuess(targetWord, guess)
-      }
-      feedback.trim should be("Dein Tipp: xyz")
+      val targetWord = controller.targetword
+      val guess = "xyzer"
+      val feedback = controller.evaluateGuess(targetWord, guess)
+
+      feedback.trim should be("xyzer")
     }
 
     "createGamefield calls gamefield.buildGamefield" in{
