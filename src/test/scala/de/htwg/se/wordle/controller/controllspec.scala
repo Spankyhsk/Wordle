@@ -2,6 +2,7 @@ package de.htwg.se.wordle.controller
 
 import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.model.attempt
+import de.htwg.se.wordle.model.gamefield
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -21,10 +22,10 @@ class controllspec extends AnyWordSpec {
 
 
     "Controller should initialize versuch and targetword from parameter" in{
-      val attampt = new attempt("fisch", 1)
-      val contoller = new controll(attampt)
-      val limit = attampt.x
-      val targetword = attampt.targetword
+
+      val controller = new controll(new attempt("fisch", 1))
+      val limit = controller.limit
+      val targetword = controller.targetword
       limit should be(1)
       targetword should be("fisch")
     }
@@ -57,6 +58,28 @@ class controllspec extends AnyWordSpec {
         controller.evaluateGuess(targetWord, guess)
       }
       feedback.trim should be("Dein Tipp: xyz")
+    }
+
+    "createGamefield calls gamefield.buildGamefield" in{
+      val controller = new controll(new attempt("fisch", 2))
+      controller.createGamefield()
+      controller.gamefield.map.size should be(2)
+
+    }
+
+    "set calls gamefield.set" in{
+      val controller = new controll(new attempt("fisch", 2))
+      controller.createGamefield()
+      controller.set(1,"Tisch")
+      controller.gamefield.map(1) should be("Tisch")
+
+    }
+
+    "toString calls gamefield.toString" in{
+      val controller = new controll(new attempt("fisch", 2))
+      controller.createGamefield()
+      val s = controller.toString
+      s should be("_____\n_____\n")
     }
   }
 }

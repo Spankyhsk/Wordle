@@ -2,7 +2,7 @@ package de.htwg.se.wordle.model
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import src.util.wordle
+import de.htwg.se.wordle
 
 class wordspec extends AnyWordSpec with Matchers{
   "word" should{

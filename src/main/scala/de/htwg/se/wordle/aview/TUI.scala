@@ -33,6 +33,7 @@ class TUI (controller: controll)extends Observer:
           continue = false
           
         }
+        
         case default =>{
           val guess = input.toUpperCase//ändert alle klein buchstaben in großbuchstaben
           if(guess == targetword){
