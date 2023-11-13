@@ -16,7 +16,7 @@ object wordle {
     val tui = TUI(controller)
     tui.run()
   }
-//testkommentar
+
   def selectRandomWord(wordArray: Array[String]): String = {
     Random.shuffle(wordArray.toList).head
   }
