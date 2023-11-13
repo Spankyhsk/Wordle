@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'corretto'
+          distribution: 'adopt'
           cache: 'sbt'
 
       - name: compile
@@ -29,7 +29,7 @@ jobs:
       - name: run tests
         run: sbt test
 
-  test-coverage:
+  run-tests:
     name: Test
 
     runs-on: ubuntu-latest
@@ -37,12 +37,12 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
-          java-version: '18'
-          distribution: 'corretto'
+          java-version: '11'
+          distribution: 'adopt'
           cache: 'sbt'
       - name: Run Tests
         run: sbt clean coverage test
       - name: Upload Coverage Report
         env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
         run: sbt coverageReport coveralls
