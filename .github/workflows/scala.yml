@@ -44,5 +44,5 @@ jobs:
         run: sbt clean coverage test
       - name: Upload Coverage Report
         env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: sbt coverageReport coveralls -Dcoveralls.service_name=github -Dcoveralls.service_job_id=${{ github.run_id }}
