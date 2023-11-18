@@ -1,15 +1,15 @@
 
 package de.htwg.se.wordle.controller
-
+import de.htwg.se.wordle.model.gamemode
 import de.htwg.se.wordle.model.attempt
 import de.htwg.se.wordle.model.gamefield
-import scala.util.Random
 import de.htwg.se.wordle.util.Observable
 
-case class controll (val attempt: attempt)extends Observable {
+case class controll (gm: gamemode.State)extends Observable {
 
-  val limit = attempt.x
-  val targetword = attempt.targetword
+
+  val limit = gm.getLimit()
+  val targetword = gm.getTargetword()
   val gamefield = new gamefield()
 
   def count(n:Int):Boolean={
@@ -18,7 +18,7 @@ case class controll (val attempt: attempt)extends Observable {
 
   }
   def createGamefield():Unit ={
-    gamefield.buildGamefield(limit, 1, "_"*targetword.length)
+    gamefield.buildGamefield(limit, 1, "_"*targetword.size)
     notifyObservers
   }
 
@@ -40,7 +40,9 @@ case class controll (val attempt: attempt)extends Observable {
 
   override def toString: String = {gamefield.toString}
 
-
+  def changeState(e:Int):Unit={
+    gm.handle(e)
+  }
 
 
 }
