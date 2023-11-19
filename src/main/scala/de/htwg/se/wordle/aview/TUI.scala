@@ -8,15 +8,16 @@ import scala.io.StdIn.readLine
 class TUI (controller: controll)extends Observer:
   controller.add(this)
   var continue = true;
-  val numberTrys = controller.limit//int
-  val targetword= controller.targetword//string
+  val numberTrys = controller.limit//int//updatet sich nicht//getmethode schreiben das erste nach state wechsel difiniert
+  val targetword= controller.targetword//string//updatet sich nicht//getmethode schreiben das erste nach state wechsel difiniert
 
   def run():Unit ={
     val n = 1
     println("Gamemode aussuchen: \n1:= leicht\n 2:=mittel\n 3:=schwer")
     controller.changeState(readLine.toInt)
+    println(targetword)
     println("Errate Wort:")//guess
-    controller.createGamefield()
+    controller.createGameboard()
     inputLoop(n)
     if (continue) println(s"Verloren! Versuche aufgebraucht. Lösung: $targetword")
 

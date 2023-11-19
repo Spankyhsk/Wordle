@@ -49,11 +49,13 @@ object gamemode{
   }
 
 
-  val wordlength = 2
-  case class gamemode1()extends State {
 
-    val targetword = Map(1->selectRandomWord(word(wordlength)))
+  case class gamemode1()extends State {
+    val wordObject = new word()
+    val wordlength = 2
+    val targetword= Map(1->selectRandomWord(wordObject.words(wordlength)))
     val limit = 3
+
 
     override def handle(e: Int): State = {
       e match {
@@ -72,9 +74,11 @@ object gamemode{
   }
 
   case class gamemode2()extends State{
+    val wordObject = new word()
+    val wordlength = 2
     val targetword = Map(
-      1 -> selectRandomWord(word(wordlength)),
-      2 -> selectRandomWord(word(wordlength))
+      1 -> selectRandomWord(wordObject.words(wordlength)),
+      2 -> selectRandomWord(wordObject.words(wordlength))
     )
     val limit = 3
 
@@ -96,11 +100,13 @@ object gamemode{
   }
 
   case class gamemode3()extends State{
+    val wordObject = new word()
+    val wordlength = 2
     val targetword = Map(
-      1 -> selectRandomWord(word(wordlength)),
-      2 -> selectRandomWord(word(wordlength)),
-      3 -> selectRandomWord(word(wordlength)),
-      4 -> selectRandomWord(word(wordlength))
+      1 -> selectRandomWord(wordObject.words(wordlength)),
+      2 -> selectRandomWord(wordObject.words(wordlength)),
+      3 -> selectRandomWord(wordObject.words(wordlength)),
+      4 -> selectRandomWord(wordObject.words(wordlength))
     )
     val limit = 3
 
@@ -121,7 +127,7 @@ object gamemode{
     }
   }
 
-  var state: State = gamemode1()
+  var state: State = gamemode1()//targetword und limit nimmt die werte als erstes
 
   def handle(e: Int) = state = state.handle(e)
 
@@ -129,13 +135,18 @@ object gamemode{
     Random.shuffle(wordArray.toList).head
   }
 
-  val word = Map(
-    1 -> Array("A", "B", "C", "D", "E"),
-    2 -> Array("AB", "BC", "CD", "DE", "EF"),
-    3 -> Array("ABC", "BCD", "CDE", "DEF", "EFG"),
-    4 -> Array("ABCD", "BCDE", "CDEF", "DEFG", "EFGH"),
-    5 -> Array("ABCDE", "BCDEF", "CDEFG", "DEFGH", "EFGHI")
-  )
+  case class word() {
+
+    val words= Map(
+      1 -> Array("A", "B", "C", "D", "E"),
+      2 -> Array("AB", "BC", "CD", "DE", "EF"),
+      3 -> Array("ABC", "BCD", "CDE", "DEF", "EFG"),
+      4 -> Array("ABCD", "BCDE", "CDEF", "DEFG", "EFGH"),
+      5 -> Array("ABCDE", "BCDEF", "CDEFG", "DEFGH", "EFGHI")
+    )
+
+
+  }
 
 
 
