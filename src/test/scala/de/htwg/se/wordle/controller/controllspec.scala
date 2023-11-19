@@ -1,7 +1,6 @@
 package de.htwg.se.wordle.controller
 
 import de.htwg.se.wordle.controller.controll
-import de.htwg.se.wordle.model.attempt
 import de.htwg.se.wordle.model.gamefield
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec

@@ -45,13 +45,15 @@ object gamefield {
       children
     }
 
-    override def toString: String ={
+    override def toString: String ={//druckt nur gamefield 2 wenn es 2 gibt // HAT FEHLER
       var gameboard = ""
       val mapValues = map.values
       mapValues.foreach(value => gameboard += value.toString + "\n")
       gameboard
 
     }
+
+
 
 
 
