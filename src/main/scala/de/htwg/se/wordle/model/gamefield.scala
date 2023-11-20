@@ -4,13 +4,13 @@ object gamefield {
     def set(key:Int, feedback:String):Unit
     def buildGamefield(n: Int, key: Int, value: String): Unit
     def toString: String
-		def setWin:Boolean
-		def getWin:Boolean
+    def setWin():Unit
+    def getWin():Boolean
   }
-  case class gamefield()extends Component {
+  case class gamefield() extends Component {
 
     var map = Map.empty[Int, String]
-		var win = False
+    var win = false
 
     def set(key: Int, feedback: String): Unit = {
       map = map + (key -> feedback)
@@ -30,11 +30,11 @@ object gamefield {
       gamefield
 
     }
-		def setWin():Boolean={
-			win = true
-		}
+    override def setWin():Unit={
+      win = true
+    }
 
-		def getWin():Boolean={
+    override def getWin():Boolean={
 			win
 		}
 
@@ -42,13 +42,13 @@ object gamefield {
 
   case class gameboard() extends Component{
     var map = Map.empty[Int, Component]
-		var win = false
+    var win = false
     override def set(key:Int, feedback:String):Unit={}
     override def buildGamefield(n: Int, key: Int, value: String): Unit={}
 
-    def buildGameboard(n:Int, key:Int, value:Component): Unit = {
-      map += (key -> value)
-      if (key < n) buildGameboard(n, key + 1, value)
+    def buildGameboard(n:Int, key:Int): Unit = {
+      map += (key -> new gamefield())
+      if (key < n) buildGameboard(n, key + 1)
     }
 
     def getChilderen(key:Int):Component={
@@ -56,18 +56,18 @@ object gamefield {
       children
     }
 
-    override def toString: String ={//druckt nur gamefield 2 wenn es 2 gibt // HAT FEHLER
+    override def toString: String ={
       var gameboard = ""
       val mapValues = map.values
       mapValues.foreach(value => gameboard += value.toString + "\n")
       gameboard
 
     }
-		def setWin():Boolean={
+    override def setWin():Unit={
 			win = true
 		}
 
-		def getWin():Boolean={
+    override def getWin():Boolean={
 			win
 		}
 

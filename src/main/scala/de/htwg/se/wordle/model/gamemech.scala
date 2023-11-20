@@ -5,7 +5,7 @@ case class gamemech(){
     if (n < limit) true else false
   }
 
-  def compareTargetguess(targetword:String, guess:String):Boolean={
+  def compareTargetguess(targetword:String, guess:String):Boolean={//als Stragy-panel
     if(guess == targetword) true else false
   }
 

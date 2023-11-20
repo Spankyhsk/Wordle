@@ -16,12 +16,12 @@ case class controll (gm: gamemode.State)extends Observable {
     bool
   }
   def createGameboard():Unit ={
-    gameboard.buildGameboard(getTargetword().size, 1, new gamefield())
+    gameboard.buildGameboard(getTargetword().size, 1)
     createGamefieldR(1)
     notifyObservers
   }
   def createGamefieldR(n:Int):Unit ={
-    gameboard.getChilderen(n).buildGamefield(getLimit(), 1, "_"*getTargetword()(1).length)
+    gameboard.getChilderen(n).buildGamefield(getLimit(), 1, s"_"*getTargetword()(1).length)
     if(n<gameboard.map.size) createGamefieldR(n+1)
   }
 
@@ -38,7 +38,6 @@ case class controll (gm: gamemode.State)extends Observable {
   def evaluateGuess(guess: String): Map[Int, String] = {
     val keys: List[Int] = getTargetword().keys.toList
     val feedback: Map[Int, String] = keys.map(key => key -> gamemech.evaluateGuess(getTargetword()(key), guess)).toMap
-    println(feedback)
     feedback
   }
 
@@ -60,11 +59,26 @@ case class controll (gm: gamemode.State)extends Observable {
     val limit = gamemode.getLimit()
     limit
   }
+  def areYouWinningSon(guess:String):Boolean={
+    compareTargetguess(1, guess)
+    gameboard.getWin()
+  }
 
-  /*def compareTargetguess(guess:String):Boolean={
-    val mapvalue = getTargetword().values
-    mapvalue.foreach(value => gamemech.compareTargetguess(value, guess))
-  }*/
+  def compareTargetguess(n:Int, guess:String):Unit={
+    var victory = false
+    if(!gameboard.getChilderen(n).getWin()){ //wenn Wort noch nicht erraten kommt es hier rein
+      //wenn guess gleich der lösung ist setzte win auf true in diesen Spielfeld
+      if(gamemech.compareTargetguess(getTargetword()(n), guess)) {
+        gameboard.getChilderen(n).setWin()
+        victory = true//du bist dem Siege schon eins näher
+      }else{victory = false}//wenn schon das nicht richtig ist hast du wohl noch nicht gewonnen
+    }
+    if(n<gameboard.map.size){ compareTargetguess(n+1, guess)}else{if(victory) gameboard.setWin()}
+
+
+
+
+  }
 
 
 }

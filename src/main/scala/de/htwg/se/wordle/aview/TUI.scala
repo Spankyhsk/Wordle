@@ -10,9 +10,9 @@ class TUI (controller: controll)extends Observer:
 
   def run():Unit ={
     val n = 1
-    println("Gamemode aussuchen: \n1:= leicht\n 2:=mittel\n 3:=schwer")
+    println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
     controller.changeState(readLine.toInt)
-    println(controller.getTargetword())
+    println(controller.getTargetword())//Entfernen wenn alles funkzioniert
     println("Errate Wort:")//guess
     controller.createGameboard()
     inputLoop(n)
@@ -32,7 +32,7 @@ class TUI (controller: controll)extends Observer:
         }
         case default =>{
           val guess = input.toUpperCase//ändert alle klein buchstaben in großbuchstaben
-          if(guess == controller.getTargetword()(1)){
+          if(controller.areYouWinningSon(guess)){
             continue = false
             println(s"Du hast gewonnen! Lösung:"+ controller.getTargetword())
           } else controller.set(n, controller.evaluateGuess(guess))
