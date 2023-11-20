@@ -4,10 +4,13 @@ object gamefield {
     def set(key:Int, feedback:String):Unit
     def buildGamefield(n: Int, key: Int, value: String): Unit
     def toString: String
+		def setWin:Boolean
+		def getWin:Boolean
   }
   case class gamefield()extends Component {
 
     var map = Map.empty[Int, String]
+		var win = False
 
     def set(key: Int, feedback: String): Unit = {
       map = map + (key -> feedback)
@@ -27,11 +30,19 @@ object gamefield {
       gamefield
 
     }
+		def setWin():Boolean={
+			win = true
+		}
+
+		def getWin():Boolean={
+			win
+		}
 
   }
 
   case class gameboard() extends Component{
     var map = Map.empty[Int, Component]
+		var win = false
     override def set(key:Int, feedback:String):Unit={}
     override def buildGamefield(n: Int, key: Int, value: String): Unit={}
 
@@ -52,10 +63,13 @@ object gamefield {
       gameboard
 
     }
+		def setWin():Boolean={
+			win = true
+		}
 
-
-
-
+		def getWin():Boolean={
+			win
+		}
 
   }
 }
