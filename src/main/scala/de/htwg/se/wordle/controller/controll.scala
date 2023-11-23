@@ -59,12 +59,13 @@ case class controll (gm: gamemode.State)extends Observable {
     val limit = gamemode.getLimit()
     limit
   }
-  
+
   def createwinningboard():Unit={
     gamemech.buildwinningboard(gameboard.map.size, 1)
   }
   def areYouWinningSon(guess:String):Boolean={
-    true
+    gamemech.compareTargetguess(1, getTargetword(),guess)
+    gamemech.areYouWinningSon()
   }
 
   /*def compareTargetguess(n:Int, guess:String):Unit={
