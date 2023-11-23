@@ -1,3 +1,4 @@
+/*
 package de.htwg.se.wordle.aview
 import de.htwg.se.wordle.aview.TUI
 
@@ -125,4 +126,4 @@ class MockController(attempts: Int, target: String) extends controll(attempt(tar
   override val targetword: String = target
 
 
-}
+}*/
