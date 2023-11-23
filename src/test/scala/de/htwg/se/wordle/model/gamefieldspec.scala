@@ -3,7 +3,7 @@ package de.htwg.se.wordle.model
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class GamefieldSpec extends AnyWordSpec with Matchers {
+class gamefieldspec extends AnyWordSpec with Matchers {
 
   "Gamefield" when {
     "using gamefield" should {

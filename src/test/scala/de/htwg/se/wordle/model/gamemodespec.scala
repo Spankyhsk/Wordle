@@ -3,7 +3,7 @@ package de.htwg.se.wordle.model
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class GamemodeSpec extends AnyWordSpec with Matchers {
+class gamemodespec extends AnyWordSpec with Matchers {
 
   "Gamemode" when {
     "in gamemode1" should {
