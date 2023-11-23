@@ -1,5 +1,8 @@
 package de.htwg.se.wordle.model
 
-class gamemodespec {
+import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.AnyWordSpec
+class gamemodespec extends AnyWordSpec{
+  
 
 }

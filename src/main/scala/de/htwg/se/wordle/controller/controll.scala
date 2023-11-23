@@ -74,10 +74,6 @@ case class controll (gm: gamemode.State)extends Observable {
       }else{victory = false}//wenn schon das nicht richtig ist hast du wohl noch nicht gewonnen
     }
     if(n<gameboard.map.size){ compareTargetguess(n+1, guess)}else{if(victory) gameboard.setWin()}
-
-
-
-
   }
 
 
