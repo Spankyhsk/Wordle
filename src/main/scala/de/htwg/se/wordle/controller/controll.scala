@@ -2,13 +2,13 @@
 package de.htwg.se.wordle.controller
 import de.htwg.se.wordle.model.gamemode
 import de.htwg.se.wordle.model.gamefield.{gamefield, gameboard}
-import de.htwg.se.wordle.model.gamemech
+import de.htwg.se.wordle.model.gamemech.GameMech
 import de.htwg.se.wordle.util.Observable
 
 case class controll (gm: gamemode.State)extends Observable {
 
   var gamemode = gm
-  val gamemech = new gamemech()
+  val gamemech = new GameMech()
   val gameboard = new gameboard()
 
   def count(n:Int):Boolean={
@@ -33,16 +33,13 @@ case class controll (gm: gamemode.State)extends Observable {
     gameboard.getChilderen(n).set(key, feedback(n))
     if(n<gameboard.map.size) setR(n+1, key, feedback)
   }
-
-
+  
   def evaluateGuess(guess: String): Map[Int, String] = {
     val keys: List[Int] = getTargetword().keys.toList
     val feedback: Map[Int, String] = keys.map(key => key -> gamemech.evaluateGuess(getTargetword()(key), guess)).toMap
     feedback
   }
-
-
-
+  
   override def toString: String = {gameboard.toString}
 
   def changeState(e:Int):Unit={
@@ -64,21 +61,7 @@ case class controll (gm: gamemode.State)extends Observable {
     gamemech.buildwinningboard(gameboard.map.size, 1)
   }
   def areYouWinningSon(guess:String):Boolean={
-    gamemech.compareTargetguess(1, getTargetword(),guess)
+    gamemech.compareTargetGuess(1, getTargetword(),guess)
     gamemech.areYouWinningSon()
   }
-
-  /*def compareTargetguess(n:Int, guess:String):Unit={
-    var victory = false
-    if(!gameboard.getChilderen(n).getWin()){ //wenn Wort noch nicht erraten kommt es hier rein
-      //wenn guess gleich der lösung ist setzte win auf true in diesen Spielfeld
-      if(gamemech.compareTargetguess(getTargetword()(n), guess)) {
-        gameboard.getChilderen(n).setWin()
-        victory = true//du bist dem Siege schon eins näher
-      }else{victory = false}//wenn schon das nicht richtig ist hast du wohl noch nicht gewonnen
-    }
-    if(n<gameboard.map.size){ compareTargetguess(n+1, guess)}else{if(victory) gameboard.setWin()}
-  }*/
-
-
 }

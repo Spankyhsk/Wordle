@@ -12,10 +12,10 @@ class TUI (controller: controll)extends Observer:
     val n = 1
     println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
     controller.changeState(readLine.toInt)
-    controller.createwinningboard()
     println(controller.getTargetword())//Entfernen wenn alles funkzioniert
     println("Errate Wort:")//guess
     controller.createGameboard()
+    controller.createwinningboard()
     inputLoop(n)
     if (continue) println(s"Verloren! Versuche aufgebraucht. Lösung:"+ controller.getTargetword())
   }
