@@ -4,6 +4,7 @@ import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.util.Observer
 
 import scalafx.application.JFXApp3
+import scalafx.Includes._
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.beans.property.{ReadOnlyStringWrapper, StringProperty}
 import scalafx.collections.ObservableBuffer
@@ -14,13 +15,18 @@ import scalafx.scene.layout.{BorderPane, HBox, StackPane, VBox}
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.{Font, FontWeight, Text}
 
-class Gui(controller: controll) extends JFXApp3 with Observer {
+object GUIFX extends JFXApp3 with Observer {
   case class GeneratedItem(name: String)
 
+  /*class Gui(controller: controll) extends Observer {
+
+    override def update: Unit = {}
+  }*/
   override def update: Unit = {}
 
   override def start(): Unit = {
     stage = new PrimaryStage {
+      title = "wordle1"
       scene = new Scene {
         fill = LightGray
 
@@ -68,7 +74,7 @@ class Gui(controller: controll) extends JFXApp3 with Observer {
             val generatedTable = new TableView[GeneratedItem] {
               columns ++= List(
                 new TableColumn[GeneratedItem, String] {
-                  //text = "Name"
+                  text = "Name"
                   //cellValueFactory = _.value.name
                 }
               )
@@ -92,6 +98,5 @@ class Gui(controller: controll) extends JFXApp3 with Observer {
         }
       }
     }
-    stage.title = "Wordle"
   }
 }

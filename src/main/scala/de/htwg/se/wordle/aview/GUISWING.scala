@@ -1,0 +1,173 @@
+package de.htwg.se.wordle.aview
+
+import de.htwg.se.wordle.controller.controll
+import de.htwg.se.wordle.util.Observer
+
+import scala.swing._
+import scala.swing.event._
+import java.awt.Color
+import javax.swing.table.{AbstractTableModel, DefaultTableModel}
+class GUISWING(controller:controll) extends Frame with Observer {
+  controller.add(this)
+  var won = false
+  var continue = true
+  var n = 1
+  title = "Wordle"
+
+  menuBar = new MenuBar {
+    contents += new Menu("File") {
+      contents += new MenuItem(Action("Exit") {
+        sys.exit(0)
+      })
+    }
+  }
+  //-------------------------------------
+  val headlinepanel = new FlowPanel{
+    contents += new Label("Wordle"){
+      font = new Font("Arial", Font.Bold.id, 24)
+      border = Swing.EmptyBorder(0, 0, 10, 0)
+    }
+  }
+  //------------------------------------
+  val level = new Label("???")
+
+
+  val EasymodusButton = new Button("Leicht")
+  val MediummodusButton = new Button("Mittel")
+  val HardmodusButton = new Button("Schwer")
+
+
+  val gamemoduspanel1 = new BoxPanel(Orientation.Horizontal){
+    contents += new Label("Schwierigkeitsgrad: ")
+    contents += level
+  }
+
+  val gamemoduspanel2 = new BoxPanel(Orientation.Horizontal){
+    contents += EasymodusButton
+    contents += MediummodusButton
+    contents += HardmodusButton
+  }
+
+  val gamemoduspanelMain = new BoxPanel(Orientation.Vertical){
+    contents += gamemoduspanel1
+    contents += gamemoduspanel2
+  }
+
+  val northpanel = new BoxPanel(Orientation.Vertical){
+    contents += menuBar
+    contents += headlinepanel
+    contents += gamemoduspanelMain
+  }
+  //------------------------------------------------------
+  object inputTextField extends TextField {
+    columns = 10
+    preferredSize = new Dimension(200, 30)
+    maximumSize = new Dimension(200, 30)
+    enabled = false
+  }
+
+  object OutputTextField extends TextArea{
+    rows = 20
+    columns = 20
+    editable = false
+    lineWrap = true
+    wordWrap = true
+    text = controller.toString
+    foreground = this.foreground
+  }
+
+  val InputPanel = new BoxPanel(Orientation.Vertical){
+    contents += new Label("Versuch:")
+    contents += inputTextField
+  }
+  InputPanel.xLayoutAlignment = 0.5
+  InputPanel.yLayoutAlignment = 0.5
+  //--------------------------------------------------
+
+  val OutputPanel = new FlowPanel{
+    contents += OutputTextField
+  }
+
+  val centerPanel = new BoxPanel(Orientation.Vertical){
+    contents += InputPanel
+    contents += OutputPanel
+  }
+  //--------------------
+  object newsBoard extends TextArea {
+    columns = 20
+    rows = 3
+    text = "Suche dir ein Spielmodus aus"
+    editable = false
+    lineWrap = true
+    wordWrap = true
+  }
+  val southPanel = new BorderPanel {
+    border = Swing.LineBorder(java.awt.Color.BLACK)
+    add(newsBoard, BorderPanel.Position.Center)
+  }
+
+
+  //-------------------------------------
+  contents = new BorderPanel{
+    add(northpanel, BorderPanel.Position.North)
+    add(centerPanel, BorderPanel.Position.Center)
+    add(southPanel, BorderPanel.Position.South)
+    border = Swing.EmptyBorder(10, 10, 10, 10) // Abstand von 10 Pixeln oben, unten, links und rechts
+  }
+
+  listenTo(inputTextField, EasymodusButton, MediummodusButton, HardmodusButton)
+  reactions +={
+    case EditDone(inputTextField) =>
+      val guess = inputTextField.text.toUpperCase()
+      controller.set(n, controller.evaluateGuess(guess))
+      won = controller.areYouWinningSon(guess.toUpperCase)
+      continue = (!controller.count(n) && !won)
+      n += 1
+    case ButtonClicked(EasymodusButton)=>
+      //undo anything
+      controller.changeState(1)
+      controller.createGameboard()
+      controller.createwinningboard()
+      level.text = "leicht"
+      inputTextField.enabled = true
+      n = 1
+    case ButtonClicked(MediummodusButton)=>
+      //undo anything
+      controller.changeState(2)
+      controller.createGameboard()
+      controller.createwinningboard()
+      level.text = "mittel"
+      inputTextField.enabled = true
+      n = 1
+    case ButtonClicked(HardmodusButton)=>
+      //undo anything what happen
+      controller.changeState(2)
+      controller.createGameboard()
+      controller.createwinningboard()
+      level.text = "schwer"
+      inputTextField.enabled = true
+      n = 1
+  }
+  pack()
+  maximumSize = new Dimension(300, 800)
+  preferredSize = new Dimension(300,800)
+  centerOnScreen()
+  open()
+
+
+
+  override def update:Unit={
+    OutputTextField.text = controller.toString
+    newsBoard.text= s"$n"
+    level.text
+    if (won) {
+      newsBoard.text = "Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
+      inputTextField.enabled = false
+    }
+    if(!continue){
+      newsBoard.text ="Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
+      inputTextField.enabled = false
+    }
+
+  }
+}

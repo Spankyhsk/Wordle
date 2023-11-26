@@ -2,19 +2,22 @@ package de.htwg.se.wordle
 
 import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.model.gamemode
-import de.htwg.se.wordle.aview.{TUI,Gui}
+import de.htwg.se.wordle.aview.{TUI,GUIFX, GUISWING}
 
 
 
 object wordle {
   def main(args:Array[String]): Unit = {
-    println("Willkommen zu Wordle")
     
     val controller = controll(gamemode.state)
-    val tui = TUI(controller)
-    tui.run()
+    //val tui = TUI(controller)
+    //tui.run()
     //val gui =new Gui(controller)
-    //gui.start()
+    //controller.add(GUI)
+    //GUIFX.start()
+    val gui = new GUISWING(controller)
+    
+
   }
   
 }

@@ -10,6 +10,7 @@ class TUI (controller: controll)extends Observer:
 
   def run():Unit ={
     val n = 1
+    println("Willkommen zu Wordle")
     println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
     controller.changeState(readLine.toInt)
     println(controller.getTargetword())//Entfernen wenn alles funkzioniert
@@ -21,7 +22,7 @@ class TUI (controller: controll)extends Observer:
   }
   def inputLoop(n:Int):Unit ={// do while schleife
     controller.toString
-    scanInput(readLine, n)
+    scanInput(readLine,n)
     if continue && controller.count(n) then inputLoop(n+1)
   }
 
