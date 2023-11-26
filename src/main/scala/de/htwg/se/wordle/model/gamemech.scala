@@ -1,5 +1,7 @@
 package de.htwg.se.wordle.model
 
+import scala.util.Random
+
 object gamemech{
   // Abstrakte Strategie für das Erraten von Wörtern
   trait GuessStrategy {
@@ -77,6 +79,40 @@ object gamemech{
       guessStrategy.evaluateGuess(targetWord, guess)
     }
   }
+  
+  
+  //Ein Bot für den VS Modus, habe aber noch keinen Plan wie wir den Sinnvoll einbauen
+  case class Bot(word: Array[String]) {
+    var wordListe = word
+    val YellowPattern = """\u001B\[33m([A-Za-z])\u001B\[0m""".r
+    val GreenPattern = """\u001B\[32m([A-Za-z])\u001B\[0m""".r
 
+    def filter(feedback: String): Unit = {
+      val YellowLetters = YellowPattern.findAllMatchIn(feedback).map(matchResult => matchResult.group(1)).toSet
+      val GreenLetters = GreenPattern.findAllMatchIn(feedback).map(matchResult => matchResult.group(1)).toSet
+      
+      //Filtert nach den Gelben und grünen wörtern raus
+      wordListe = wordListe.filter { str =>
+        YellowLetters.forall(str.contains) && (
+          GreenLetters.isEmpty || (
+            str.length == feedback.length &&
+              str.zip(feedback).forall {
+                case (w, e) => w == e || GreenLetters.contains(w.toString)
+              }
+            )
+          )
+      }
+
+      // Entferne Wörter, die die gleichen Buchstaben wie das Feedback haben und nicht codiert sind
+      wordListe = wordListe.filter { word =>
+        val wordLetters = word.toSet
+        wordLetters == feedback.toSet && !word.exists(char => YellowLetters.contains(char.toString) || GreenLetters.contains(char.toString))
+      }
+    }
+
+    def guess(): String = {
+      Random.shuffle(wordListe.toList).head
+    }
+  }
 }
 

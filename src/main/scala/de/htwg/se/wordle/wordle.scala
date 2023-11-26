@@ -12,9 +12,6 @@ object wordle {
     val controller = controll(gamemode.state)
     //val tui = TUI(controller)
     //tui.run()
-    //val gui =new Gui(controller)
-    //controller.add(GUI)
-    //GUIFX.start()
     val gui = new GUISWING(controller)
     
 

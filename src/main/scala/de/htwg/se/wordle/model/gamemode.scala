@@ -52,9 +52,9 @@ object gamemode{
 
   case class gamemode1()extends State {
     val wordObject = new word()
-    val wordlength = 2
+    val wordlength = 5
     val targetword= Map(1->selectRandomWord(wordObject.words(wordlength)))
-    val limit = 3
+    val limit = 6
 
 
     override def handle(e: Int): State = {
@@ -75,12 +75,12 @@ object gamemode{
 
   case class gamemode2()extends State{
     val wordObject = new word()
-    val wordlength = 2
+    val wordlength = 5
     val targetword = Map(
       1 -> selectRandomWord(wordObject.words(wordlength)),
       2 -> selectRandomWord(wordObject.words(wordlength))
     )
-    val limit = 3
+    val limit = 7
 
     override def handle(e: Int): State = {
       e match {
@@ -101,14 +101,14 @@ object gamemode{
 
   case class gamemode3()extends State{
     val wordObject = new word()
-    val wordlength = 2
+    val wordlength = 5
     val targetword = Map(
       1 -> selectRandomWord(wordObject.words(wordlength)),
       2 -> selectRandomWord(wordObject.words(wordlength)),
       3 -> selectRandomWord(wordObject.words(wordlength)),
       4 -> selectRandomWord(wordObject.words(wordlength))
     )
-    val limit = 3
+    val limit = 9
 
     override def handle(e: Int): State = {
       e match {
@@ -133,6 +133,36 @@ object gamemode{
 
   def selectRandomWord(wordArray: Array[String]): String = {
     Random.shuffle(wordArray.toList).head
+  }
+  
+  case class gamemode4() extends State{
+    val wordObject = new word()
+    val wordlength = 5
+    val targetword = Map(1 -> selectRandomWord(wordObject.words(wordlength)))
+    val limit = 6
+
+
+    override def handle(e: Int): State = {
+      e match {
+        case 1 => gamemode1()
+        case 2 => gamemode2()
+        case 3 => gamemode3()
+        case 4 => gamemode4()
+      }
+    }
+
+    override def getTargetword(): Map[Int, String] = {
+      targetword
+    }
+
+    override def getLimit(): Int = {
+      limit
+    }
+    
+    def getWord():Array[String]={
+      wordObject.words(wordlength)
+    }
+    
   }
 
   case class word() {

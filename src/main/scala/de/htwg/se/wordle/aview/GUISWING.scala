@@ -6,7 +6,7 @@ import de.htwg.se.wordle.util.Observer
 import scala.swing._
 import scala.swing.event._
 import java.awt.Color
-import javax.swing.table.{AbstractTableModel, DefaultTableModel}
+
 class GUISWING(controller:controll) extends Frame with Observer {
   controller.add(this)
   var won = false
@@ -121,7 +121,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       val guess = inputTextField.text.toUpperCase()
       controller.set(n, controller.evaluateGuess(guess))
       won = controller.areYouWinningSon(guess.toUpperCase)
-      continue = (!controller.count(n) && !won)
+      continue = (!controller.count(n-1) && !won)
       n += 1
     case ButtonClicked(EasymodusButton)=>
       //undo anything
@@ -141,7 +141,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       n = 1
     case ButtonClicked(HardmodusButton)=>
       //undo anything what happen
-      controller.changeState(2)
+      controller.changeState(3)
       controller.createGameboard()
       controller.createwinningboard()
       level.text = "schwer"
