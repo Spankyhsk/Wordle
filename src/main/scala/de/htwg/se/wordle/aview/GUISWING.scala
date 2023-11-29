@@ -10,7 +10,7 @@ import java.awt.Color
 class GUISWING(controller:controll) extends Frame with Observer {
   controller.add(this)
   var won = false
-  var continue = true
+  var continue = false
   var n = 1
   title = "Wordle"
 
@@ -122,7 +122,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       controller.set(n, controller.evaluateGuess(guess))
       won = controller.areYouWinningSon(guess.toUpperCase)
       continue = (!controller.count(n-1) && !won)
-      n += 1
+      if(controller.count(n-1)) n = n +1
     case ButtonClicked(EasymodusButton)=>
       //undo anything
       controller.changeState(1)
@@ -164,7 +164,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       newsBoard.text = "Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
       inputTextField.enabled = false
     }
-    if(!continue){
+    if(continue){
       newsBoard.text ="Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
       inputTextField.enabled = false
     }

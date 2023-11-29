@@ -12,8 +12,13 @@ case class controll (gm: gamemode.State)extends Observable {
   val gameboard = new gameboard()
 
   def count(n:Int):Boolean={
-    val bool = gamemech.count(n, getLimit())
-    bool
+    if (gamemech.count(n, getLimit())) true else false
+  }
+  def controllLength(n:Int):Boolean={
+    if (gamemech.controllLength(n, gamemode.getTargetword()(1).length)) true else false
+  }
+  def controllRealWord(guess:String):Boolean={
+    if(gamemech.controllRealWord(guess, gamemode.getWordList())) true else false
   }
   def createGameboard():Unit ={
     gameboard.buildGameboard(getTargetword().size, 1)

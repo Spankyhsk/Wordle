@@ -46,15 +46,16 @@ object gamemode{
 
     def getTargetword():Map[Int, String]
     def getLimit():Int
+    def getWordList():Array[String]
   }
 
 
 
   case class gamemode1()extends State {
     val wordObject = new word()
-    val wordlength = 5
+    val wordlength = 2
     val targetword= Map(1->selectRandomWord(wordObject.words(wordlength)))
-    val limit = 6
+    val limit = 3
 
 
     override def handle(e: Int): State = {
@@ -71,16 +72,20 @@ object gamemode{
     override def getLimit():Int={
       limit
     }
+
+    override def getWordList():Array[String]={
+      wordObject.words(wordlength)
+    }
   }
 
   case class gamemode2()extends State{
     val wordObject = new word()
-    val wordlength = 5
+    val wordlength = 2
     val targetword = Map(
       1 -> selectRandomWord(wordObject.words(wordlength)),
       2 -> selectRandomWord(wordObject.words(wordlength))
     )
-    val limit = 7
+    val limit = 4
 
     override def handle(e: Int): State = {
       e match {
@@ -97,18 +102,22 @@ object gamemode{
     override def getLimit(): Int = {
       limit
     }
+
+    override def getWordList(): Array[String] = {
+      wordObject.words(wordlength)
+    }
   }
 
   case class gamemode3()extends State{
     val wordObject = new word()
-    val wordlength = 5
+    val wordlength = 2
     val targetword = Map(
       1 -> selectRandomWord(wordObject.words(wordlength)),
       2 -> selectRandomWord(wordObject.words(wordlength)),
       3 -> selectRandomWord(wordObject.words(wordlength)),
       4 -> selectRandomWord(wordObject.words(wordlength))
     )
-    val limit = 9
+    val limit = 6
 
     override def handle(e: Int): State = {
       e match {
@@ -124,6 +133,10 @@ object gamemode{
 
     override def getLimit(): Int = {
       limit
+    }
+
+    override def getWordList(): Array[String] = {
+      wordObject.words(wordlength)
     }
   }
 
@@ -135,35 +148,7 @@ object gamemode{
     Random.shuffle(wordArray.toList).head
   }
   
-  case class gamemode4() extends State{
-    val wordObject = new word()
-    val wordlength = 5
-    val targetword = Map(1 -> selectRandomWord(wordObject.words(wordlength)))
-    val limit = 6
 
-
-    override def handle(e: Int): State = {
-      e match {
-        case 1 => gamemode1()
-        case 2 => gamemode2()
-        case 3 => gamemode3()
-        case 4 => gamemode4()
-      }
-    }
-
-    override def getTargetword(): Map[Int, String] = {
-      targetword
-    }
-
-    override def getLimit(): Int = {
-      limit
-    }
-    
-    def getWord():Array[String]={
-      wordObject.words(wordlength)
-    }
-    
-  }
 
   case class word() {
 

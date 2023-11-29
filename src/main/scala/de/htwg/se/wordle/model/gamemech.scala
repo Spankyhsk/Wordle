@@ -2,17 +2,17 @@ package de.htwg.se.wordle.model
 
 import scala.util.Random
 
-object gamemech{
+object gamemech {
   // Abstrakte Strategie für das Erraten von Wörtern
   trait GuessStrategy {
-    def compareTargetGuess(targetWord: String, guess: String,n:Int, winningBoard: Map[Int, Boolean]): Map[Int, Boolean]
+    def compareTargetGuess(targetWord: String, guess: String, n: Int, winningBoard: Map[Int, Boolean]): Map[Int, Boolean]
 
     def evaluateGuess(targetWord: String, guess: String): String
   }
 
   // Konkrete Implementierung der Strategie
   class SimpleGuessStrategy extends GuessStrategy {
-    override def compareTargetGuess(targetWord: String, guess: String, n:Int, winningBoard: Map[Int, Boolean]): Map[Int, Boolean] = {
+    override def compareTargetGuess(targetWord: String, guess: String, n: Int, winningBoard: Map[Int, Boolean]): Map[Int, Boolean] = {
       val updatedBoard = winningBoard.collect {
         case (key, isWordGuessed) if key == n && !isWordGuessed && guess == targetWord =>
           key -> true
@@ -40,6 +40,14 @@ object gamemech{
       if (n < limit) true else false
     }
 
+    def controllLength(n: Int, wordLength: Int): Boolean = {
+      if (n == wordLength) true else false
+    }
+
+    def controllRealWord(guess: String, wordList: Array[String]): Boolean = {
+      if (wordList.contains(guess)) true else false
+    }
+
     def buildwinningboard(n: Int, key: Int): Unit = {
       winningBoard += (key -> false)
       if (key < n) buildwinningboard(n, key + 1)
@@ -61,58 +69,21 @@ object gamemech{
     def GuessTransform(guess: String): String = {
       guess.toUpperCase
     }
-    //Methode die Wortlänge prüft von guess
 
-    //Methode die Prüft ob guess ein echtes wort ist (in unser Map der Wörter)
-
-    //Methode die input in groß buchstaben ändert(nicht wirklich notwendig aber wer weiß)
 
     def compareTargetGuess(n: Int, targetWord: Map[Int, String], guess: String): Unit = {
       if (!getWin(n)) {
-        val updatedBoard = guessStrategy.compareTargetGuess(targetWord(n), guess,n, winningBoard)
+        val updatedBoard = guessStrategy.compareTargetGuess(targetWord(n), guess, n, winningBoard)
         winningBoard ++= updatedBoard
       }
-      if(n<winningBoard.size)compareTargetGuess(n+1,targetWord, guess)
+      if (n < winningBoard.size) compareTargetGuess(n + 1, targetWord, guess)
     }
 
     def evaluateGuess(targetWord: String, guess: String): String = {
       guessStrategy.evaluateGuess(targetWord, guess)
     }
   }
-  
-  
-  //Ein Bot für den VS Modus, habe aber noch keinen Plan wie wir den Sinnvoll einbauen
-  case class Bot(word: Array[String]) {
-    var wordListe = word
-    val YellowPattern = """\u001B\[33m([A-Za-z])\u001B\[0m""".r
-    val GreenPattern = """\u001B\[32m([A-Za-z])\u001B\[0m""".r
-
-    def filter(feedback: String): Unit = {
-      val YellowLetters = YellowPattern.findAllMatchIn(feedback).map(matchResult => matchResult.group(1)).toSet
-      val GreenLetters = GreenPattern.findAllMatchIn(feedback).map(matchResult => matchResult.group(1)).toSet
-      
-      //Filtert nach den Gelben und grünen wörtern raus
-      wordListe = wordListe.filter { str =>
-        YellowLetters.forall(str.contains) && (
-          GreenLetters.isEmpty || (
-            str.length == feedback.length &&
-              str.zip(feedback).forall {
-                case (w, e) => w == e || GreenLetters.contains(w.toString)
-              }
-            )
-          )
-      }
-
-      // Entferne Wörter, die die gleichen Buchstaben wie das Feedback haben und nicht codiert sind
-      wordListe = wordListe.filter { word =>
-        val wordLetters = word.toSet
-        wordLetters == feedback.toSet && !word.exists(char => YellowLetters.contains(char.toString) || GreenLetters.contains(char.toString))
-      }
-    }
-
-    def guess(): String = {
-      Random.shuffle(wordListe.toList).head
-    }
-  }
 }
+  
+  
 
