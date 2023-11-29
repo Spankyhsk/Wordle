@@ -1,7 +1,7 @@
 
 package de.htwg.se.wordle.controller
 import de.htwg.se.wordle.model.gamemode
-import de.htwg.se.wordle.model.gamefield.{gamefield, gameboard}
+import de.htwg.se.wordle.model.gamefield.{gameboard, gamefield}
 import de.htwg.se.wordle.model.gamemech.GameMech
 import de.htwg.se.wordle.util.Observable
 
@@ -10,6 +10,21 @@ case class controll (gm: gamemode.State)extends Observable {
   var gamemode = gm
   val gamemech = new GameMech()
   val gameboard = new gameboard()
+
+  //Steffen braucht das für undo
+  /*private var undoStack: List[Command] = List.empty
+
+  def addUndoCommand(command: Command): Unit = {
+    undoStack = command :: undoStack
+  }
+
+  def undoLastCommand(): Unit = {
+    undoStack.headOption.foreach { command =>
+      command.undo()
+      undoStack = undoStack.tail
+      notifyObservers
+    }
+  }*/
 
   def count(n:Int):Boolean={
     if (gamemech.count(n, getLimit())) true else false
