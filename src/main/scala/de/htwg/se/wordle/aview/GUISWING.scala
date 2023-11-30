@@ -71,14 +71,9 @@ class GUISWING(controller:controll) extends Frame with Observer {
     enabled = false
   }
 
-  object OutputTextField extends TextArea{
-    rows = 20
-    columns = 20
-    editable = false
-    lineWrap = true
-    wordWrap = true
-    text = controller.toString
-    foreground = this.foreground
+  val OutputLabel = new Label(controller.toString) {
+    foreground = Color.BLACK
+    text = filterAndColor(controller.toString)
   }
 
   val InputPanel = new BoxPanel(Orientation.Vertical){
@@ -90,7 +85,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
   //--------------------------------------------------
 
   val OutputPanel = new FlowPanel{
-    contents += OutputTextField
+    contents += OutputLabel
   }
 
   val centerPanel = new BoxPanel(Orientation.Vertical){
@@ -119,7 +114,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
     add(southPanel, BorderPanel.Position.South)
     border = Swing.EmptyBorder(10, 10, 10, 10) // Abstand von 10 Pixeln oben, unten, links und rechts
   }
-  
+
   val modeSwitchInvoker = new ModeSwitchInvoker()
 
   listenTo(inputTextField, EasymodusButton, MediummodusButton, HardmodusButton)
@@ -189,10 +184,20 @@ class GUISWING(controller:controll) extends Frame with Observer {
 
 
   override def update:Unit={
-    OutputTextField.text = controller.toString
+    OutputLabel.text = controller.toString
     newsBoard.text
     level.text
 
 
+  }
+
+  def filterAndColor(input: String): String = {
+    val YellowPattern = """\u001B\[33m([^\\]+)\u001B\[0m""".r
+    val GreenPattern = """\u001B\[32m([^\\]+)\u001B\[0m""".r
+
+    val yellowColored = YellowPattern.replaceAllIn(input, m => s"<font color='yellow'>${m.group(1)}</font>")
+    val greenColored = GreenPattern.replaceAllIn(yellowColored, m => s"<font color='green'>${m.group(1)}</font>")
+
+    s"<html>$greenColored</html>"
   }
 }
