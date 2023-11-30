@@ -47,6 +47,10 @@ object gamemode{
     def getTargetword():Map[Int, String]
     def getLimit():Int
     def getWordList():Array[String]
+
+    
+
+
   }
 
 
@@ -57,6 +61,7 @@ object gamemode{
     val targetword= Map(1->selectRandomWord(wordObject.words(wordlength)))
     val limit = 3
 
+    
 
     override def handle(e: Int): State = {
       e match {
@@ -90,6 +95,8 @@ object gamemode{
       2 -> selectRandomWord(wordObject.words(wordlength))
     )
     val limit = 4
+
+    
 
     override def handle(e: Int): State = {
       e match {
@@ -126,6 +133,8 @@ object gamemode{
       4 -> selectRandomWord(wordObject.words(wordlength))
     )
     val limit = 6
+
+    
 
     override def handle(e: Int): State = {
       e match {

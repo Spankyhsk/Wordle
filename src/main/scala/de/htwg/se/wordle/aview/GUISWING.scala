@@ -1,10 +1,14 @@
 package de.htwg.se.wordle.aview
 
 import de.htwg.se.wordle.controller.controll
-import de.htwg.se.wordle.util.Observer
+import de.htwg.se.wordle.util.{Command, ModeSwitchInvoker, Observer}
+import de.htwg.se.wordle.model.gamemode
+import de.htwg.se.wordle.util.EasyModeCommand
+import de.htwg.se.wordle.util.MediumModeCommand
+import de.htwg.se.wordle.util.HardModeCommand
 
-import scala.swing._
-import scala.swing.event._
+import scala.swing.*
+import scala.swing.event.*
 import java.awt.Color
 
 class GUISWING(controller:controll) extends Frame with Observer {
@@ -115,6 +119,8 @@ class GUISWING(controller:controll) extends Frame with Observer {
     add(southPanel, BorderPanel.Position.South)
     border = Swing.EmptyBorder(10, 10, 10, 10) // Abstand von 10 Pixeln oben, unten, links und rechts
   }
+  
+  val modeSwitchInvoker = new ModeSwitchInvoker()
 
   listenTo(inputTextField, EasymodusButton, MediummodusButton, HardmodusButton)
   reactions +={
@@ -138,6 +144,9 @@ class GUISWING(controller:controll) extends Frame with Observer {
       }
       if(controller.count(n)) n = n +1
     case ButtonClicked(EasymodusButton)=>
+      modeSwitchInvoker.setCommand(EasyModeCommand(controller))
+      modeSwitchInvoker.executeCommand()
+
       //undo anything
       controller.changeState(1)
       controller.createGameboard()
@@ -147,6 +156,9 @@ class GUISWING(controller:controll) extends Frame with Observer {
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(MediummodusButton)=>
+      modeSwitchInvoker.setCommand(MediumModeCommand(controller))
+      modeSwitchInvoker.executeCommand()
+
       //undo anything
       controller.changeState(2)
       controller.createGameboard()
@@ -156,6 +168,9 @@ class GUISWING(controller:controll) extends Frame with Observer {
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(HardmodusButton)=>
+      modeSwitchInvoker.setCommand(HardModeCommand(controller))
+      modeSwitchInvoker.executeCommand()
+
       //undo anything what happen
       controller.changeState(3)
       controller.createGameboard()

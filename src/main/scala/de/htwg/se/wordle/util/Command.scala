@@ -9,22 +9,36 @@ import scala.util.{Failure, Success, Try}
 
 trait Command {
   def execute(): Unit
-  def undo(): Unit
+  //def undo(): Unit
 }
 
 // Concrete command class for changing state
-class ChangeStateCommand(controller: controll, newState: gamemode.State) extends Command {
-  private val previousState = controller.gamemode // Store the previous state for undo
 
+
+case class EasyModeCommand(controller: controll) extends Command {
   override def execute(): Unit = {
-    controller.gamemode = newState
+    controller.changeState(1)
     controller.createGameboard()
     controller.createwinningboard()
-  }
-
-  override def undo(): Unit = {
-    controller.gamemode = previousState
-    controller.createGameboard()
-    controller.createwinningboard()
+    //controller.setDifficulty("leicht")
   }
 }
+
+case class MediumModeCommand(controller: controll) extends Command {
+  override def execute(): Unit = {
+    controller.changeState(2)
+    controller.createGameboard()
+    controller.createwinningboard()
+    //controller.setDifficulty("mittel")
+  }
+}
+
+case class HardModeCommand(controller: controll) extends Command {
+  override def execute(): Unit = {
+    controller.changeState(3)
+    controller.createGameboard()
+    controller.createwinningboard()
+    //controller.setDifficulty("schwer")
+  }
+}
+
