@@ -76,6 +76,10 @@ object gamemode{
     override def getWordList():Array[String]={
       wordObject.words(wordlength)
     }
+
+    override def toString():String={
+      targetword.map { case (key, value) => s"Wort $key: $value" }.mkString(" ")
+    }
   }
 
   case class gamemode2()extends State{
@@ -105,6 +109,10 @@ object gamemode{
 
     override def getWordList(): Array[String] = {
       wordObject.words(wordlength)
+    }
+
+    override def toString(): String = {
+      targetword.map { case (key, value) => s"Wort $key: $value" }.mkString(" ")
     }
   }
 
@@ -137,6 +145,10 @@ object gamemode{
 
     override def getWordList(): Array[String] = {
       wordObject.words(wordlength)
+    }
+
+    override def toString(): String = {
+      targetword.map { case (key, value) => s"Wort $key: $value" }.mkString(" ")
     }
   }
 
