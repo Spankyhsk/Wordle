@@ -84,6 +84,9 @@ case class controll (gm: gamemode.State)extends Observable {
     gamemech.compareTargetGuess(1, getTargetword(),guess)
     gamemech.areYouWinningSon()
   }
+  def GuessTransform(guess:String):String={
+    gamemech.GuessTransform(guess)
+  }
 }
 
 /*

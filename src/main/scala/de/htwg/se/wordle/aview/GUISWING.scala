@@ -11,6 +11,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
   controller.add(this)
   var won = false
   var continue = false
+  var wrongInput = true
   var n = 1
   title = "Wordle"
 
@@ -118,17 +119,31 @@ class GUISWING(controller:controll) extends Frame with Observer {
   listenTo(inputTextField, EasymodusButton, MediummodusButton, HardmodusButton)
   reactions +={
     case EditDone(inputTextField) =>
-      val guess = inputTextField.text.toUpperCase()
-      controller.set(n, controller.evaluateGuess(guess))
-      won = controller.areYouWinningSon(guess.toUpperCase)
-      continue = (!controller.count(n-1) && !won)
-      if(controller.count(n-1)) n = n +1
+      val guess = controller.GuessTransform(inputTextField.text)
+      if(controller.controllLength(guess.length)){
+        controller.set(n, controller.evaluateGuess(guess))
+        if(controller.areYouWinningSon(guess)){
+          newsBoard.text = "Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
+          inputTextField.enabled = false
+          controller.set(n, controller.evaluateGuess(guess))
+        }
+      }else{
+        newsBoard.text = "Falsche Eingabe"
+        n = n -1
+      }
+
+      if(!controller.count(n) && !won){
+        newsBoard.text = "Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
+        inputTextField.enabled = false
+      }
+      if(controller.count(n)) n = n +1
     case ButtonClicked(EasymodusButton)=>
       //undo anything
       controller.changeState(1)
       controller.createGameboard()
       controller.createwinningboard()
       level.text = "leicht"
+      newsBoard.text = "Errate 1 Wort mit 1 guess bevor die Versuche ausgehen"
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(MediummodusButton)=>
@@ -137,6 +152,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       controller.createGameboard()
       controller.createwinningboard()
       level.text = "mittel"
+      newsBoard.text = "Errate 2 Wörter mit 1 guess bevor die Versuche ausgehen"
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(HardmodusButton)=>
@@ -145,6 +161,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       controller.createGameboard()
       controller.createwinningboard()
       level.text = "schwer"
+      newsBoard.text = "Errate 4 Wörter mit 1 guess bevor die Versuche ausgehen"
       inputTextField.enabled = true
       n = 1
   }
@@ -158,16 +175,9 @@ class GUISWING(controller:controll) extends Frame with Observer {
 
   override def update:Unit={
     OutputTextField.text = controller.toString
-    newsBoard.text= s"$n"
+    newsBoard.text
     level.text
-    if (won) {
-      newsBoard.text = "Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
-      inputTextField.enabled = false
-    }
-    if(continue){
-      newsBoard.text ="Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
-      inputTextField.enabled = false
-    }
+
 
   }
 }
