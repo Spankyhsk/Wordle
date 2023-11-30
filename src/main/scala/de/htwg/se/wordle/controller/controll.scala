@@ -6,6 +6,7 @@ import de.htwg.se.wordle.model.gamemech.GameMech
 import de.htwg.se.wordle.util.Observable
 import de.htwg.se.wordle.util.Command
 import de.htwg.se.wordle.model.gamefield.Component
+import scala.util.{Try, Success, Failure}
 case class controll (gm: gamemode.State)extends Observable {
 
   var gamemode = gm
@@ -17,14 +18,16 @@ case class controll (gm: gamemode.State)extends Observable {
 
 
   //
-  def count(n:Int):Boolean={
+  def count(n: Int): Boolean = {
     if (gamemech.count(n, getLimit())) true else false
   }
-  def controllLength(n:Int):Boolean={
+
+  def controllLength(n: Int): Boolean = {
     if (gamemech.controllLength(n, gamemode.getTargetword()(1).length)) true else false
   }
-  def controllRealWord(guess:String):Boolean={
-    if(gamemech.controllRealWord(guess, gamemode.getWordList())) true else false
+
+  def controllRealWord(guess: String): Boolean = {
+    if (gamemech.controllRealWord(guess, gamemode.getWordList())) true else false
   }
 
   def createGameboard(): Unit = {
@@ -35,18 +38,19 @@ case class controll (gm: gamemode.State)extends Observable {
   }
 
 
-  def createGamefieldR(n:Int):Unit ={
-    gameboard.getChilderen(n).buildGamefield(getLimit(), 1, s"_"*getTargetword()(1).length)
-    if(n<gameboard.map.size) createGamefieldR(n+1)
+  def createGamefieldR(n: Int): Unit = {
+    gameboard.getChilderen(n).buildGamefield(getLimit(), 1, s"_" * getTargetword()(1).length)
+    if (n < gameboard.map.size) createGamefieldR(n + 1)
   }
 
-  def set(key:Int,feedback:Map[Int, String]):Unit={
+  def set(key: Int, feedback: Map[Int, String]): Unit = {
     setR(1, key, feedback)
     notifyObservers
   }
-  def setR(n:Int, key:Int, feedback:Map[Int, String]):Unit={
+
+  def setR(n: Int, key: Int, feedback: Map[Int, String]): Unit = {
     gameboard.getChilderen(n).set(key, feedback(n))
-    if(n<gameboard.map.size) setR(n+1, key, feedback)
+    if (n < gameboard.map.size) setR(n + 1, key, feedback)
   }
 
   def evaluateGuess(guess: String): Map[Int, String] = {
@@ -55,32 +59,41 @@ case class controll (gm: gamemode.State)extends Observable {
     feedback
   }
 
-  override def toString: String = {gameboard.toString}
+  override def toString: String = {
+    gameboard.toString
+  }
 
-  def changeState(e:Int):Unit={
+  def changeState(e: Int): Unit = {
     gamemode = gm.handle(e)
 
   }
 
-  def getTargetword():Map[Int, String]={
+  def getTargetword(): Map[Int, String] = {
     val targetword = gamemode.getTargetword()
     targetword
   }
 
-  def getLimit():Int={
+  def getLimit(): Int = {
     val limit = gamemode.getLimit()
     limit
   }
 
-  def createwinningboard():Unit={
+  def createwinningboard(): Unit = {
     gamemech.winningBoard = Map.empty[Int, Boolean]
     gamemech.buildwinningboard(gameboard.map.size, 1)
   }
-  def areYouWinningSon(guess:String):Boolean={
-    gamemech.compareTargetGuess(1, getTargetword(),guess)
+
+  def areYouWinningSon(guess: String): Boolean = {
+    gamemech.compareTargetGuess(1, getTargetword(), guess)
     gamemech.areYouWinningSon()
   }
-  def GuessTransform(guess:String):String={
+
+  def GuessTransform(guess: String): String = {
     gamemech.GuessTransform(guess)
   }
+
+
+
+
+
 }
