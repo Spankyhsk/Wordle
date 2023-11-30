@@ -142,7 +142,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       modeSwitchInvoker.setCommand(EasyModeCommand(controller))
       modeSwitchInvoker.executeCommand()
 
-      //undo anything
+
       controller.changeState(1)
       controller.createGameboard()
       controller.createwinningboard()
@@ -154,7 +154,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       modeSwitchInvoker.setCommand(MediumModeCommand(controller))
       modeSwitchInvoker.executeCommand()
 
-      //undo anything
+
       controller.changeState(2)
       controller.createGameboard()
       controller.createwinningboard()
@@ -166,7 +166,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       modeSwitchInvoker.setCommand(HardModeCommand(controller))
       modeSwitchInvoker.executeCommand()
 
-      //undo anything what happen
+
       controller.changeState(3)
       controller.createGameboard()
       controller.createwinningboard()

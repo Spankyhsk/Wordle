@@ -10,10 +10,8 @@ import scala.util.{Failure, Success, Try}
 trait Command {
   def execute(): Unit
   //def undo(): Unit
+
 }
-
-// Concrete command class for changing state
-
 
 case class EasyModeCommand(controller: controll) extends Command {
   override def execute(): Unit = {
