@@ -1,7 +1,5 @@
 package de.htwg.se.wordle.util
 
-
-import de.htwg.se.wordle.controller
 import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.model.gamemode
 
@@ -10,6 +8,11 @@ import scala.util.{Failure, Success, Try}
 trait Command {
   def execute(): Unit
 
+  def doStep: Unit
+
+  def undoStep: Unit
+
+  def redoStep: Unit
 
 
 }
@@ -22,6 +25,12 @@ case class EasyModeCommand(controller: controll) extends Command {
     //controller.setDifficulty("leicht")
   }
 
+  override def doStep: Unit={}
+
+  override def undoStep: Unit={}
+
+  override def redoStep: Unit={}
+
 }
 
 case class MediumModeCommand(controller: controll) extends Command {
@@ -31,6 +40,12 @@ case class MediumModeCommand(controller: controll) extends Command {
     controller.createwinningboard()
     //controller.setDifficulty("mittel")
   }
+
+  override def doStep: Unit={}
+
+  override def undoStep: Unit={}
+
+  override def redoStep: Unit={}
 
 }
 
@@ -42,12 +57,12 @@ case class HardModeCommand(controller: controll) extends Command {
     //controller.setDifficulty("schwer")
   }
 
-}
+  override def doStep: Unit={}
 
-trait CommandUndo {
-  def doStep:Unit
-  def undoStep:Unit
-  def redoStep:Unit
+  override def undoStep: Unit={}
+
+  override def redoStep: Unit={}
+
 }
 
 
@@ -55,7 +70,7 @@ class UndoManager {
   private var undoStack: List[Command] = Nil
   private var redoStack: List[Command] = Nil
 
-  def doStep(command: CommandUndo) = {
+  def doStep(command: Command) = {
     undoStack = command :: undoStack
     command.doStep
   }

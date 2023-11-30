@@ -188,7 +188,6 @@ class GUISWING(controller:controll) extends Frame with Observer {
     newsBoard.text
     level.text
 
-
   }
 
   def filterAndColor(input: String): String = {
