@@ -123,26 +123,29 @@ class GUISWING(controller:controll) extends Frame with Observer {
   reactions +={
     case EditDone(inputTextField) =>
       val guess = controller.GuessTransform(inputTextField.text)
+
       if(controller.controllLength(guess.length)){
         controller.set(n, controller.evaluateGuess(guess))
         if(controller.areYouWinningSon(guess)){
           newsBoard.text = "Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
           inputTextField.enabled = false
-          controller.set(n, controller.evaluateGuess(guess))
+          //controller.set(n, controller.evaluateGuess(guess))
           won = true
         }
       }else{
         newsBoard.text = "Falsche Eingabe"
         n = n -1
       }
-
-      if(!controller.count(n) && !won){
+      if (!controller.count(n) && !won) {
         newsBoard.text = "Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
         inputTextField.enabled = false
+      } else {
+        n = n + 1
       }
-      if(controller.count(n)) n = n +1
+
+
     case ButtonClicked(EasymodusButton)=>
-      modeSwitchInvoker.setCommand(EasyModeCommand(controller))
+      modeSwitchInvoker.setCommand(EasyModeCommand(Some(controller)))
       modeSwitchInvoker.executeCommand()
 
 
@@ -154,7 +157,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(MediummodusButton)=>
-      modeSwitchInvoker.setCommand(MediumModeCommand(controller))
+      modeSwitchInvoker.setCommand(MediumModeCommand(Some(controller)))
       modeSwitchInvoker.executeCommand()
 
 
@@ -166,7 +169,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(HardmodusButton)=>
-      modeSwitchInvoker.setCommand(HardModeCommand(controller))
+      modeSwitchInvoker.setCommand(HardModeCommand(Some(controller)))
       modeSwitchInvoker.executeCommand()
 
 
