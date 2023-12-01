@@ -188,7 +188,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
 
 
   override def update:Unit={
-    val filteredAndColoredText = filterAndColor(controller.toString)
+    val filteredAndColoredText = controller.toString
 
     OutputTextField.text = filteredAndColoredText
     OutputTextField.peer.setCaretPosition(0)
