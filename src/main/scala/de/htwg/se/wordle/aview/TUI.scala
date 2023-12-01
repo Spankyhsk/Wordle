@@ -24,6 +24,10 @@ class TUI (controller: controll)extends Observer:
   def inputLoop(n:Int):Unit ={// do while schleife
     controller.toString
     scanInput(readLine,n)
+    if(stepback){
+      stepback = false
+      inputLoop(n-1)
+    }
     if continue && controller.count(n) then inputLoop(n+1)
   }
 
