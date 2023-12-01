@@ -7,6 +7,8 @@ import de.htwg.se.wordle.util.Observable
 import de.htwg.se.wordle.util.Command
 import de.htwg.se.wordle.model.gamefield.Component
 import scala.util.{Try, Success, Failure}
+import de.htwg.se.wordle.util.UndoManager
+
 case class controll (gm: gamemode.State)extends Observable {
 
   var gamemode = gm
@@ -92,8 +94,7 @@ case class controll (gm: gamemode.State)extends Observable {
     gamemech.GuessTransform(guess)
   }
 
-
-
+  
 
 
 }

@@ -85,4 +85,18 @@ class UndoManager {
       }
     }
   }
+
+
+  
+  def clearUndoStack(): Unit = {
+    undoStack = Nil
+  }
+
+  def clearRedoStack(): Unit = {
+    redoStack = Nil
+  }
+
+  
+  
+  
 }
