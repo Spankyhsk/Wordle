@@ -3,6 +3,7 @@ package de.htwg.se.wordle.aview
 import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.util.Observer
 import scala.io.StdIn.readLine
+import scala.util.{Failure, Success, Try}
 
 class TUI (controller: controll)extends Observer:
   controller.add(this)
@@ -13,6 +14,9 @@ class TUI (controller: controll)extends Observer:
     val n = 1
     println("Willkommen zu Wordle")
     println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
+    val gameModeInput = Try(readLine.toInt)
+    val selectedGameMode = gameModeInput.getOrElse(1)
+    controller.changeState(selectedGameMode)
     controller.changeState(readLine.toInt)
     println(controller.getTargetword())//Entfernen wenn alles funkzioniert
     println("Errate Wort:")//guess

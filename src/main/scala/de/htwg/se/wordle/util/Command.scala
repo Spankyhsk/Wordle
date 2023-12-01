@@ -17,12 +17,14 @@ trait Command {
 
 }
 
-case class EasyModeCommand(controller: controll) extends Command {
+case class EasyModeCommand(controller: Option[controll]) extends Command {
   override def execute(): Unit = {
-    controller.changeState(1)
-    controller.createGameboard()
-    controller.createwinningboard()
-    //controller.setDifficulty("leicht")
+    controller.foreach { c =>
+      c.changeState(1)
+      c.createGameboard()
+      c.createwinningboard()
+      // c.setDifficulty("leicht")
+    }  
   }
 
   override def doStep: Unit={}
@@ -33,12 +35,14 @@ case class EasyModeCommand(controller: controll) extends Command {
 
 }
 
-case class MediumModeCommand(controller: controll) extends Command {
+case class MediumModeCommand(controller: Option[controll]) extends Command {
   override def execute(): Unit = {
-    controller.changeState(2)
-    controller.createGameboard()
-    controller.createwinningboard()
-    //controller.setDifficulty("mittel")
+    controller.foreach { c =>
+      c.changeState(2)
+      c.createGameboard()
+      c.createwinningboard()
+      // c.setDifficulty("leicht")
+    }
   }
 
   override def doStep: Unit={}
@@ -49,12 +53,14 @@ case class MediumModeCommand(controller: controll) extends Command {
 
 }
 
-case class HardModeCommand(controller: controll) extends Command {
+case class HardModeCommand(controller: Option[controll]) extends Command {
   override def execute(): Unit = {
-    controller.changeState(3)
-    controller.createGameboard()
-    controller.createwinningboard()
-    //controller.setDifficulty("schwer")
+    controller.foreach { c =>
+      c.changeState(3)
+      c.createGameboard()
+      c.createwinningboard()
+      // c.setDifficulty("leicht")
+    }
   }
 
   override def doStep: Unit={}
