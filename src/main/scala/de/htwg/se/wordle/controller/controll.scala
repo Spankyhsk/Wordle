@@ -14,6 +14,7 @@ case class controll (gm: gamemode.State)extends Observable {
   var gamemode = gm
   val gamemech = new GameMech()
   val gameboard = new gameboard()
+  private val undoManager = new UndoManager
 
 
   //Steffen braucht das für undo
@@ -46,14 +47,16 @@ case class controll (gm: gamemode.State)extends Observable {
   }
 
   def set(key: Int, feedback: Map[Int, String]): Unit = {
-    setR(1, key, feedback)
+    undoManager.doStep(new SetCommand(key, feedback, this))
     notifyObservers
   }
 
-  def setR(n: Int, key: Int, feedback: Map[Int, String]): Unit = {
-    gameboard.getChilderen(n).set(key, feedback(n))
-    if (n < gameboard.map.size) setR(n + 1, key, feedback)
+  def undo: Unit = {
+    undoManager.undoStep
+    notifyObservers
   }
+
+ 
 
   def evaluateGuess(guess: String): Map[Int, String] = {
     val keys: List[Int] = getTargetword().keys.toList

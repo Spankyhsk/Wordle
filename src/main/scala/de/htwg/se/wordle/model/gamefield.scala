@@ -37,6 +37,11 @@ object gamefield {
 
     override def set(key: Int, feedback: String): Unit = {}
 
+    def setR(n: Int, key: Int, feedback: Map[Int, String]): Unit = {
+      map(n).set(key, feedback(n))
+      if (n < map.size) setR(n + 1, key, feedback)
+    }
+
     override def buildGamefield(n: Int, key: Int, value: String): Unit = {}
 
     def buildGameboard(n: Int, key: Int): Unit = {

@@ -6,7 +6,8 @@ import scala.io.StdIn.readLine
 
 class TUI (controller: controll)extends Observer:
   controller.add(this)
-  var continue = true;
+  var continue = true
+  var stepback = false
 
   def run():Unit ={
     val n = 1
@@ -32,6 +33,10 @@ class TUI (controller: controll)extends Observer:
           println(s"Wiedersehen")
           continue = false
         }
+        case "$"=>{
+          controller.undo
+          stepback = true
+        }
         case default =>{
           val guess = input.toUpperCase//ändert alle klein buchstaben in großbuchstaben
           if(controller.areYouWinningSon(guess)){
@@ -40,7 +45,9 @@ class TUI (controller: controll)extends Observer:
           } else controller.set(n, controller.evaluateGuess(guess))
         }
   }
-  override def update:Unit = println(controller.toString)
+  override def update:Unit = {
+    println(controller.toString)
+  }
 
 
 
