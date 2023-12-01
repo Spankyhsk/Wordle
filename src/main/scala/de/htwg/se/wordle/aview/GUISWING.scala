@@ -2,7 +2,6 @@ package de.htwg.se.wordle.aview
 
 import de.htwg.se.wordle.controller.controll
 import de.htwg.se.wordle.util.{Command, ModeSwitchInvoker, Observer}
-import de.htwg.se.wordle.model.gamemode
 import de.htwg.se.wordle.util.EasyModeCommand
 import de.htwg.se.wordle.util.MediumModeCommand
 import de.htwg.se.wordle.util.HardModeCommand

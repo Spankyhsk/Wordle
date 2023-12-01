@@ -10,9 +10,9 @@ object wordle {
   def main(args:Array[String]): Unit = {
     
     val controller = controll(gamemode.state)
-    //val tui = TUI(controller)
-    //tui.run()
+    val tui = TUI(controller)
     val gui = new GUISWING(controller)
+    tui.run()
     
 
   }
