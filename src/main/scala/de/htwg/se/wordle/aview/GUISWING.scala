@@ -13,9 +13,6 @@ import java.awt.Color
 
 class GUISWING(controller:controll) extends Frame with Observer {
   controller.add(this)
-  var won = false
-  var continue = false
-  var wrongInput = true
   var n = 1
   title = "Wordle"
 
@@ -71,9 +68,14 @@ class GUISWING(controller:controll) extends Frame with Observer {
     enabled = false
   }
 
-  val OutputLabel = new Label(controller.toString) {
+  object OutputTextField extends TextArea {
+    rows = 20
+    columns = 20
+    editable = false
+    lineWrap = true
+    wordWrap = true
+    text = controller.toString
     foreground = Color.BLACK
-    text = filterAndColor(controller.toString)
   }
 
   val InputPanel = new BoxPanel(Orientation.Vertical){
@@ -85,7 +87,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
   //--------------------------------------------------
 
   val OutputPanel = new FlowPanel{
-    contents += OutputLabel
+    contents += OutputTextField
   }
 
   val centerPanel = new BoxPanel(Orientation.Vertical){
@@ -118,6 +120,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
   val modeSwitchInvoker = new ModeSwitchInvoker()
 
   listenTo(inputTextField, EasymodusButton, MediummodusButton, HardmodusButton)
+  var won = false
   reactions +={
     case EditDone(inputTextField) =>
       val guess = controller.GuessTransform(inputTextField.text)
@@ -127,6 +130,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
           newsBoard.text = "Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
           inputTextField.enabled = false
           controller.set(n, controller.evaluateGuess(guess))
+          won = true
         }
       }else{
         newsBoard.text = "Falsche Eingabe"
@@ -184,7 +188,10 @@ class GUISWING(controller:controll) extends Frame with Observer {
 
 
   override def update:Unit={
-    OutputLabel.text = controller.toString
+    val filteredAndColoredText = filterAndColor(controller.toString)
+
+    OutputTextField.text = filteredAndColoredText
+    OutputTextField.peer.setCaretPosition(0)
     newsBoard.text
     level.text
 
@@ -197,6 +204,6 @@ class GUISWING(controller:controll) extends Frame with Observer {
     val yellowColored = YellowPattern.replaceAllIn(input, m => s"<font color='yellow'>${m.group(1)}</font>")
     val greenColored = GreenPattern.replaceAllIn(yellowColored, m => s"<font color='green'>${m.group(1)}</font>")
 
-    s"<html>$greenColored</html>"
+    s"""<html>$greenColored</html>"""
   }
 }
