@@ -1,22 +1,18 @@
-/*
 package de.htwg.se.wordle.aview
-import de.htwg.se.wordle.aview.TUI
-
 import de.htwg.se.wordle.controller.controll
-import de.htwg.se.wordle.aview.MockController
-import org.scalatest.matchers.should.Matchers.*
+import de.htwg.se.wordle.model.gamemode
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 
-
-class tuispec extends AnyWordSpec {
+class TuiSpec extends AnyWordSpec with Matchers {
 
   "TUI" when {
 
     "run" should {
       "print the initial game state" in {
-        val controller = new MockController(3, "word")
+        val controller = new MockController("word")
         val tui = new TUI(controller)
         val input = "word\nquit\n"
         val output = captureOutputWithInput(input) {
@@ -27,7 +23,7 @@ class tuispec extends AnyWordSpec {
       }
 
       "end the game with a loss when out of attempts" in {
-        val controller = new MockController(1, "word")
+        val controller = new MockController("word")
         val tui = new TUI(controller)
         val input = "wrong\nquit\n"
         val output = captureOutputWithInput(input) {
@@ -38,7 +34,7 @@ class tuispec extends AnyWordSpec {
       }
 
       "end the game with a win when the correct word is guessed" in {
-        val controller = new MockController(3, "WORD")
+        val controller = new MockController("WORD")
         val tui = new TUI(controller)
 
         val input = "word\n"
@@ -46,14 +42,13 @@ class tuispec extends AnyWordSpec {
           tui.run()
         }
         output should include("Du hast gewonnen!")
-
       }
 
     }
 
     "inputLoop" should {
       "continue the loop when continue is true" in {
-        val controller = new MockController(3, "word")
+        val controller = new MockController("word")
         val tui = new TUI(controller)
         val input = "wrong\nwrong\nwrong\nquit\n" // Added 'quit' to end the loop
         val output = captureOutputWithInput(input) {
@@ -62,13 +57,12 @@ class tuispec extends AnyWordSpec {
         output should include("WRONG")
         output should include("WRONG\nWRONG")
         output should include("WRONG\nWRONG\nWRONG")
-
       }
     }
 
     "scanInput" should {
       "exit the program when 'quit' is entered" in {
-        val controller = new MockController(3, "word")
+        val controller = new MockController("word")
         val tui = new TUI(controller)
         val input = "quit"
 
@@ -83,47 +77,33 @@ class tuispec extends AnyWordSpec {
 
   }
 
-}
-
-def captureOutputWithInput(input: String)(block: => Unit): String = {
-  val stream = new ByteArrayOutputStream()
-  Console.withOut(stream) {
-    Console.withIn(new ByteArrayInputStream(input.getBytes()))(block)
+  def captureOutputWithInput(input: String)(block: => Unit): String = {
+    val stream = new ByteArrayOutputStream()
+    Console.withOut(stream) {
+      Console.withIn(new ByteArrayInputStream(input.getBytes()))(block)
+    }
+    stream.toString
   }
-  stream.toString
-}
 
+  class MockController(target: String) extends controll(gamemode.gamemode1()) {
+    var continue = true
 
-class MockController(attempts: Int, target: String) extends controll(attempt(targetword = target, x = attempts)) {
-  var continue = true
+    override def count(n: Int): Boolean = {
+      continue
+    }
 
-  override def count(n: Int): Boolean = {
-    if (n >= attempts) {
+    override def evaluateGuess(guess: String): Map[Int, String] = {
+      val keys: List[Int] = getTargetword().keys.toList
+      val feedback: Map[Int, String] = keys.map(key => key -> gamemech.evaluateGuess(getTargetword()(key), guess)).toMap
+      feedback
+    }
+
+    def quit(): Unit = {
       continue = false
     }
-    continue
-  }
 
-  override def evaluateGuess(targetWord: String, guess: String): String = {
-    val minLen = Math.min(targetWord.length, guess.length) //Vergleicht nur so lange wie kurze Wort Indexfehler beim testen
-    val feedback = guess.zipWithIndex.map {
-      case (g, i) if i < minLen && g == targetWord(i) => "\u001B[32m" + g + "\u001B[0m" //Tupel mit (buchstabe, index)
-      case (g, _) if targetWord.contains(g) => "\u001B[33m" + g + "\u001B[0m"
-      case (g, _) => g.toString
-    }.mkString("")
-
-    feedback
-  }
-
-  var exitCalled: Boolean = false // Eine Variable, um das Programmende nachzuverfolgen
-
-  def quit(): Unit = {
-    exitCalled = true // Diese Methode wird aufgerufen, wenn das Programm beendet werden soll
+    val targetword: String = target
   }
 
 
-  override val limit: Int = attempts
-  override val targetword: String = target
-
-
-}*/
+}

@@ -1,4 +1,4 @@
-/*
+
 package de.htwg.se.wordle.controller
 
 import de.htwg.se.wordle.controller.controll
@@ -81,4 +81,3 @@ class controllspec extends AnyWordSpec {
     }
   }
 }
-*/
