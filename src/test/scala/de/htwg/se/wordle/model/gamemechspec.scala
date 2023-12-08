@@ -1,6 +1,6 @@
 package de.htwg.se.wordle.model
 
-import de.htwg.se.wordle.model.gamemech.GameMech
+import de.htwg.se.wordle.model.gamemechComponent.gamemech.GameMech
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 class gamemechspec extends AnyWordSpec with Matchers{

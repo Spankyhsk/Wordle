@@ -1,7 +1,7 @@
 package de.htwg.se.wordle.util
 
 import de.htwg.se.wordle.controller.controll
-import de.htwg.se.wordle.model.gamemode
+import de.htwg.se.wordle.model.gamemodeComponnent.gamemode
 
 import scala.util.{Failure, Success, Try}
 

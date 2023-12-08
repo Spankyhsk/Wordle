@@ -1,26 +1,20 @@
 
 package de.htwg.se.wordle.controller
-import de.htwg.se.wordle.model.gamemode
-import de.htwg.se.wordle.model.gamefield.{gameboard, gamefield}
-import de.htwg.se.wordle.model.gamemech.GameMech
 import de.htwg.se.wordle.util.Observable
 import de.htwg.se.wordle.util.Command
-import de.htwg.se.wordle.model.gamefield.Component
-import scala.util.{Try, Success, Failure}
+import de.htwg.se.wordle.model.GameInterface
+
+import scala.util.{Failure, Success, Try}
 import de.htwg.se.wordle.util.UndoManager
 
-case class controll (gm: gamemode.State)extends Observable {
+case class controll (game:GameInterface)extends Observable {
 
-  var gamemode = gm
-  val gamemech = new GameMech()
-  val gameboard = new gameboard()
+  var gamemode = game.getGamemode()
+  val gamemech = game.getGamemech()
+  val gameboard = game.getGamefield()
   private val undoManager = new UndoManager
 
-
-  //Steffen braucht das für undo
-
-
-  //
+  
   def count(n: Int): Boolean = {
     if (gamemech.count(n, getLimit())) true else false
   }
@@ -34,7 +28,7 @@ case class controll (gm: gamemode.State)extends Observable {
   }
 
   def createGameboard(): Unit = {
-    gameboard.map = Map.empty[Int, de.htwg.se.wordle.model.gamefield.Component]
+    gameboard.map = Map.empty[Int, gamefieldComponent.gamefield.Component]
     gameboard.buildGameboard(getTargetword().size, 1)
     createGamefieldR(1)
     notifyObservers

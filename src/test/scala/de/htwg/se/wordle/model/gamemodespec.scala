@@ -1,5 +1,6 @@
 package de.htwg.se.wordle.model
 
+import de.htwg.se.wordle.model.gamemodeComponnent.gamemode
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
