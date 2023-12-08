@@ -14,9 +14,6 @@ class TUI (controller: controll)extends Observer:
     val n = 1
     println("Willkommen zu Wordle")
     println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
-    val gameModeInput = Try(readLine.toInt)
-    val selectedGameMode = gameModeInput.getOrElse(1)
-    controller.changeState(selectedGameMode)
     controller.changeState(readLine.toInt)
     println(controller.getTargetword())//Entfernen wenn alles funkzioniert
     println("Errate Wort:")//guess
