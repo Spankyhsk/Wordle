@@ -1,6 +1,6 @@
 package de.htwg.se.wordle.aview
 
-import de.htwg.se.wordle.controller.controll
+import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.{Command, ModeSwitchInvoker, Observer}
 import de.htwg.se.wordle.util.EasyModeCommand
 import de.htwg.se.wordle.util.MediumModeCommand
@@ -11,7 +11,7 @@ import scala.swing.event.*
 import java.awt.Color
 import javax.swing.text._
 
-class GUISWING(controller:controll) extends Frame with Observer {
+class GUISWING(controller:ControllerInterface) extends Frame with Observer {
   controller.add(this)
   var n = 1
   title = "Wordle"

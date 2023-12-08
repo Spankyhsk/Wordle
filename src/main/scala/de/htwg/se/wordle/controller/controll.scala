@@ -16,29 +16,24 @@ case class controll (game:GameInterface)extends Observable {
 
   
   def count(n: Int): Boolean = {
-    if (gamemech.count(n, getLimit())) true else false
+    game.count(n)
   }
 
   def controllLength(n: Int): Boolean = {
-    if (gamemech.controllLength(n, gamemode.getTargetword()(1).length)) true else false
+    game.controllLength(n)
   }
 
   def controllRealWord(guess: String): Boolean = {
-    if (gamemech.controllRealWord(guess, gamemode.getWordList())) true else false
+    game.controllRealWord(guess)
   }
 
   def createGameboard(): Unit = {
-    gameboard.map = Map.empty[Int, gamefieldComponent.gamefield.Component]
-    gameboard.buildGameboard(getTargetword().size, 1)
-    createGamefieldR(1)
+    game.createGameboard()
     notifyObservers
   }
 
 
-  def createGamefieldR(n: Int): Unit = {
-    gameboard.getChilderen(n).buildGamefield(getLimit(), 1, s"_" * getTargetword()(1).length)
-    if (n < gameboard.map.size) createGamefieldR(n + 1)
-  }
+  
 
   def set(key: Int, feedback: Map[Int, String]): Unit = {
     undoManager.doStep(new SetCommand(key, feedback, this))
@@ -53,42 +48,36 @@ case class controll (game:GameInterface)extends Observable {
  
 
   def evaluateGuess(guess: String): Map[Int, String] = {
-    val keys: List[Int] = getTargetword().keys.toList
-    val feedback: Map[Int, String] = keys.map(key => key -> gamemech.evaluateGuess(getTargetword()(key), guess)).toMap
-    feedback
+    game.evaluateGuess(guess)
   }
 
   override def toString: String = {
-    gameboard.toString
+    game.toString
   }
 
   def changeState(e: Int): Unit = {
-    gamemode = gm.handle(e)
+    game.changeState(e)
 
   }
 
   def getTargetword(): Map[Int, String] = {
-    val targetword = gamemode.getTargetword()
-    targetword
+    game.getTargetword()
   }
 
   def getLimit(): Int = {
-    val limit = gamemode.getLimit()
-    limit
+    game.getLimit()
   }
 
   def createwinningboard(): Unit = {
-    gamemech.winningBoard = Map.empty[Int, Boolean]
-    gamemech.buildwinningboard(gameboard.map.size, 1)
+    game.createwinningboard()
   }
 
   def areYouWinningSon(guess: String): Boolean = {
-    gamemech.compareTargetGuess(1, getTargetword(), guess)
-    gamemech.areYouWinningSon()
+    game.areYouWinningSon(guess)
   }
 
   def GuessTransform(guess: String): String = {
-    gamemech.GuessTransform(guess)
+    game.GuessTransform(guess)
   }
 
   

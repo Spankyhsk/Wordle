@@ -1,11 +1,11 @@
 package de.htwg.se.wordle.aview
 
-import de.htwg.se.wordle.controller.controll
+import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.Observer
 import scala.io.StdIn.readLine
 import scala.util.{Failure, Success, Try}
 
-class TUI (controller: controll)extends Observer:
+class TUI (controller: ControllerInterface)extends Observer:
   controller.add(this)
   var continue = true
   var stepback = false

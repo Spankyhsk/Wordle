@@ -90,12 +90,12 @@ object gamemode{
   
   var state: GamemodeInterface = gamemode1(new Word())//targetword und limit nimmt die werte als erstes
 
-  def handle(e: Int): GamemodeInterface = {
+  def apply(e: Int) = 
     e match {
       case 1 => gamemode1(new Word())
       case 2 => gamemode2(new Word())
       case 3 => gamemode3(new Word())
     }
-  }
+  
   
 }
