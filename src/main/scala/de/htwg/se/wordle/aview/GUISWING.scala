@@ -9,6 +9,7 @@ import de.htwg.se.wordle.util.HardModeCommand
 import scala.swing.*
 import scala.swing.event.*
 import java.awt.Color
+import javax.swing.text._
 
 class GUISWING(controller:controll) extends Frame with Observer {
   controller.add(this)
@@ -190,7 +191,7 @@ class GUISWING(controller:controll) extends Frame with Observer {
 
 
   override def update:Unit={
-    val filteredAndColoredText = controller.toString
+    val filteredAndColoredText = filterAndColor(controller.toString)
 
     OutputTextField.text = filteredAndColoredText
     OutputTextField.peer.setCaretPosition(0)
@@ -203,9 +204,22 @@ class GUISWING(controller:controll) extends Frame with Observer {
     val YellowPattern = """\u001B\[33m([^\\]+)\u001B\[0m""".r
     val GreenPattern = """\u001B\[32m([^\\]+)\u001B\[0m""".r
 
-    val yellowColored = YellowPattern.replaceAllIn(input, m => s"<font color='yellow'>${m.group(1)}</font>")
-    val greenColored = GreenPattern.replaceAllIn(yellowColored, m => s"<font color='green'>${m.group(1)}</font>")
+    val yellowColored = YellowPattern.replaceAllIn(input, m => colorToANSIEscape(Color.YELLOW) + m.group(1) + "\u001B[0m")
+    val greenColored = GreenPattern.replaceAllIn(yellowColored, m => colorToANSIEscape(Color.GREEN) + m.group(1) + "\u001B[0m")
 
-    s"""<html>$greenColored</html>"""
+    greenColored
   }
+
+  private def colorToANSIEscape(color: Color): String = {
+    val ANSI_COLOR_ESCAPE = "\u001B[38;2;"
+    val ANSI_COLOR_RESET = "\u001B[0m"
+
+    val rgb = color.getRGB
+    val r = (rgb >> 16) & 0xFF
+    val g = (rgb >> 8) & 0xFF
+    val b = rgb & 0xFF
+
+    s"$ANSI_COLOR_ESCAPE$r;$g;$b" + "m" + ANSI_COLOR_RESET // ANSI escape sequence for setting text color and resetting
+  }
+
 }
