@@ -1,21 +1,27 @@
 package de.htwg.se.wordle.model.gamefieldComponent
 
 
-  case class gamefield() extends GamefieldInterface {
+  case class gamefield() extends GamefieldInterface[String] {
 
     var map = Map.empty[Int, String]
+
+    def getMap():Map[Int, String]={
+      map
+    }
     
 
     def set(key: Int, feedback: String): Unit = {
       map = map + (key -> feedback)
     }
+    def setR(n: Int, key: Int, feedback: Map[Int, String]): Unit={}
 
     def buildGamefield(n: Int, key: Int, value: String): Unit = {
       map += (key -> value)
       if (key < n) buildGamefield(n, key + 1, value)
-
-
+      
     }
+    def buildGameboard(n: Int, key: Int): Unit={}
+    
 
     override def toString: String = {
       var gamefield = ""
@@ -28,8 +34,11 @@ package de.htwg.se.wordle.model.gamefieldComponent
 
   }
 
-  case class gameboard() extends GamefieldInterface {
-    var map = Map.empty[Int, GamefieldInterface]
+  case class gameboard() extends GamefieldInterface[GamefieldInterface[String]] {
+    var map = Map.empty[Int, GamefieldInterface[String]]
+    def getMap():Map[Int, GamefieldInterface[String]]={
+      map
+    }
 
     override def set(key: Int, feedback: String): Unit = {}
 
@@ -44,12 +53,8 @@ package de.htwg.se.wordle.model.gamefieldComponent
       map += (key -> new gamefield())
       if (key < n) buildGameboard(n, key + 1)
     }
-
-    def getChilderen(key: Int): GamefieldInterface = {
-      val children = map(key)
-      children
-    }
-
+    
+    
     override def toString: String = {
       var gameboard = ""
       val mapValues = map.values

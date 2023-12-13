@@ -5,12 +5,13 @@ import de.htwg.se.wordle.model.gamefieldComponent.*
 import de.htwg.se.wordle.model.gamemodeComponnent.*
 
 
-case class Game(mech:gamemechInterface, board:GamefieldInterface,var mode:GamemodeInterface)extends GameInterface{
+case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterface[String]],var mode:GamemodeInterface)extends GameInterface{
+  def this() = this(new GameMech, new gameboard(), gamemode(1))
   def getGamemech(): gamemechInterface ={
     mech
   }
 
-  def getGamefield(): GamefieldInterface ={
+  def getGamefield(): GamefieldInterface[GamefieldInterface[String]] ={
     board
   }
 
@@ -31,14 +32,14 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface,var mode:Gamemo
   }
 
   def createGameboard(): Unit = {
-    gameboard().map = Map.empty[Int, GamefieldInterface]
-    gameboard().buildGameboard(getTargetword().size, 1)
+    //gameboard().map = Map.empty[Int, GamefieldInterface[String]]
+    board.buildGameboard(mode.getTargetword().size, 1)
     createGamefieldR(1)
   }
 
   def createGamefieldR(n: Int): Unit = {
-    gameboard().getChilderen(n).buildGamefield(getLimit(), 1, s"_" * getTargetword()(1).length)
-    if (n < gameboard().map.size) createGamefieldR(n + 1)
+    board.getMap()(n).buildGamefield(getLimit(), 1, s"_" * getTargetword()(1).length)
+    if (n < board.getMap().size) createGamefieldR(n + 1)
   }
 
   def evaluateGuess(guess: String): Map[Int, String] = {
@@ -66,8 +67,8 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface,var mode:Gamemo
   }
 
   def createwinningboard(): Unit = {
-    GameMech().winningBoard = Map.empty[Int, Boolean]
-    mech.buildwinningboard(gameboard().map.size, 1)
+    //GameMech().winningBoard = Map.empty[Int, Boolean]
+    mech.buildwinningboard(board.getMap().size, 1)
   }
 
   def areYouWinningSon(guess: String): Boolean = {

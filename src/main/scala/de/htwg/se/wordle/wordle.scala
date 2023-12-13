@@ -11,9 +11,9 @@ import de.htwg.se.wordle.model.gamemechComponent.GameMech
 object wordle {
   def main(args:Array[String]): Unit = {
     
-    val controller = controll(new Game(new GameMech(), new gameboard() , gamemode(1)))
-    val tui = TUI(controller)
-    val gui = new GUISWING(controller)
+    val controlls= controll(Game(new GameMech(), new gameboard() , gamemode(1)))
+    val tui = new TUI(controlls)
+    val gui = new GUISWING(controlls)
     tui.run()
     
 

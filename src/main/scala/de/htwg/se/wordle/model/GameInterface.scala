@@ -5,7 +5,7 @@ import de.htwg.se.wordle.model.gamefieldComponent.GamefieldInterface
 import de.htwg.se.wordle.model.gamemodeComponnent.GamemodeInterface
 trait GameInterface {
   def getGamemech():gamemechInterface
-  def getGamefield():GamefieldInterface
+  def getGamefield():GamefieldInterface[GamefieldInterface[String]]
   def getGamemode():GamemodeInterface
 
   def count(n: Int): Boolean

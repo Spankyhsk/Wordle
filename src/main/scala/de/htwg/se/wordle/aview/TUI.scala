@@ -39,7 +39,7 @@ class TUI (controller: ControllerInterface)extends Observer:
           continue = false
         }
         case "$"=>{
-          controller.undo
+          controller.undo()
           stepback = true
         }
         case default =>{

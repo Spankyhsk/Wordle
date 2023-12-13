@@ -11,8 +11,8 @@ import scala.swing.event.*
 import java.awt.Color
 import javax.swing.text._
 
-class GUISWING(controller:ControllerInterface) extends Frame with Observer {
-  controller.add(this)
+class GUISWING(controll:ControllerInterface) extends Frame with Observer {
+  controll.add(this)
   var n = 1
   title = "Wordle"
 
@@ -74,7 +74,7 @@ class GUISWING(controller:ControllerInterface) extends Frame with Observer {
     editable = false
     lineWrap = true
     wordWrap = true
-    text = controller.toString
+    text = controll.toString
     foreground = Color.BLACK
   }
 
@@ -123,11 +123,11 @@ class GUISWING(controller:ControllerInterface) extends Frame with Observer {
   var won = false
   reactions +={
     case EditDone(inputTextField) =>
-      val guess = controller.GuessTransform(inputTextField.text)
+      val guess = controll.GuessTransform(inputTextField.text)
 
-      if(controller.controllLength(guess.length)){
-        controller.set(n, controller.evaluateGuess(guess))
-        if(controller.areYouWinningSon(guess)){
+      if(controll.controllLength(guess.length)){
+        controll.set(n, controll.evaluateGuess(guess))
+        if(controll.areYouWinningSon(guess)){
           newsBoard.text = "Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
           inputTextField.enabled = false
           //controller.set(n, controller.evaluateGuess(guess))
@@ -137,7 +137,7 @@ class GUISWING(controller:ControllerInterface) extends Frame with Observer {
         newsBoard.text = "Falsche Eingabe"
         n = n -1
       }
-      if (!controller.count(n) && !won) {
+      if (!controll.count(n) && !won) {
         newsBoard.text = "Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
         inputTextField.enabled = false
       } else {
@@ -146,37 +146,37 @@ class GUISWING(controller:ControllerInterface) extends Frame with Observer {
 
 
     case ButtonClicked(EasymodusButton)=>
-      modeSwitchInvoker.setCommand(EasyModeCommand(Some(controller)))
-      modeSwitchInvoker.executeCommand()
+      //modeSwitchInvoker.setCommand(EasyModeCommand(Some(controll)))
+      //modeSwitchInvoker.executeCommand()
 
 
-      controller.changeState(1)
-      controller.createGameboard()
-      controller.createwinningboard()
+      controll.changeState(1)
+      controll.createGameboard()
+      controll.createwinningboard()
       level.text = "leicht"
       newsBoard.text = "Errate 1 Wort mit 1 guess bevor die Versuche ausgehen"
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(MediummodusButton)=>
-      modeSwitchInvoker.setCommand(MediumModeCommand(Some(controller)))
-      modeSwitchInvoker.executeCommand()
+      //modeSwitchInvoker.setCommand(MediumModeCommand(Some(controll)))
+      //modeSwitchInvoker.executeCommand()
 
 
-      controller.changeState(2)
-      controller.createGameboard()
-      controller.createwinningboard()
+      controll.changeState(2)
+      controll.createGameboard()
+      controll.createwinningboard()
       level.text = "mittel"
       newsBoard.text = "Errate 2 Wörter mit 1 guess bevor die Versuche ausgehen"
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(HardmodusButton)=>
-      modeSwitchInvoker.setCommand(HardModeCommand(Some(controller)))
-      modeSwitchInvoker.executeCommand()
+      //modeSwitchInvoker.setCommand(HardModeCommand(Some(controll)))
+      //modeSwitchInvoker.executeCommand()
 
 
-      controller.changeState(3)
-      controller.createGameboard()
-      controller.createwinningboard()
+      controll.changeState(3)
+      controll.createGameboard()
+      controll.createwinningboard()
       level.text = "schwer"
       newsBoard.text = "Errate 4 Wörter mit 1 guess bevor die Versuche ausgehen"
       inputTextField.enabled = true
@@ -191,7 +191,7 @@ class GUISWING(controller:ControllerInterface) extends Frame with Observer {
 
 
   override def update:Unit={
-    val filteredAndColoredText = filterAndColor(controller.toString)
+    val filteredAndColoredText = filterAndColor(controll.toString)
 
     OutputTextField.text = filteredAndColoredText
     OutputTextField.peer.setCaretPosition(0)

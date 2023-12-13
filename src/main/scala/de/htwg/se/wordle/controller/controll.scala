@@ -7,7 +7,7 @@ import de.htwg.se.wordle.model.GameInterface
 import scala.util.{Failure, Success, Try}
 import de.htwg.se.wordle.util.UndoManager
 
-case class controll (game:GameInterface)extends Observable {
+case class controll (game:GameInterface)extends ControllerInterface with Observable {
 
   var gamemode = game.getGamemode()
   val gamemech = game.getGamemech()
@@ -40,7 +40,7 @@ case class controll (game:GameInterface)extends Observable {
     notifyObservers
   }
 
-  def undo: Unit = {
+  def undo(): Unit = {
     undoManager.undoStep
     notifyObservers
   }

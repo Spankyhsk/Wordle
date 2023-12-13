@@ -7,7 +7,6 @@ trait ControllerInterface extends Observable{
   def controllLength(n:Int):Boolean
   def controllRealWord(guess:String):Boolean
   def createGameboard():Unit
-  def createGamefieldR(n:Int):Unit
   def set(key:Int, feedback:Map[Int, String]):Unit
   def undo():Unit
   def evaluateGuess(guess:String):Map[Int, String]
