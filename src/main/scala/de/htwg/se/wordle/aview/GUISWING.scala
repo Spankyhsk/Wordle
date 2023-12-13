@@ -1,15 +1,12 @@
 package de.htwg.se.wordle.aview
 
 import de.htwg.se.wordle.controller.ControllerInterface
-import de.htwg.se.wordle.util.{Command, ModeSwitchInvoker, Observer}
-import de.htwg.se.wordle.util.EasyModeCommand
-import de.htwg.se.wordle.util.MediumModeCommand
-import de.htwg.se.wordle.util.HardModeCommand
+import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand, MediumModeCommand, ModeSwitchInvoker, Observer}
 
 import scala.swing.*
 import scala.swing.event.*
 import java.awt.Color
-import javax.swing.text._
+import javax.swing.text.*
 
 class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   controll.add(this)
@@ -181,6 +178,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       newsBoard.text = "Errate 4 Wörter mit 1 guess bevor die Versuche ausgehen"
       inputTextField.enabled = true
       n = 1
+
   }
   pack()
   maximumSize = new Dimension(300, 800)
@@ -190,13 +188,25 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
 
-  override def update:Unit={
-    val filteredAndColoredText = filterAndColor(controll.toString)
+  override def update(e:Event):Unit={
+    e match
+      case Event.Move =>{
+        val filteredAndColoredText = filterAndColor(controll.toString)
 
-    OutputTextField.text = filteredAndColoredText
-    OutputTextField.peer.setCaretPosition(0)
-    newsBoard.text
-    level.text
+        OutputTextField.text = filteredAndColoredText
+        OutputTextField.peer.setCaretPosition(0)
+        newsBoard.text
+        level.text
+      }
+      /*case Event.NEW =>{
+        newsBoard.text
+        level.text
+        //controll.createGameboard()
+        //controll.createwinningboard()
+        inputTextField.enabled = true
+        //n = 1
+
+      }*/
 
   }
 

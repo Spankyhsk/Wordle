@@ -1,7 +1,8 @@
 package de.htwg.se.wordle.aview
 
 import de.htwg.se.wordle.controller.ControllerInterface
-import de.htwg.se.wordle.util.Observer
+import de.htwg.se.wordle.util.{Event, Observer}
+
 import scala.io.StdIn.readLine
 import scala.util.{Failure, Success, Try}
 
@@ -50,8 +51,16 @@ class TUI (controller: ControllerInterface)extends Observer:
           } else controller.set(n, controller.evaluateGuess(guess))
         }
   }
-  override def update:Unit = {
-    println(controller.toString)
+  override def update(e:Event):Unit = {
+    e match
+      case Event.Move=> println(controller.toString)
+      case Event.NEW=>{
+        val n = 1
+        println("Errate Wort:") //guess
+        controller.createGameboard()
+        controller.createwinningboard()
+        inputLoop(n)
+      }
   }
 
 

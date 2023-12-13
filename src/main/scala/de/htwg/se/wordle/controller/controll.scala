@@ -3,6 +3,7 @@ package de.htwg.se.wordle.controller
 import de.htwg.se.wordle.util.Observable
 import de.htwg.se.wordle.util.Command
 import de.htwg.se.wordle.model.GameInterface
+import de.htwg.se.wordle.util.Event
 
 import scala.util.{Failure, Success, Try}
 import de.htwg.se.wordle.util.UndoManager
@@ -29,7 +30,7 @@ case class controll (game:GameInterface)extends ControllerInterface with Observa
 
   def createGameboard(): Unit = {
     game.createGameboard()
-    notifyObservers
+    notifyObservers(Event.Move)
   }
 
 
@@ -37,12 +38,11 @@ case class controll (game:GameInterface)extends ControllerInterface with Observa
 
   def set(key: Int, feedback: Map[Int, String]): Unit = {
     undoManager.doStep(new SetCommand(key, feedback, this))
-    notifyObservers
+    notifyObservers(Event.Move)
   }
 
   def undo(): Unit = {
     undoManager.undoStep
-    notifyObservers
   }
 
  
@@ -57,6 +57,8 @@ case class controll (game:GameInterface)extends ControllerInterface with Observa
 
   def changeState(e: Int): Unit = {
     game.changeState(e)
+    //notifyObservers(Event.NEW)
+    notifyObservers(Event.Move)
 
   }
 
