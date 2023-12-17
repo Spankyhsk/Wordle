@@ -80,3 +80,10 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
     mech.GuessTransform(guess)
   }
 }
+
+object Game:
+  def apply(kind:String)={
+    kind match{
+      case "norm" => new Game(new GameMech(), new gameboard() , gamemode(1))
+    }
+  }

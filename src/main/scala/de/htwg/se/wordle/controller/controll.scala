@@ -1,8 +1,8 @@
 
 package de.htwg.se.wordle.controller
 import de.htwg.se.wordle.util.Observable
-import de.htwg.se.wordle.util.Command
 import de.htwg.se.wordle.model.GameInterface
+import de.htwg.se.wordle.model.Game
 import de.htwg.se.wordle.util.Event
 
 import scala.util.{Failure, Success, Try}
@@ -81,8 +81,12 @@ case class controll (game:GameInterface)extends ControllerInterface with Observa
   def GuessTransform(guess: String): String = {
     game.GuessTransform(guess)
   }
-
   
-
-
 }
+
+object controll:
+  def apply(kind:String):controll ={
+    kind match {
+      case "norm" => controll(Game("norm"))
+    }
+  }
