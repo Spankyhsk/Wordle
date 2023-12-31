@@ -56,11 +56,12 @@ case class controll (game:GameInterface)extends ControllerInterface with Observa
   }
 
   def changeState(e: Int): Unit = {
+    game.resetGameboard() // Spielbrett zurücksetzen
     game.changeState(e)
-    //notifyObservers(Event.NEW)
+    createGameboard() // Neues Spielbrett initialisieren
     notifyObservers(Event.Move)
-
   }
+
 
   def getTargetword(): Map[Int, String] = {
     game.getTargetword()

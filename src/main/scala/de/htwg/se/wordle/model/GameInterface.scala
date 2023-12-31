@@ -32,4 +32,6 @@ trait GameInterface {
 
   def areYouWinningSon(guess: String): Boolean
   def GuessTransform(guess:String):String
+
+  def resetGameboard(): Unit
 }

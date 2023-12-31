@@ -8,10 +8,10 @@ package de.htwg.se.wordle.model.gamefieldComponent
     def getMap():Map[Int, String]={
       map
     }
-    
+
 
     def set(key: Int, feedback: String): Unit = {
-      map = map + (key -> feedback)
+      map = map.updated(key, feedback)
     }
     def setR(n: Int, key: Int, feedback: Map[Int, String]): Unit={}
 
@@ -21,14 +21,15 @@ package de.htwg.se.wordle.model.gamefieldComponent
       
     }
     def buildGameboard(n: Int, key: Int): Unit={}
-    
+
 
     override def toString: String = {
-      var gamefield = ""
-      val mapValues = map.values
-      mapValues.foreach(value => gamefield += value + "\n")
-      gamefield
+      map.toSeq.sortBy(_._1).map(_._2).mkString("\n")
+    }
 
+    override def reset(): Unit = {
+      map = Map.empty[Int, String]
+      // Fügen Sie hier weitere Schritte zur Neuinitialisierung hinzu, falls benötigt
     }
 		
 
@@ -43,9 +44,10 @@ package de.htwg.se.wordle.model.gamefieldComponent
     override def set(key: Int, feedback: String): Unit = {}
 
     def setR(n: Int, key: Int, feedback: Map[Int, String]): Unit = {
-      map(n).set(key, feedback(n))
+      map.get(n).foreach(_.set(key, feedback.getOrElse(n, "")))
       if (n < map.size) setR(n + 1, key, feedback)
     }
+
 
     override def buildGamefield(n: Int, key: Int, value: String): Unit = {}
 
@@ -53,15 +55,17 @@ package de.htwg.se.wordle.model.gamefieldComponent
       map += (key -> new gamefield())
       if (key < n) buildGameboard(n, key + 1)
     }
-    
-    
-    override def toString: String = {
-      var gameboard = ""
-      val mapValues = map.values
-      mapValues.foreach(value => gameboard += value.toString + "\n")
-      gameboard
 
+    override def reset(): Unit = {
+      map = Map.empty[Int, GamefieldInterface[String]]
+      // Hier können Sie weitere Schritte zur Neuinitialisierung durchführen
     }
+
+
+    override def toString: String = {
+      map.toSeq.sortBy(_._1).map { case (_, field) => field.toString }.mkString("\n")
+    }
+
 
   }
   

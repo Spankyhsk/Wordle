@@ -43,10 +43,11 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
   }
 
   def evaluateGuess(guess: String): Map[Int, String] = {
-    val keys: List[Int] = getTargetword().keys.toList
+    val keys: List[Int] = getTargetword().keys.toList.sorted // Stellen Sie sicher, dass die Schlüssel sortiert sind
     val feedback: Map[Int, String] = keys.map(key => key -> mech.evaluateGuess(getTargetword()(key), guess)).toMap
     feedback
   }
+
 
   override def toString(): String = {
     board.toString
@@ -54,7 +55,11 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
 
   def changeState(e: Int): Unit = {
     mode = gamemode(e)
+    mech.resetWinningBoard(mode.getTargetword().size)
+    resetGameboard()
   }
+
+  
 
   def getTargetword(): Map[Int, String] = {
     val targetword = mode.getTargetword()
@@ -79,7 +84,17 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
   def GuessTransform(guess: String): String = {
     mech.GuessTransform(guess)
   }
+
+  def resetGameboard(): Unit = {
+    board.reset()
+    createGameboard()
+    createwinningboard()
+  }
+
+
 }
+
+
 
 object Game:
   def apply(kind:String)={

@@ -8,6 +8,8 @@ trait GamefieldInterface[T] {
   def setR(n: Int, key: Int, feedback: Map[Int, String]): Unit
   
   def getMap():Map[Int, T]
+
+  def reset(): Unit
   
 
   def toString: String

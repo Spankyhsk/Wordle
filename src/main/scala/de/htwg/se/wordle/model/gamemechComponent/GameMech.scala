@@ -47,9 +47,12 @@ import scala.util.Random
       guess.toUpperCase
     }
 
+    def resetWinningBoard(size: Int): Unit = {
+      winningBoard = (1 to size).map(_ -> false).toMap
+    }
 
     def compareTargetGuess(n: Int, targetWord: Map[Int, String], guess: String): Unit = {
-      if (!getWin(n)) {
+      if (winningBoard.contains(n) && !getWin(n)) {
         val updatedBoard = guessStrategy.compareTargetGuess(targetWord(n), guess, n, winningBoard)
         winningBoard ++= updatedBoard
       }
