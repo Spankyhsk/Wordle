@@ -4,11 +4,11 @@ import com.sun.glass.ui.Cursor.setVisible
 import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand, MediumModeCommand, ModeSwitchInvoker, Observer}
 import sun.tools.jconsole.LabeledComponent.layout
-import javax.swing.SwingUtilities
+
+import javax.swing.{JPanel, JScrollPane, JTextPane, SwingUtilities}
 import scala.swing.*
 import scala.swing.event.*
 import java.awt.{BorderLayout, Color, FlowLayout, Graphics, GridBagConstraints, GridBagLayout}
-import javax.swing.{JPanel, JTextPane}
 import javax.swing.text.*
 import javax.imageio.ImageIO
 import java.io.File
@@ -139,7 +139,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     override lazy val peer: JTextPane = new JTextPane() {
       setContentType("text/html")
       setEditable(false)
-
+      setBackground(new Color(0, 0, 0, 0)) // Hintergrund transparent machen
     }
   }
 
@@ -201,12 +201,15 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     c.gridy = 1
     c.weighty = 1.0
     c.fill = GridBagConstraints.BOTH
-    val scrollPanel = new ScrollPane(Component.wrap(OutputPanel.peer)) {
-      preferredSize = new Dimension(280, 250) // Größe des ScrollPane anpassen
-      maximumSize = preferredSize
-      minimumSize = preferredSize
+    // Erstellen eines eigenen ScrollPane-Objekts
+    val scrollPane = new ScrollPane(OutputPanel) {
+      // Zugriff auf das zugrunde liegende JScrollPane-Objekt
+      override lazy val peer: JScrollPane = new JScrollPane(OutputPanel.peer) with SuperMixin {
+        setOpaque(false)
+        getViewport.setOpaque(false)
+      }
     }
-    peer.add(scrollPanel.peer, c)
+    peer.add(scrollPane.peer, c)
   }
 
 
@@ -332,7 +335,8 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   InputPanel.peer.setOpaque(false)
   OutputPanel.peer.setOpaque(false)
   newsBoard.peer.setOpaque(false)
-  
+
+
 
   // Erstellen Sie ein Scala Swing Panel, das das BackgroundPanel beinhaltet
   val scalaBackgroundPanel = new Panel {
@@ -349,7 +353,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   this.contents = scalaBackgroundPanel
 
   pack()
-  
+
 
   def resetInputField(): Unit = {
     javax.swing.SwingUtilities.invokeLater(new Runnable {
