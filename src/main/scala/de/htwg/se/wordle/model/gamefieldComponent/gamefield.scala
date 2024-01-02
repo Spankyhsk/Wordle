@@ -63,7 +63,8 @@ package de.htwg.se.wordle.model.gamefieldComponent
 
 
     override def toString: String = {
-      map.toSeq.sortBy(_._1).map { case (_, field) => field.toString }.mkString("\n")
+      val gamefieldsString = map.toSeq.sortBy(_._1).map { case (_, field) => field.toString }
+      gamefieldsString.mkString("\n\n") // Zwei Zeilenumbrüche für die Trennung zwischen den Gamefields
     }
 
 
