@@ -3,8 +3,10 @@ package de.htwg.se.wordle.aview
 import com.sun.glass.ui.Cursor.setVisible
 import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand, MediumModeCommand, ModeSwitchInvoker, Observer}
+
 import sun.tools.jconsole.LabeledComponent.layout
 
+import java.awt.event.ComponentAdapter
 import javax.swing.{JPanel, JScrollPane, JTextPane, SwingUtilities}
 import scala.swing.*
 import scala.swing.event.*
@@ -14,7 +16,10 @@ import javax.imageio.ImageIO
 import java.io.File
 import scala.swing.MenuBar.NoMenuBar.revalidate
 import javax.imageio.ImageIO
-
+import javax.swing.ImageIcon
+import java.awt.Image
+import java.awt.{Graphics, Graphics2D, RenderingHints}
+import scala.swing.Action.NoAction.text
 
 
 
@@ -23,9 +28,61 @@ class BackgroundPanel(imagePath: String) extends JPanel {
 
   override def paintComponent(g: Graphics): Unit = {
     super.paintComponent(g)
-    g.drawImage(backgroundImage, 0, 0, this.getWidth, this.getHeight, this)
+
+    // Ermitteln der Größe des Panels
+    val panelWidth = this.getWidth
+    val panelHeight = this.getHeight
+
+    // Festlegen der neuen Größe des Bildes
+    val newWidth = 1752
+    val newHeight = 1236
+
+    // Berechnen der Position, um das Bild in der Mitte des Panels zu zentrieren
+    val x = (panelWidth - newWidth) / 2
+    val y = (panelHeight - newHeight) / 2
+
+    // Zeichnen des skalierten Bildes in der Mitte des Panels
+    g.drawImage(backgroundImage, x, y, newWidth, newHeight, this)
   }
 }
+
+
+
+
+class TexturedBackground(imagePath: String) extends BorderPanel {
+  private val texture = ImageIO.read(new File(imagePath))
+  peer.setOpaque(false)
+  border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
+
+  override def paintComponent(g: Graphics2D): Unit = {
+
+    super.paintComponent(g)
+    if (texture != null) {
+      // Erhalten Sie die Breite und Höhe des übergeordneten Containers
+      val containerBreite = this.peer.getParent.getWidth
+      val containerHoehe = this.peer.getParent.getHeight
+
+      // Setzen Sie die Höhe des Bildes so, dass es in das OutputPanel hineinragt
+      val bildHoehe = (containerHoehe * 1.0).toInt // 40% der Containerhöhe, anpassen nach Bedarf
+
+      // Skalieren Sie das Bild basierend auf der Containerbreite und der festgelegten Höhe
+      val scaledImage = texture.getScaledInstance(containerBreite, bildHoehe, java.awt.Image.SCALE_SMOOTH)
+
+      // Berechnen Sie die y-Position, um das Bild nach oben in das OutputPanel hineinragen zu lassen
+      // Hier setzen wir es direkt am unteren Rand des Panels
+      val yPosition = containerHoehe - bildHoehe
+
+      // Zeichnen Sie das skalierte Bild an der berechneten y-Position
+      g.drawImage(scaledImage, 0, yPosition, this.peer)
+    }
+  }
+}
+
+
+
+
+
+
 
 
 class TransparentButton(label: String) extends Button(label) {
@@ -36,6 +93,8 @@ class TransparentButton(label: String) extends Button(label) {
   background = new Color(0, 0, 0, 0)
   foreground = Color.BLACK
   font = new Font("Skia", Font.Plain.id, 18)
+  border = Swing.EmptyBorder(0, 0, 0, 0)
+  peer.setOpaque(false)
 }
 
 
@@ -53,8 +112,8 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   title = "Wordle"
   resizable = true
   // Ändern Sie diese Werte, um die Startgröße des Fensters zu beeinflussen
-  minimumSize = new Dimension(300, 600) // Erhöht von 300x600
-  preferredSize = new Dimension(700, 800) // Neue bevorzugte Größe
+  minimumSize = new Dimension(853, 682) // Erhöht von 300x600
+
   maximumSize = new Dimension(1280, 1024) // Erhöht von 1024x768
 
   // Schriftart definieren
@@ -85,14 +144,24 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   //-------------------------------------
-  val headlinepanel = new FlowPanel{
-    contents += new Label("Wordle"){
-      font = customFont.deriveFont(60f)
+  val headlinepanel = new FlowPanel {
+    // Pfad zu Ihrem Bannerbild
+    val bannerPath = "/Users/steffen/Desktop/privat/Gekauft/FoldedPaperTextures/WordleBanner2.png"
+    val originalIcon = new ImageIcon(bannerPath)
+    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
+
+
+    // Skalieren des Bildes
+    val scaledImage = originalIcon.getImage.getScaledInstance(514, 157, java.awt.Image.SCALE_SMOOTH)
+    val bannerIcon = new ImageIcon(scaledImage)
+
+    contents += new Label {
+      icon = bannerIcon
       border = Swing.EmptyBorder(0, 0, 10, 0)
     }
   }
   //------------------------------------
-  val level = new Label("Wähle deinen Schwierigkeitsgrad")
+  val level = new Label("")
 
 
   val EasymodusButton = new TransparentButton("Leicht")
@@ -105,15 +174,19 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     contents += level
   }
 
-  val gamemoduspanel2 = new BoxPanel(Orientation.Horizontal){
+  val gamemoduspanel2 = new BoxPanel(Orientation.Horizontal) {
     contents += EasymodusButton
+    contents += Swing.HStrut(20) // Fügt einen horizontalen Abstand von 10 Pixeln hinzu
     contents += MediummodusButton
+    contents += Swing.HStrut(20) // Fügt einen weiteren horizontalen Abstand von 10 Pixeln hinzu
     contents += HardmodusButton
   }
+
 
   val gamemoduspanelMain = new BoxPanel(Orientation.Vertical){
     contents += gamemoduspanel1
     contents += gamemoduspanel2
+
   }
 
   val northpanel = new BoxPanel(Orientation.Vertical){
@@ -122,16 +195,36 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     contents += gamemoduspanelMain
   }
 
+  // Pfad zu Ihrem Eingabebild
+  val inputImagePath = "/Users/steffen/Desktop/privat/Gekauft/FoldedPaperTextures/eingabepaper2.png"
+  val originalIcon = new ImageIcon(inputImagePath)
 
 
+  // Skalieren des Bildes
+  val scaledImage = originalIcon.getImage.getScaledInstance(
+    170, // Breite anpassen
+    70, // Höhe anpassen
+    java.awt.Image.SCALE_SMOOTH
+  )
+  val inputImageIcon = new ImageIcon(scaledImage)
 
+  // Erstellen Sie ein JLabel mit dem skalierten Bild als Hintergrund
+  val inputImageLabel = new Label {
+    icon = inputImageIcon
+    xLayoutAlignment = 0.5
+    yLayoutAlignment = 0.5
+  }
 
-  //------------------------------------------------------
+  inputTextField.enabled = false
+  // Erstellen Sie ein transparentes TextField
   object inputTextField extends TextField {
-    columns = 10
-    preferredSize = new Dimension(200, 30)
-    maximumSize = new Dimension(200, 30)
-    enabled = false
+    columns = 8 // Anzahl der Zeichen festlegen
+    opaque = false
+    border = Swing.EmptyBorder(0, 0, 0, 0)
+    background = new Color(0, 0, 0, 0) // Vollständig transparent
+    peer.setCaretColor(Color.BLACK) // Farbe des Cursors
+    peer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) // Text zentrieren
+    font = new Font("Skia", Font.Plain.id, 24) // Schriftgröße
   }
 
   // JTextPane für Output
@@ -144,28 +237,35 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
 
+  // Fügen Sie das Eingabebild und das TextField in einem Panel zusammen
   val InputPanel = new Panel {
-    preferredSize = new Dimension(300, 50) // Beispielgröße
-    maximumSize = preferredSize
-    minimumSize = preferredSize
-    font = customFont.deriveFont(18)
-
     peer.setLayout(new GridBagLayout())
     val c = new GridBagConstraints()
 
-    c.gridx = GridBagConstraints.REMAINDER
+    // Einstellungen für das Textfeld
+    c.gridx = 0
     c.gridy = 0
+    c.weightx = 0
+    c.weighty = 0
     c.anchor = GridBagConstraints.CENTER
+    c.insets = new Insets(25, 10, 0, 0) // Feinabstimmung der Position
+    c.ipadx = -20 // Interne Polsterung
+    c.ipady = 20 // Höhe des Textfelds
+    peer.add(inputTextField.peer, c) // Korrekte Verwendung von inputTextField
 
-    // Hinzufügen der Beschriftung "Versuch:"
-    val label = new Label("Versuch:")
-    peer.add(label.peer, c)
-
-
+    // Einstellungen für das Bild
     c.gridy = 1
-    peer.add(inputTextField.peer, c)
+    c.insets = new Insets(-68, 10, 0, 0)
+    peer.add(inputImageLabel.peer, c)
 
+    border = Swing.EmptyBorder(0, 0, 0, 0)
+    opaque = false
   }
+
+  inputTextField.opaque = false
+  inputTextField.border = Swing.EmptyBorder(0, 0, 0, 0)
+  inputTextField.background = new Color(0, 0, 0, 0) // Vollständig transparent
+  inputTextField.peer.setCaretColor(Color.BLACK) // Farbe des Cursors
 
 
 
@@ -176,6 +276,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   val OutputPanel = new BoxPanel(Orientation.Vertical) {
     contents += Component.wrap(OutputTextField.peer)
     font = customFont.deriveFont(18)
+    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
 
   val centerPanelSize = new Dimension(300, 300) // Festgelegte Größe für das centerPanel
@@ -186,24 +287,24 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     maximumSize = centerPanelSize
 
     peer.setLayout(new GridBagLayout())
-    val c = new GridBagConstraints()
 
-    // Konfiguration für das zentrierte InputPanel
+
+    // Konfiguration für das Eingabefeld
+    val c = new GridBagConstraints()
     c.gridx = 0
     c.gridy = 0
     c.gridwidth = 1
-    c.anchor = GridBagConstraints.CENTER
+    c.anchor = GridBagConstraints.NORTH
     c.weightx = 0.5
-    c.weighty = 0.5
+    c.weighty = 0.0
     peer.add(InputPanel.peer, c)
 
-    // Konfiguration für das OutputPanel innerhalb eines ScrollPane
+    // Konfiguration für das OutputPanel
     c.gridy = 1
-    c.weighty = 1.0
+    c.weighty = 1.0 // Das restliche Gewicht wird dem OutputPanel zugewiesen
     c.fill = GridBagConstraints.BOTH
-    // Erstellen eines eigenen ScrollPane-Objekts
     val scrollPane = new ScrollPane(OutputPanel) {
-      // Zugriff auf das zugrunde liegende JScrollPane-Objekt
+      border = Swing.EmptyBorder(0, 0, 0, 0)
       override lazy val peer: JScrollPane = new JScrollPane(OutputPanel.peer) with SuperMixin {
         setOpaque(false)
         getViewport.setOpaque(false)
@@ -214,21 +315,101 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   //--------------------
-  object newsBoard extends TextArea {
-    columns = 20
-    rows = 3
-    text = "Wähle deinen Schwierigkeitsgrad" // Text geändert
-    editable = false
-    lineWrap = true
-    wordWrap = true
-    font = customFont.deriveFont(22)
-    peer.setLayout(new FlowLayout(FlowLayout.CENTER)) // Setzt das Layout auf FlowLayout mit zentrierter Ausrichtung
+  // Erstellen Sie die TextArea für das NewsBoard
+  val newsBoardText = new Component {
+    override lazy val peer: JTextPane = new JTextPane() {
+      setContentType("text/html")
+      setText(
+        s"""
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: 'Skia';
+                font-size: 30pt; // Größe anpassen, wie benötigt
+                font-weight: bold;
+              }
+              .centered {
+                text-align: center;
+                display: table;
+                height: 100%;
+                width: 100%;
+              }
+              .centered div {
+                display: table-cell;
+                vertical-align: middle;
+              }
+            </style>
+          </head>
+          <body>
+            <div class='centered'>
+              <div>Wähle zwischen Leicht, Mittel und Schwer!</div>
+            </div>
+          </body>
+        </html>
+      """)
+      setEditable(false)
+      setOpaque(false)
+      setBorder(null)
+    }
   }
+
+
+  def updateNewsBoardText(newText: String): Unit = {
+    val htmlContent =
+      s"""
+    <html>
+      <head>
+        <style>
+          body {
+            font-family: 'Skia';
+            font-size: 30pt; // Größe anpassen, wie benötigt
+            font-weight: bold;
+          }
+          .centered {
+            text-align: center;
+            display: table;
+            height: 100%;
+            width: 100%;
+          }
+          .centered div {
+            display: table-cell;
+            vertical-align: middle;
+          }
+        </style>
+      </head>
+      <body>
+        <div class='centered'>
+          <div>$newText</div>
+        </div>
+      </body>
+    </html>
+    """
+    newsBoardText.peer.setText(htmlContent)
+  }
+
+
+  val newsBoardPanel = new BoxPanel(Orientation.Vertical) {
+    opaque = false // Stellen Sie sicher, dass das Panel transparent ist
+
+    // Fügen Sie vertikale Struts hinzu, um den Text vertikal zu zentrieren
+    contents += Swing.VStrut(80) // Abstand oben
+    contents += newsBoardText
+    contents += Swing.VStrut(60) // Abstand unten
+
+    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
+  }
+
+
+  val texturedBackground = new TexturedBackground("/Users/steffen/Desktop/privat/Gekauft/FoldedPaperTextures/4rippedpaperneu.png") {
+    layout(newsBoardPanel) = BorderPanel.Position.Center
+    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
+  }
+
   val southPanel = new BorderPanel {
     border = Swing.LineBorder(java.awt.Color.BLACK)
-    add(newsBoard, BorderPanel.Position.Center)
-    layout(newsBoard) = BorderPanel.Position.Center // Zentriert das newsBoard im southPanel
-    font = customFont.deriveFont(18)
+    add(texturedBackground, BorderPanel.Position.Center)
+    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
 
 
@@ -238,6 +419,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     add(northpanel, BorderPanel.Position.North)
     add(centerPanel, BorderPanel.Position.Center)
     add(southPanel, BorderPanel.Position.South)
+    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
 
   }
 
@@ -253,19 +435,19 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       if(controll.controllLength(guess.length)){
         controll.set(n, controll.evaluateGuess(guess))
         if(controll.areYouWinningSon(guess)){
-          newsBoard.text = "Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
+          updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
           inputTextField.enabled = false
 
           //controller.set(n, controller.evaluateGuess(guess))
           won = true
         }
       }else{
-        newsBoard.text = "Falsche Eingabe"
+        updateNewsBoardText("Falsche Eingabe")
         n = n -1
 
       }
       if (!controll.count(n) && !won) {
-        newsBoard.text = "Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen"
+        updateNewsBoardText("Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
         inputTextField.enabled = false
 
       } else {
@@ -287,7 +469,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       updateButtonColors(EasymodusButton)
       inputTextField.enabled = true
       level.text = ""
-      newsBoard.text = "Errate 1 Wort mit 1 guess bevor die Versuche ausgehen"
+      updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(MediummodusButton)=>
@@ -301,7 +483,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       updateButtonColors(MediummodusButton)
       inputTextField.enabled = true
       level.text = ""
-      newsBoard.text = "Errate 2 Wörter mit 1 guess bevor die Versuche ausgehen"
+      updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
       inputTextField.enabled = true
       n = 1
     case ButtonClicked(HardmodusButton)=>
@@ -315,14 +497,14 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       updateButtonColors(HardmodusButton)
       inputTextField.enabled = true
       level.text = ""
-      newsBoard.text = "Errate 4 Wörter mit 1 guess bevor die Versuche ausgehen"
+      updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
       inputTextField.enabled = true
       n = 1
 
   }
 
   // Laden des Hintergrundbilds
-  val backgroundPanel = new BackgroundPanel("/Users/steffen/Desktop/privat/Gekauft/FoldedPaperTextures/3.jpg")
+  val backgroundPanel = new BackgroundPanel("/Users/steffen/Desktop/privat/Gekauft/FoldedPaperTextures/3background.jpg")
   northpanel.peer.setOpaque(false)
   centerPanel.peer.setOpaque(false)
   southPanel.peer.setOpaque(false)
@@ -334,7 +516,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   gamemoduspanel2.peer.setOpaque(false)
   InputPanel.peer.setOpaque(false)
   OutputPanel.peer.setOpaque(false)
-  newsBoard.peer.setOpaque(false)
+  //newsBoardPanel.peer.setOpaque(false)  // Verwenden Sie newsBoardPanel anstelle von newsBoard
 
 
 
@@ -368,7 +550,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     controll.createGameboard()
     controll.createwinningboard()
     level.text = difficultyLevelToString(difficulty)
-    newsBoard.text = s"Spiel gestartet im Modus: ${level.text}"
+    updateNewsBoardText("Spiel gestartet im Modus: ${level.text}")
     OutputTextField.peer.setText("") // Text zurücksetzen
     OutputTextField.peer.repaint() // Komponente neu zeichnen
     won = false
@@ -435,10 +617,12 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
 
+
+
   pack()
   centerOnScreen()
   open()
-
+  peer.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH) // Fenster maximieren
 
 
 }
