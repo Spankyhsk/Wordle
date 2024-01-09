@@ -10,6 +10,7 @@ trait GamefieldInterface[T] {
   def getMap():Map[Int, T]
 
   def reset(): Unit
+  def setMap(boardmap:Map[Int, Map[Int, String]]):Unit
   
 
   def toString: String

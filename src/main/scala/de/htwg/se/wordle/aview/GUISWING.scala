@@ -132,21 +132,32 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   menuBar = new MenuBar {
-    contents += new Menu("Spiel beenden") {
+    contents += new Menu("Menue") {
       font = customFont.deriveFont(12)
       contents += new MenuItem(Action("Exit") {
         sys.exit(0)
       }) {
         font = customFont.deriveFont(12)
       }
+      contents += new MenuItem(Action("Save") {
+        controll.save()
+      }) {
+        font = customFont.deriveFont(12)
+      }
+      contents += new MenuItem(Action("load") {
+        controll.load()
+      }) {
+        font = customFont.deriveFont(12)
+      }
     }
+
   }
 
 
   //-------------------------------------
   val headlinepanel = new FlowPanel {
     // Pfad zu Ihrem Bannerbild
-    val bannerPath = "/Users/steffen/Desktop/privat/Gekauft/FoldedPaperTextures/WordleBanner2.png"
+    val bannerPath = "texturengui/Wordlebanner2.png"
     val originalIcon = new ImageIcon(bannerPath)
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
 
@@ -196,7 +207,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
   // Pfad zu Ihrem Eingabebild
-  val inputImagePath = "/Users/steffen/Desktop/privat/Gekauft/FoldedPaperTextures/eingabepaper2.png"
+  val inputImagePath = "texturengui/eingabepaper2.png"
   val originalIcon = new ImageIcon(inputImagePath)
 
 
@@ -401,7 +412,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
 
-  val texturedBackground = new TexturedBackground("/Users/steffen/Desktop/privat/Gekauft/FoldedPaperTextures/4rippedpaperneu.png") {
+  val texturedBackground = new TexturedBackground("texturengui/4rippedpaperneu.png") {
     layout(newsBoardPanel) = BorderPanel.Position.Center
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
@@ -504,7 +515,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
   // Laden des Hintergrundbilds
-  val backgroundPanel = new BackgroundPanel("/Users/steffen/Desktop/privat/Gekauft/FoldedPaperTextures/3background.jpg")
+  val backgroundPanel = new BackgroundPanel("texturengui/3background.jpg")
   northpanel.peer.setOpaque(false)
   centerPanel.peer.setOpaque(false)
   southPanel.peer.setOpaque(false)

@@ -12,5 +12,10 @@ trait gamemechInterface {
   def compareTargetGuess(n:Int, targetWord:Map[Int, String], guess:String):Unit
   def evaluateGuess(targetWord:String, guess:String):String
 
+  def getN(): Integer
+  def setN(zahl: Integer): Unit
+  def getWinningboard():Map[Int, Boolean]
+  def setWinningboard(wBoard:Map[Int, Boolean]):Unit
+
   def resetWinningBoard(size: Int): Unit
 }

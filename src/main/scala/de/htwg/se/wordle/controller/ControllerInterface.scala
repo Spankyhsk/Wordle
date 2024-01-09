@@ -17,4 +17,8 @@ trait ControllerInterface extends Observable{
   def createwinningboard():Unit
   def areYouWinningSon(guess:String):Boolean
   def GuessTransform(guess:String):String
+
+  def save(): Unit
+
+  def load(): Unit
 }

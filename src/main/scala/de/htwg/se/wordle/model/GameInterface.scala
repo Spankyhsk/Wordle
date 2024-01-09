@@ -34,4 +34,15 @@ trait GameInterface {
   def GuessTransform(guess:String):String
 
   def resetGameboard(): Unit
+
+  def setWinningboard(wBoard: Map[Int, Boolean]):Unit
+  def setN(zahl: Integer): Unit
+
+  def setMap(boardmap:Map[Int, Map[Int, String]]):Unit
+
+  def setTargetWord(targetWordMap: Map[Int, String]): Unit
+  def setLimit(Limit: Int): Unit
+
+  
+
 }

@@ -2,18 +2,23 @@
 package de.htwg.se.wordle.controller
 import de.htwg.se.wordle.util.Observable
 import de.htwg.se.wordle.model.GameInterface
+import de.htwg.se.wordle.model.FileIOComponent.*
 import de.htwg.se.wordle.model.Game
 import de.htwg.se.wordle.util.Event
 
 import scala.util.{Failure, Success, Try}
 import de.htwg.se.wordle.util.UndoManager
 
-case class controll (game:GameInterface)extends ControllerInterface with Observable {
+case class controll (game:GameInterface, file:FileIOInterface)extends ControllerInterface with Observable {
 
   var gamemode = game.getGamemode()
   val gamemech = game.getGamemech()
   val gameboard = game.getGamefield()
   private val undoManager = new UndoManager
+  
+  def save():Unit={file.save(game)}
+  
+  def load():Unit={file.load(game)}
 
   
   def count(n: Int): Boolean = {
@@ -88,6 +93,6 @@ case class controll (game:GameInterface)extends ControllerInterface with Observa
 object controll:
   def apply(kind:String):controll ={
     kind match {
-      case "norm" => controll(Game("norm"))
+      case "XML" => controll(Game("norm"), new FileIOXML)
     }
   }

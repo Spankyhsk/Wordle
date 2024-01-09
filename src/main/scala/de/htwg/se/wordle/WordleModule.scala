@@ -5,9 +5,9 @@ import net.codingwell.scalaguice.ScalaModule
 import de.htwg.se.wordle.controller.*
 
 
-class WordleModule extends AbstractModule with ScalaModule {
+class WordleModuleXML extends AbstractModule with ScalaModule {
   override def configure():Unit= {
-    bind[ControllerInterface].toInstance(controll("norm"))
+    bind[ControllerInterface].toInstance(controll("XML"))
   }
 
 }

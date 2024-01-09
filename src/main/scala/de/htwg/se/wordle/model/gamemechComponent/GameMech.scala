@@ -12,6 +12,7 @@ import scala.util.Random
   // Klasse für den Spielmechanismus mit Strategie
   case class GameMech(guessStrategy: GuessStrategy = new SimpleGuessStrategy)extends gamemechInterface {
     var winningBoard = Map.empty[Int, Boolean]
+    var n = 1
 
     def count(n: Int, limit: Int): Boolean = {
       if (n < limit) true else false
@@ -62,8 +63,32 @@ import scala.util.Random
     def evaluateGuess(targetWord: String, guess: String): String = {
       guessStrategy.evaluateGuess(targetWord, guess)
     }
-  }
+    
+    def getN(): Integer = {
+      n
+    }
 
-  
+    def setN(zahl: Integer): Unit = {
+      n = zahl
+    }
+    
+    def getWinningboard():Map[Int, Boolean]={
+      winningBoard
+    }
+    
+    def setWinningboard(wBoard:Map[Int, Boolean])={
+      winningBoard = wBoard
+    }
+    
+    
+  }
+/*
+object GameMech{
+  import play.api.libs.json._
+  implicit val GameMechWrites = Json.writes[GameMech]
+  implicit val GameMechReads = Json.reads[GameMech]
+}
+
+  */
   
 

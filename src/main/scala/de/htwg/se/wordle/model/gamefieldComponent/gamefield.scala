@@ -9,6 +9,13 @@ package de.htwg.se.wordle.model.gamefieldComponent
       map
     }
 
+    def setMap(boardmap: Map[Int, Map[Int, String]]): Unit = {
+    }
+    
+    def SetMapper(field:Map[Int, String]):Unit={
+      map = field
+    }
+
 
     def set(key: Int, feedback: String): Unit = {
       map = map.updated(key, feedback)
@@ -39,6 +46,17 @@ package de.htwg.se.wordle.model.gamefieldComponent
     var map = Map.empty[Int, GamefieldInterface[String]]
     def getMap():Map[Int, GamefieldInterface[String]]={
       map
+    }
+    
+    def setMap(boardmap:Map[Int, Map[Int, String]]):Unit={
+      setMapR(boardmap.size,1,boardmap)
+    }
+    
+    def setMapR(n:Int, key:Int, boardmap:Map[Int, Map[Int, String]]):Unit={
+      val GameField = new gamefield()
+      GameField.SetMapper(boardmap(key))
+      map += (key-> GameField)
+      if(key<n) setMapR(n, key+1, boardmap)
     }
 
     override def set(key: Int, feedback: String): Unit = {}

@@ -90,6 +90,26 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
     createGameboard()
     createwinningboard()
   }
+  
+  def setWinningboard(wBoard: Map[Int, Boolean]) = {
+    mech.setWinningboard(wBoard)
+  }
+
+  def setN(zahl: Integer): Unit={
+    mech.setN(zahl)
+  }
+
+  def setTargetWord(targetWordMap: Map[Int, String]): Unit={
+    mode.setTargetWord(targetWordMap)
+  }
+
+  def setLimit(Limit: Int): Unit={
+    mode.setLimit(Limit)
+  }
+
+  def setMap(boardmap:Map[Int, Map[Int, String]]):Unit={
+    board.setMap(boardmap)
+  }
 
 
 }
