@@ -1,0 +1,29 @@
+<game>
+    <Mech>
+        <Gamemech>
+            <winningboard>
+                <entry key="1" value="false"/>
+            </winningboard>
+            <anzahl> 1 </anzahl>
+        </Gamemech>
+    </Mech>
+    <board>
+        <gameboard>
+            <entry key="1">
+                <Gamefield>
+                    <Innerentry key="1" value="AR"/>
+                    <Innerentry key="2" value="__"/>
+                    <Innerentry key="3" value="__"/>
+                </Gamefield>
+            </entry>
+        </gameboard>
+    </board>
+    <mode>
+        <Gamemode>
+            <TargetWord>
+                <entry key="1" value="CD"/>
+            </TargetWord>
+            <limit>3</limit>
+        </Gamemode>
+    </mode>
+</game>
