@@ -1,6 +1,7 @@
 package de.htwg.se.wordle.controller
 import de.htwg.se.wordle.util.Observable
 import de.htwg.se.wordle.model.GameInterface
+import scala.util.{Failure, Success, Try}
 
 trait ControllerInterface extends Observable{
   def count(n:Int):Boolean
@@ -20,5 +21,5 @@ trait ControllerInterface extends Observable{
 
   def save(): Unit
 
-  def load(): Unit
+  def load():Unit
 }

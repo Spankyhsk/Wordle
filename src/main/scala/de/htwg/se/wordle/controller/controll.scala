@@ -15,10 +15,13 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
   val gamemech = game.getGamemech()
   val gameboard = game.getGamefield()
   private val undoManager = new UndoManager
-  
+
   def save():Unit={file.save(game)}
-  
-  def load():Unit={file.load(game)}
+
+  def load():Unit={
+    file.load(game)
+    notifyObservers(Event.Move)
+  }
 
   
   def count(n: Int): Boolean = {

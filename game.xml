@@ -11,7 +11,7 @@
         <gameboard>
             <entry key="1">
                 <Gamefield>
-                    <Innerentry key="1" value="BE"/>
+                    <Innerentry key="1" value="AF"/>
                     <Innerentry key="2" value="__"/>
                     <Innerentry key="3" value="__"/>
                 </Gamefield>
@@ -21,7 +21,7 @@
     <mode>
         <Gamemode>
             <TargetWord>
-                <entry key="1" value="CD"/>
+                <entry key="1" value="DE"/>
             </TargetWord>
             <limit>3</limit>
         </Gamemode>
