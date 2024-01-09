@@ -1,5 +1,6 @@
 package de.htwg.se.wordle.model.gamemechComponent
 
+import java.beans.Encoder
 import scala.util.Random
 
 
@@ -82,13 +83,25 @@ import scala.util.Random
     
     
   }
-/*
-object GameMech{
+
+object Gamemech{
   import play.api.libs.json._
-  implicit val GameMechWrites = Json.writes[GameMech]
-  implicit val GameMechReads = Json.reads[GameMech]
+  implicit val GameMechFormat:Writes[GameMech] = new Writes[GameMech] {
+    
+    def writes(mech: gamemechInterface): JsValue = Json.obj(
+      "winningboard" -> mech.getWinningboard().toString(),
+      "Versuch" -> mech.getN().toString
+    )
+  }
+  
+  /*
+  implicit val mapWrites:Writes[Map[Int, Boolean]] = new Writes[Map[Int, Boolean]] {
+    override def writes(map: Map[Int, Boolean]): JsValue = {
+      Json.obj(map.map{case (key, value)=> key.toString -> Json.toJsFieldJsValueWrapper(JsBoolean(value))}.toSeq: _*)
+    }
+  }*/
 }
 
-  */
+
   
 
