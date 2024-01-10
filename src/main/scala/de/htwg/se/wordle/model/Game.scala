@@ -98,6 +98,9 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
   def setN(zahl: Integer): Unit={
     mech.setN(zahl)
   }
+  def getN():Int={
+    mech.getN()
+  }
 
   def setTargetWord(targetWordMap: Map[Int, String]): Unit={
     mode.setTargetWord(targetWordMap)

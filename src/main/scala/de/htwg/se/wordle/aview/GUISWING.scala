@@ -101,7 +101,7 @@ class TransparentButton(label: String) extends Button(label) {
 
 class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   controll.add(this)
-  var n = 1
+  controll.setVersuche(1)
 
 
 
@@ -444,7 +444,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       val guess = controll.GuessTransform(inputTextField.text)
 
       if(controll.controllLength(guess.length)){
-        controll.set(n, controll.evaluateGuess(guess))
+        controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
         if(controll.areYouWinningSon(guess)){
           updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
           inputTextField.enabled = false
@@ -454,15 +454,15 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         }
       }else{
         updateNewsBoardText("Falsche Eingabe")
-        n = n -1
+        controll.setVersuche(controll.getVersuche()-1)
 
       }
-      if (!controll.count(n) && !won) {
+      if (!controll.count(controll.getVersuche()) && !won) {
         updateNewsBoardText("Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
         inputTextField.enabled = false
 
       } else {
-        n = n + 1
+        controll.setVersuche(controll.getVersuche()+1)
 
       }
 
@@ -482,7 +482,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       level.text = ""
       updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
       inputTextField.enabled = true
-      n = 1
+      controll.setVersuche(1)
     case ButtonClicked(MediummodusButton)=>
       //modeSwitchInvoker.setCommand(MediumModeCommand(Some(controll)))
       //modeSwitchInvoker.executeCommand()
@@ -496,7 +496,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       level.text = ""
       updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
       inputTextField.enabled = true
-      n = 1
+      controll.setVersuche(1)
     case ButtonClicked(HardmodusButton)=>
       //modeSwitchInvoker.setCommand(HardModeCommand(Some(controll)))
       //modeSwitchInvoker.executeCommand()
@@ -510,7 +510,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       level.text = ""
       updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
       inputTextField.enabled = true
-      n = 1
+      controll.setVersuche(1)
 
   }
 
@@ -565,7 +565,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     OutputTextField.peer.setText("") // Text zurücksetzen
     OutputTextField.peer.repaint() // Komponente neu zeichnen
     won = false
-    n = 1
+    controll.setVersuche(1)
   }
 
 

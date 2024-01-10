@@ -7,7 +7,7 @@ import de.htwg.se.wordle.controller.ControllerInterface
 
 object wordle {
   def main(args:Array[String]): Unit = {
-    val injector = Guice.createInjector(new WordleModuleXML)
+    val injector = Guice.createInjector(new WordleModuleJson)
     val c = injector.getInstance(classOf[ControllerInterface])
     val tui = new TUI(c)
     val gui = new GUISWING(c)

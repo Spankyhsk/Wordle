@@ -65,7 +65,7 @@ import scala.util.Random
       guessStrategy.evaluateGuess(targetWord, guess)
     }
     
-    def getN(): Integer = {
+    def getN(): Int = {
       n
     }
 
@@ -84,23 +84,7 @@ import scala.util.Random
     
   }
 
-object Gamemech{
-  import play.api.libs.json._
-  implicit val GameMechFormat:Writes[GameMech] = new Writes[GameMech] {
-    
-    def writes(mech: gamemechInterface): JsValue = Json.obj(
-      "winningboard" -> mech.getWinningboard().toString(),
-      "Versuch" -> mech.getN().toString
-    )
-  }
-  
-  /*
-  implicit val mapWrites:Writes[Map[Int, Boolean]] = new Writes[Map[Int, Boolean]] {
-    override def writes(map: Map[Int, Boolean]): JsValue = {
-      Json.obj(map.map{case (key, value)=> key.toString -> Json.toJsFieldJsValueWrapper(JsBoolean(value))}.toSeq: _*)
-    }
-  }*/
-}
+
 
 
   

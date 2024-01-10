@@ -22,4 +22,8 @@ trait ControllerInterface extends Observable{
   def save(): Unit
 
   def load():Unit
+  
+  def setVersuche(zahl:Integer):Unit
+  
+  def getVersuche():Int
 }

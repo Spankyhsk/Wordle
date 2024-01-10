@@ -90,6 +90,13 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
   def GuessTransform(guess: String): String = {
     game.GuessTransform(guess)
   }
+  def setVersuche(zahl:Integer):Unit={
+    game.setN(zahl)
+  }
+
+  def getVersuche():Int={
+    game.getN()
+  }
   
 }
 
@@ -97,5 +104,6 @@ object controll:
   def apply(kind:String):controll ={
     kind match {
       case "XML" => controll(Game("norm"), new FileIOXML)
+      case "JSON" => controll(Game("norm"), new FileIOJSON)
     }
   }

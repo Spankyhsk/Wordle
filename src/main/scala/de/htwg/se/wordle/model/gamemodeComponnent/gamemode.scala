@@ -122,8 +122,6 @@ object gamemode{
       case 3 => gamemode3(new Word())
     }
   }
-  /*
-  implicit val gamemodeWrites = Json.writes[gamemode]
-*/
+ 
 
 }

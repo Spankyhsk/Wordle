@@ -38,6 +38,8 @@ trait GameInterface {
   def setWinningboard(wBoard: Map[Int, Boolean]):Unit
   def setN(zahl: Integer): Unit
 
+  def getN():Int
+
   def setMap(boardmap:Map[Int, Map[Int, String]]):Unit
 
   def setTargetWord(targetWordMap: Map[Int, String]): Unit
