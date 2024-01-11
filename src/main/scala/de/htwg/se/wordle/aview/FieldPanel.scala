@@ -7,7 +7,7 @@ import java.io.File
 import de.htwg.se.wordle.controller.ControllerInterface
 
 import java.awt.image.BufferedImage
-class FieldPanel(controll:ControllerInterface)extends FlowPanel {
+class FieldPanel()extends FlowPanel {
 
   var Gamefield = ""
 
@@ -15,45 +15,56 @@ class FieldPanel(controll:ControllerInterface)extends FlowPanel {
 
   val YellowPattern = """\u001B\[33m([^\u001B]+)\u001B\[0m""".r
   val GreenPattern = """\u001B\[32m([^\u001B]+)\u001B\[0m""".r
+  val unterstrichPattern = """_""".r
+  val letterPattern = """(?<!gelb\$|grun\$)[a-z]""".r
 
-  val fieldPanel = new BoxPanel(Orientation.Vertical){
-    contents ++= Gamefield.flatMap{ char =>
-      if(char == '\n'){
+  val fieldPanel: BoxPanel = new BoxPanel(Orientation.Vertical) {
+    contents ++= Gamefield.split("§").flatMap { line =>
+      if (line == "\n") {
         Seq(new Label(""))
-      }else{
-        Seq(CharToPic(char))
+      } else {
+        Seq(CharToPic(line))
       }
     }
   }
-
-  def getColor(char: String): String = {
-    // Hier implementierst du die Logik zum Extrahieren der Farbcodierung aus dem Zeichen
-    // Beispiel: Annahme, dass die Farbcodierung in den letzten zwei Zeichen des Zeichens steht
-    if (char.length >= 2) char.substring(char.length - 2) else "default"
+  
+  val boardPanel:BoxPanel= new BoxPanel(Orientation.Horizontal){
+    
   }
+
+
 
 
   def CharToPic(letter:String):Panel= new Panel{
     //Das char filtern ob farbig oder _
-    val color = getColor(letter)
-    val image = loadImage(letter, color)
+    val image = loadImage(letter)
   }
 
 
 
-  def loadImage(letter:String, color: String):BufferedImage={
-    val file = basePath + s"$letter-$color.png"
+  def loadImage(letter:String):BufferedImage={
+    val file = basePath + letter +".png"
     ImageIO.read(new File(file))
   }
 
   def loadGamefield(text:String):Unit={
-    Gamefield = text
+    val parts = text.map {
+      case '\n' => "\n§||" // Wenn das Zeichen ein Komma ist, ersetzen Sie es durch ein Leerzeichen
+      case other => other // Andernfalls behalten Sie das Zeichen bei
+    }.mkString("")
+    val input = parts.split("||").map { line =>
+        val unterstrich = unterstrichPattern.replaceAllIn(line, m=>"2§")
+        val yellowColored = YellowPattern.replaceAllIn(unterstrich, m => s"${m}gelb§") // Dunkleres Gelb
+        val greenColored = GreenPattern.replaceAllIn(yellowColored, m => s"${m}grun§")
+        val buchstabe = letterPattern.replaceAllIn(greenColored, m=> s"${m}§")
+      }
+      .mkString("")
+    Gamefield = input
   }
 
   def loadGameBoard(text:String):Unit={
-    text.flatMap{char =>
-      //gamefield im string splitten mit \n\n und dann jeweils in loadGamefield einsetzen
+    text.split("\n\n").map{ line =>
+      loadGamefield(line)
     }
-
   }
 }
