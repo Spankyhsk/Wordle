@@ -9,7 +9,7 @@ import de.htwg.se.wordle.controller.ControllerInterface
 import java.awt.image.BufferedImage
 class FieldPanel()extends FlowPanel {
 
-  var Gamefield = ""
+  var PanelMap = Map.empty[Int, BoxPanel]
 
   val basePath = "texturengui/buchstaben/"
 
@@ -18,21 +18,26 @@ class FieldPanel()extends FlowPanel {
   val unterstrichPattern = """_""".r
   val letterPattern = """(?<!gelb\$|grun\$)[a-z]""".r
 
-  val fieldPanel: BoxPanel = new BoxPanel(Orientation.Vertical) {
-    contents ++= Gamefield.split("§").flatMap { line =>
-      if (line == "\n") {
-        Seq(new Label(""))
-      } else {
-        Seq(CharToPic(line))
+  def fieldPanel(Gamefield:String):BoxPanel={
+    val fieldpanel: BoxPanel = new BoxPanel(Orientation.Vertical) {
+      contents ++= Gamefield.split("§").flatMap { line =>
+        if (line == "\n") {
+          Seq(new Label(""))
+        } else {
+          Seq(CharToPic(line))
+        }
       }
     }
+    fieldpanel
   }
   
-  val boardPanel:BoxPanel= new BoxPanel(Orientation.Horizontal){
-    
+  var boardPanel:BoxPanel= new BoxPanel(Orientation.Horizontal){
+    PanelMap.values.foreach(panel => contents += panel)
   }
 
-
+  def getPanel():BoxPanel={
+    boardPanel
+  }
 
 
   def CharToPic(letter:String):Panel= new Panel{
@@ -43,11 +48,18 @@ class FieldPanel()extends FlowPanel {
 
 
   def loadImage(letter:String):BufferedImage={
-    val file = basePath + letter +".png"
-    ImageIO.read(new File(file))
+    val file = basePath + letter + ".png"
+    try {
+      ImageIO.read(new File(file))
+    } catch {
+      case e: Exception =>
+        // Fehlerbehandlung, falls das Bild nicht geladen werden kann
+        println(s"Fehler beim Laden des Bildes: $file")
+        new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB) // Ein leeres Bild zurückgeben
+    }
   }
 
-  def loadGamefield(text:String):Unit={
+  def loadGamefield(text:String):BoxPanel={
     val parts = text.map {
       case '\n' => "\n§||" // Wenn das Zeichen ein Komma ist, ersetzen Sie es durch ein Leerzeichen
       case other => other // Andernfalls behalten Sie das Zeichen bei
@@ -59,12 +71,15 @@ class FieldPanel()extends FlowPanel {
         val buchstabe = letterPattern.replaceAllIn(greenColored, m=> s"${m}§")
       }
       .mkString("")
-    Gamefield = input
+
+    fieldPanel(input)
   }
 
   def loadGameBoard(text:String):Unit={
+    var n= 0
     text.split("\n\n").map{ line =>
-      loadGamefield(line)
+      n = n+1
+      PanelMap += n -> loadGamefield(line)
     }
   }
 }

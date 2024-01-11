@@ -3,6 +3,7 @@ package de.htwg.se.wordle.aview
 import com.sun.glass.ui.Cursor.setVisible
 import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand, MediumModeCommand, ModeSwitchInvoker, Observer}
+import de.htwg.se.wordle.aview.FieldPanel
 
 import sun.tools.jconsole.LabeledComponent.layout
 
@@ -281,12 +282,11 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   //--------------------------------------------------
-
+  val FieldPanel = new FieldPanel()
   // Das OutputPanel, das das OutputTextField enthält
   // OutputPanel, das OutputTextField enthält
   val OutputPanel = new BoxPanel(Orientation.Vertical) {
-    contents += Component.wrap(OutputTextField.peer)
-    font = customFont.deriveFont(18)
+    contents += FieldPanel.getPanel()
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
 
@@ -581,9 +581,10 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       case Event.Move =>{
         if (!won) { // Wenn das Spiel noch nicht gewonnen wurde
           val currentGameState = controll.toString
-          val filteredAndColoredText = filterAndColor(currentGameState)
+          FieldPanel.loadGamefield(currentGameState)
+          /*val filteredAndColoredText = filterAndColor(currentGameState)
           OutputTextField.peer.setText(filteredAndColoredText)
-          OutputTextField.peer.setCaretPosition(0)
+          OutputTextField.peer.setCaretPosition(0)*/
         }
       }
       /*case Event.NEW =>{
