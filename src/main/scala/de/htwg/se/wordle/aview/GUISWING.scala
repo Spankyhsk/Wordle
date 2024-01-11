@@ -4,22 +4,22 @@ import com.sun.glass.ui.Cursor.setVisible
 import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand, MediumModeCommand, ModeSwitchInvoker, Observer}
 import de.htwg.se.wordle.aview.FieldPanel
-
 import sun.tools.jconsole.LabeledComponent.layout
+import java.awt.Font
+import java.awt.GraphicsEnvironment
+import java.io.FileInputStream
 
 import java.awt.event.ComponentAdapter
 import javax.swing.{JPanel, JScrollPane, JTextPane, SwingUtilities}
 import scala.swing.*
 import scala.swing.event.*
-import java.awt.{BorderLayout, Color, FlowLayout, Graphics, GridBagConstraints, GridBagLayout}
+import java.awt.{BorderLayout, Color, FlowLayout, Graphics, Graphics2D, GraphicsEnvironment, GridBagConstraints, GridBagLayout, Image, RenderingHints}
 import javax.swing.text.*
 import javax.imageio.ImageIO
-import java.io.File
+import java.io.{File, FileInputStream}
 import scala.swing.MenuBar.NoMenuBar.revalidate
 import javax.imageio.ImageIO
 import javax.swing.ImageIcon
-import java.awt.Image
-import java.awt.{Graphics, Graphics2D, RenderingHints}
 import scala.swing.Action.NoAction.text
 
 
@@ -93,7 +93,7 @@ class TransparentButton(label: String) extends Button(label) {
   focusPainted = false // Fokus-Indikator nicht malen
   background = new Color(0, 0, 0, 0)
   foreground = Color.BLACK
-  font = new Font("Skia", Font.Plain.id, 18)
+  font = new Font("Skia", Font.PLAIN, 18)
   border = Swing.EmptyBorder(0, 0, 0, 0)
   peer.setOpaque(false)
 }
@@ -118,7 +118,19 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   maximumSize = new Dimension(1280, 1024) // Erhöht von 1024x768
 
   // Schriftart definieren
-  val customFont = new Font("Skia", Font.Plain.id, 14)
+  val customFont = new Font("Skia", Font.PLAIN, 14)
+
+  val earwigFactoryFont: Font = try {
+    val fontStream = new FileInputStream("texturengui/font/ErpressungNormal-YMDo.ttf")
+    val earwigFactory = Font.createFont(Font.TRUETYPE_FONT, fontStream)
+    val ge = GraphicsEnvironment.getLocalGraphicsEnvironment()
+    ge.registerFont(earwigFactory)
+    earwigFactory.deriveFont(90f) // Setzen Sie die gewünschte Größe hier
+  } catch {
+    case e: Exception =>
+      e.printStackTrace()
+      new Font("Arial", Font.PLAIN, 90) // Fallback-Schriftart, falls das Laden fehlschlägt
+  }
 
 
 
@@ -126,7 +138,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   // Stilfunktion für Komponenten
   def styleComponent(component: Component): Unit = {
-    component.font = new Font("Skia", Font.Plain.id, 14)
+    component.font = new Font("Skia", Font.PLAIN, 14)
     component.foreground = Color.BLACK
     component.background = Color.WHITE
   }
@@ -236,13 +248,14 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     background = new Color(0, 0, 0, 0) // Vollständig transparent
     peer.setCaretColor(Color.BLACK) // Farbe des Cursors
     peer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) // Text zentrieren
-    font = new Font("Skia", Font.Plain.id, 24) // Schriftgröße
+    font = new Font("Skia", Font.PLAIN, 24) // Schriftgröße
   }
 
   // JTextPane für Output
   object OutputTextField extends Component {
     override lazy val peer: JTextPane = new JTextPane() {
       setContentType("text/html")
+
       setEditable(false)
       setBackground(new Color(0, 0, 0, 0)) // Hintergrund transparent machen
     }
@@ -282,22 +295,26 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   //--------------------------------------------------
-  val FieldPanel = new FieldPanel()
+  //val FieldPanel = new FieldPanel()                 //AUCH ENTFERNT
   // Das OutputPanel, das das OutputTextField enthält
   // OutputPanel, das OutputTextField enthält
   val OutputPanel = new BoxPanel(Orientation.Vertical) {
-    contents += FieldPanel.getPanel()
+    contents += Component.wrap(OutputTextField.peer)  //WIEDER HINZUGEFÜGT
+
+    //contents += FieldPanel.getPanel()               //AUSKEMMENTIERT MOMENTAN BEIDES DRINWEISS NICHT
+    //contents += Component.wrap(FieldPanel.getJavaPanel)
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
 
   val centerPanelSize = new Dimension(300, 300) // Festgelegte Größe für das centerPanel
 
-  val centerPanel = new Panel {
+  val centerPanel = new BoxPanel(Orientation.Vertical) {
     preferredSize = centerPanelSize
     minimumSize = centerPanelSize
     maximumSize = centerPanelSize
 
     peer.setLayout(new GridBagLayout())
+
 
 
     // Konfiguration für das Eingabefeld
@@ -581,21 +598,13 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       case Event.Move =>{
         if (!won) { // Wenn das Spiel noch nicht gewonnen wurde
           val currentGameState = controll.toString
-          FieldPanel.loadGamefield(currentGameState)
-          /*val filteredAndColoredText = filterAndColor(currentGameState)
-          OutputTextField.peer.setText(filteredAndColoredText)
-          OutputTextField.peer.setCaretPosition(0)*/
+          //FieldPanel.loadGamefield(currentGameState)    //AUSKOMMENTIERT
+          val filteredAndColoredText = filterAndColor(currentGameState) //WIEDER HINZU
+          OutputTextField.peer.setText(filteredAndColoredText)    //WIEDER HINZU
+          OutputTextField.peer.setCaretPosition(0)    //WIEDER HINZU
         }
       }
-      /*case Event.NEW =>{
-        newsBoard.text
-        level.text
-        //controll.createGameboard()
-        //controll.createwinningboard()
-        inputTextField.enabled = true
-        //n = 1
 
-      }*/
 
   }
 
@@ -612,7 +621,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       }
       .mkString("")
 
-    s"<html><body style='font-family:Skia; font-size:60pt;'>$formattedInput</body></html>"
+    s"<html><body style='font-family:Earwig Factory; font-size:90pt;'>$formattedInput</body></html>"
   }
 
   def updateButtonColors(clickedButton: Button): Unit = {
