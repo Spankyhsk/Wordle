@@ -38,7 +38,7 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
   }
 
   def createGamefieldR(n: Int): Unit = {
-    board.getMap()(n).buildGamefield(getLimit(), 1, s"_" * getTargetword()(1).length)
+    board.getMap()(n).buildGamefield(getLimit(), 1, s"?" * getTargetword()(1).length)
     if (n < board.getMap().size) createGamefieldR(n + 1)
   }
 
