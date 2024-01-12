@@ -3,12 +3,13 @@ package de.htwg.se.wordle.aview
 import com.sun.glass.ui.Cursor.setVisible
 import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand, MediumModeCommand, ModeSwitchInvoker, Observer}
-import de.htwg.se.wordle.aview.FieldPanel
+
+import de.htwg.se.wordle.aview.JTextPaneWrapper
 import sun.tools.jconsole.LabeledComponent.layout
+
 import java.awt.Font
 import java.awt.GraphicsEnvironment
 import java.io.FileInputStream
-
 import java.awt.event.ComponentAdapter
 import javax.swing.{JPanel, JScrollPane, JTextPane, SwingUtilities}
 import scala.swing.*
@@ -252,14 +253,14 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
   // JTextPane für Output
-  object OutputTextField extends Component {
+  /*object OutputTextField extends Component {
     override lazy val peer: JTextPane = new JTextPane() {
       setContentType("text/html")
 
       setEditable(false)
       setBackground(new Color(0, 0, 0, 0)) // Hintergrund transparent machen
     }
-  }
+  }*/
 
 
   // Fügen Sie das Eingabebild und das TextField in einem Panel zusammen
@@ -295,15 +296,15 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   //--------------------------------------------------
-  val FieldPanel = new FieldPanel()                 //AUCH ENTFERNT
+                   //AUCH ENTFERNT
   // Das OutputPanel, das das OutputTextField enthält
   // OutputPanel, das OutputTextField enthält
   val OutputPanel = new BoxPanel(Orientation.Vertical) {
     //contents += Component.wrap(OutputTextField.peer)  //WIEDER HINZUGEFÜGT
 
-    contents += FieldPanel.getPanel()               //AUSKEMMENTIERT MOMENTAN BEIDES DRINWEISS NICHT
+    contents += FieldPanel.GameFieldPanel()            //AUSKEMMENTIERT MOMENTAN BEIDES DRINWEISS NICHT
     //contents += Component.wrap(FieldPanel.getJavaPanel)
-    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
+    //border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
 
   val centerPanelSize = new Dimension(300, 300) // Festgelegte Größe für das centerPanel
@@ -537,7 +538,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   centerPanel.peer.setOpaque(false)
   southPanel.peer.setOpaque(false)
   inputTextField.peer.setOpaque(false)
-  OutputTextField.peer.setOpaque(false)
+  //OutputTextField.peer.setOpaque(false)
   gamemoduspanelMain.peer.setOpaque(false)
   headlinepanel.peer.setOpaque(false)
   gamemoduspanel1.peer.setOpaque(false)
@@ -579,8 +580,8 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     controll.createwinningboard()
     level.text = difficultyLevelToString(difficulty)
     updateNewsBoardText("Spiel gestartet im Modus: ${level.text}")
-    OutputTextField.peer.setText("") // Text zurücksetzen
-    OutputTextField.peer.repaint() // Komponente neu zeichnen
+    //OutputTextField.peer.setText("") // Text zurücksetzen
+    //OutputTextField.peer.repaint() // Komponente neu zeichnen
     won = false
     controll.setVersuche(1)
   }
@@ -600,7 +601,10 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
           val currentGameState = controll.toString
           //FieldPanel.loadGamefield(currentGameState)    //AUSKOMMENTIERT
           //val filteredAndColoredText = filterAndColor(currentGameState) //WIEDER HINZU
-          FieldPanel.loadGameBoard(currentGameState)
+          FieldPanel.updateFieldPanel(currentGameState)
+          OutputPanel.contents.clear()
+          OutputPanel.contents += FieldPanel.GameFieldPanel()
+          OutputPanel.repaint()
           //OutputTextField.peer.setText(filteredAndColoredText)    //WIEDER HINZU
           //OutputTextField.peer.setCaretPosition(0)    //WIEDER HINZU
         }
@@ -609,21 +613,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   }
 
-  def filterAndColor(input: String): String = {
-    val YellowPattern = """\u001B\[33m([^\u001B]+)\u001B\[0m""".r
-    val GreenPattern = """\u001B\[32m([^\u001B]+)\u001B\[0m""".r
 
-    val formattedInput = input
-      .split("\n")
-      .map { line =>
-        val yellowColored = YellowPattern.replaceAllIn(line, m => s"<font color='#FFA500'>${m.group(1)}</font>") // Dunkleres Gelb
-        val greenColored = GreenPattern.replaceAllIn(yellowColored, m => s"<font color='green'>${m.group(1)}</font>")
-        s"<div style='text-align: center;'>$greenColored</div>" // Zentrierung des Textes
-      }
-      .mkString("")
-
-    s"<html><body style='font-family:earwigFactoryFont; font-size:60pt;'>$formattedInput</body></html>"
-  }
 
   def updateButtonColors(clickedButton: Button): Unit = {
     val greenColor = new Color(0, 128, 0) // HTML-Grün
@@ -636,6 +626,50 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         button.foreground = Color.BLACK
       }
     }
+  }
+
+  object FieldPanel extends Component{
+
+    var textPaneSeq: Seq[JTextPaneWrapper] = Seq.empty
+
+    def createTextPane(part: String): JTextPaneWrapper = new JTextPaneWrapper(filterAndColor(part))
+
+    def createTextfieldsFromSplit(Text: String): Seq[JTextPaneWrapper] = {
+      val splitStrings = Text.split("\n\n")
+      splitStrings.map(createTextPane)
+    }
+
+    def updateFieldPanel(input: String): Unit = {
+      textPaneSeq = createTextfieldsFromSplit(input)
+
+    }
+
+
+
+    def GameFieldPanel(): BoxPanel = {
+      new BoxPanel(Orientation.Horizontal) {
+        contents ++= textPaneSeq
+        background = new Color(0,0,0,0)
+      }
+    }
+
+    def filterAndColor(input: String): String = {
+      val YellowPattern = """\u001B\[33m([^\u001B]+)\u001B\[0m""".r
+      val GreenPattern = """\u001B\[32m([^\u001B]+)\u001B\[0m""".r
+
+      val formattedInput = input
+        .split("\n")
+        .map { line =>
+          val yellowColored = YellowPattern.replaceAllIn(line, m => s"<font color='#FFA500'>${m.group(1)}</font>") // Dunkleres Gelb
+          val greenColored = GreenPattern.replaceAllIn(yellowColored, m => s"<font color='green'>${m.group(1)}</font>")
+          s"<div style='text-align: center;'>$greenColored</div>" // Zentrierung des Textes
+        }
+        .mkString("")
+
+      s"<html><body style='font-family:earwigFactoryFont; font-size:60pt;'>$formattedInput</body></html>"
+    }
+
+
   }
 
 
