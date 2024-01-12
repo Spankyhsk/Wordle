@@ -6,28 +6,30 @@ import javax.imageio.ImageIO
 import java.io.File
 import de.htwg.se.wordle.controller.ControllerInterface
 
+import java.awt.Color
 import java.awt.image.BufferedImage
+import javax.swing.JTextPane
 class FieldPanel()extends FlowPanel {
 
   var PanelMap = Map.empty[Int, BoxPanel]
 
-  val basePath = "texturengui/buchstaben/"
 
-  val YellowPattern = """\u001B\[33m([^\u001B]+)\u001B\[0m""".r
-  val GreenPattern = """\u001B\[32m([^\u001B]+)\u001B\[0m""".r
-  val unterstrichPattern = """_""".r
-  val letterPattern = """(?<!gelb\$|grun\$)[a-z]""".r
+  object FieldTextField extends Component {
+    override lazy val peer: JTextPane = new JTextPane() {
+      setContentType("text/html")
 
-  def fieldPanel(Gamefield:String):BoxPanel={
-    val fieldpanel: BoxPanel = new BoxPanel(Orientation.Vertical) {
-      contents ++= Gamefield.split("§").flatMap { line =>
-        if (line == "\n") {
-          Seq(new Label(""))
-        } else {
-          Seq(CharToPic(line))
-        }
-      }
+      setEditable(false)
+      setBackground(new Color(0, 0, 0, 0)) // Hintergrund transparent machen
     }
+  }
+
+  def loadfieldPanel(Gamefield:String):BoxPanel={
+    val fieldpanel: BoxPanel = new BoxPanel(Orientation.Vertical) {
+      contents += Component.wrap(FieldTextField.peer)
+      }
+    val filteredAndColoredText = filterAndColor(Gamefield)
+    FieldTextField.peer.setText(Gamefield)
+    FieldTextField.peer.setCaretPosition(0)
     fieldpanel
   }
   
@@ -40,46 +42,28 @@ class FieldPanel()extends FlowPanel {
   }
 
 
-  def CharToPic(letter:String):Panel= new Panel{
-    //Das char filtern ob farbig oder _
-    val image = loadImage(letter)
-  }
-
-
-
-  def loadImage(letter:String):BufferedImage={
-    val file = basePath + letter + ".png"
-    try {
-      ImageIO.read(new File(file))
-    } catch {
-      case e: Exception =>
-        // Fehlerbehandlung, falls das Bild nicht geladen werden kann
-        println(s"Fehler beim Laden des Bildes: $file")
-        new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB) // Ein leeres Bild zurückgeben
-    }
-  }
-
-  def loadGamefield(text:String):BoxPanel={
-    val parts = text.map {
-      case '\n' => "\n§||" // Wenn das Zeichen ein Komma ist, ersetzen Sie es durch ein Leerzeichen
-      case other => other // Andernfalls behalten Sie das Zeichen bei
-    }.mkString("")
-    val input = parts.split("||").map { line =>
-        val unterstrich = unterstrichPattern.replaceAllIn(line, m=>"2§")
-        val yellowColored = YellowPattern.replaceAllIn(unterstrich, m => s"${m}gelb§") // Dunkleres Gelb
-        val greenColored = GreenPattern.replaceAllIn(yellowColored, m => s"${m}grun§")
-        val buchstabe = letterPattern.replaceAllIn(greenColored, m=> s"${m}§")
-      }
-      .mkString("")
-
-    fieldPanel(input)
-  }
-
   def loadGameBoard(text:String):Unit={
+   
     var n= 0
     text.split("\n\n").map{ line =>
       n = n+1
-      PanelMap += n -> loadGamefield(line)
+      PanelMap += n -> loadfieldPanel(line)
     }
+  }
+
+  def filterAndColor(input: String): String = {
+    val YellowPattern = """\u001B\[33m([^\u001B]+)\u001B\[0m""".r
+    val GreenPattern = """\u001B\[32m([^\u001B]+)\u001B\[0m""".r
+
+    val formattedInput = input
+      .split("\n")
+      .map { line =>
+        val yellowColored = YellowPattern.replaceAllIn(line, m => s"<font color='#FFA500'>${m.group(1)}</font>") // Dunkleres Gelb
+        val greenColored = GreenPattern.replaceAllIn(yellowColored, m => s"<font color='green'>${m.group(1)}</font>")
+        s"<div style='text-align: center;'>$greenColored</div>" // Zentrierung des Textes
+      }
+      .mkString("")
+
+    s"<html><body style='font-family:earwigFactoryFont; font-size:60pt;'>$formattedInput</body></html>"
   }
 }

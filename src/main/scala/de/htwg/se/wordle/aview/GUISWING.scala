@@ -295,13 +295,13 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   //--------------------------------------------------
-  //val FieldPanel = new FieldPanel()                 //AUCH ENTFERNT
+  val FieldPanel = new FieldPanel()                 //AUCH ENTFERNT
   // Das OutputPanel, das das OutputTextField enthält
   // OutputPanel, das OutputTextField enthält
   val OutputPanel = new BoxPanel(Orientation.Vertical) {
-    contents += Component.wrap(OutputTextField.peer)  //WIEDER HINZUGEFÜGT
+    //contents += Component.wrap(OutputTextField.peer)  //WIEDER HINZUGEFÜGT
 
-    //contents += FieldPanel.getPanel()               //AUSKEMMENTIERT MOMENTAN BEIDES DRINWEISS NICHT
+    contents += FieldPanel.getPanel()               //AUSKEMMENTIERT MOMENTAN BEIDES DRINWEISS NICHT
     //contents += Component.wrap(FieldPanel.getJavaPanel)
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
@@ -599,9 +599,10 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         if (!won) { // Wenn das Spiel noch nicht gewonnen wurde
           val currentGameState = controll.toString
           //FieldPanel.loadGamefield(currentGameState)    //AUSKOMMENTIERT
-          val filteredAndColoredText = filterAndColor(currentGameState) //WIEDER HINZU
-          OutputTextField.peer.setText(filteredAndColoredText)    //WIEDER HINZU
-          OutputTextField.peer.setCaretPosition(0)    //WIEDER HINZU
+          //val filteredAndColoredText = filterAndColor(currentGameState) //WIEDER HINZU
+          FieldPanel.loadGameBoard(currentGameState)
+          //OutputTextField.peer.setText(filteredAndColoredText)    //WIEDER HINZU
+          //OutputTextField.peer.setCaretPosition(0)    //WIEDER HINZU
         }
       }
 
@@ -621,7 +622,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       }
       .mkString("")
 
-    s"<html><body style='font-family:Earwig Factory; font-size:60pt;'>$formattedInput</body></html>"
+    s"<html><body style='font-family:earwigFactoryFont; font-size:60pt;'>$formattedInput</body></html>"
   }
 
   def updateButtonColors(clickedButton: Button): Unit = {
