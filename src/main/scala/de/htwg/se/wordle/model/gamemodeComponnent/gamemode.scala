@@ -5,9 +5,9 @@ import scala.util.Random
 case class gamemode1(wordObject: Word) extends GamemodeInterface {
   def this() = this(new Word())
   
-  val wordlength = 2
+  val wordlength = 5
   var targetword = Map(1 -> wordObject.selectRandomWord(wordObject.words(wordlength)))
-  var limit = 3
+  var limit = 6
 
   
 
@@ -38,12 +38,12 @@ case class gamemode1(wordObject: Word) extends GamemodeInterface {
 
 case class gamemode2(wordObject: Word) extends GamemodeInterface {
   def this() = this(new Word())
-  val wordlength = 2
+  val wordlength = 5
   var targetword = Map(
     1 -> wordObject.selectRandomWord(wordObject.words(wordlength)),
     2 -> wordObject.selectRandomWord(wordObject.words(wordlength))
   )
-  var limit = 4
+  var limit = 7
   
 
   override def getTargetword(): Map[Int, String] = {
@@ -73,14 +73,14 @@ case class gamemode2(wordObject: Word) extends GamemodeInterface {
 
 case class gamemode3(wordObject: Word) extends GamemodeInterface {
   def this() = this(new Word())
-  val wordlength = 2
+  val wordlength = 5
   var targetword = Map(
     1 -> wordObject.selectRandomWord(wordObject.words(wordlength)),
     2 -> wordObject.selectRandomWord(wordObject.words(wordlength)),
     3 -> wordObject.selectRandomWord(wordObject.words(wordlength)),
     4 -> wordObject.selectRandomWord(wordObject.words(wordlength))
   )
-  var limit = 6
+  var limit = 8
   
 
   override def getTargetword(): Map[Int, String] = {

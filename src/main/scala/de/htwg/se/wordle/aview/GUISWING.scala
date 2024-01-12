@@ -621,7 +621,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       }
       .mkString("")
 
-    s"<html><body style='font-family:Earwig Factory; font-size:90pt;'>$formattedInput</body></html>"
+    s"<html><body style='font-family:Earwig Factory; font-size:60pt;'>$formattedInput</body></html>"
   }
 
   def updateButtonColors(clickedButton: Button): Unit = {
