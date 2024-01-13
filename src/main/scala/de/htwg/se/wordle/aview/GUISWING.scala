@@ -214,19 +214,26 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   }
 
-  val northpanel = new BoxPanel(Orientation.Vertical){
+  var northpanel = new BoxPanel(Orientation.Vertical) {
     contents += menuBar
     contents += headlinepanel
     contents += gamemoduspanelMain
   }
 
+  def upgradeNorthpanel():BoxPanel={
+    new BoxPanel(Orientation.Vertical) {
+      contents += menuBar
+      contents += headlinepanel
+      contents += gamemoduspanelMain
+    }
+  }
   // Pfad zu Ihrem Eingabebild
   val inputImagePath = "texturengui/eingabepaper2.png"
   val originalIcon = new ImageIcon(inputImagePath)
 
 
   // Skalieren des Bildes
-  val scaledImage = originalIcon.getImage.getScaledInstance(
+  var scaledImage = originalIcon.getImage.getScaledInstance(
     170, // Breite anpassen
     70, // Höhe anpassen
     java.awt.Image.SCALE_SMOOTH
@@ -462,12 +469,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       val guess = controll.GuessTransform(inputTextField.text)
 
       if(controll.controllLength(guess.length)){
-        controll.areYouWinningSon(guess)
-        controll.count(controll.getVersuche())
-
-      }
-      /*
-      if(controll.controllLength(guess.length)){
         controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
         if(controll.areYouWinningSon(guess)){
           updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
@@ -490,13 +491,16 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
       }
 
-      resetInputField()*/
+      resetInputField()
 
 
     case ButtonClicked(EasymodusButton)=>
       //modeSwitchInvoker.setCommand(EasyModeCommand(Some(controll)))
       //modeSwitchInvoker.executeCommand()
-
+      updateButtonColors(EasymodusButton)
+      inputTextField.enabled = true
+      level.text = ""
+      updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
       startNewGame(1)
       controll.changeState(1)
       controll.createGameboard()
@@ -609,17 +613,15 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
           OutputPanel.contents.clear()
           OutputPanel.contents += FieldPanel.GameFieldPanel()
           OutputPanel.repaint()
+
         }
       }
       case Event.NEW =>{
-        controll.setVersuche(0)
-        controll.createGameboard()
-        controll.createwinningboard()
+        updateButtonColors(EasymodusButton)
 
       }
       case Event.WIN =>{
-        updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
-        inputTextField.enabled = false
+
       }
       case Event.LOSE =>{
 
