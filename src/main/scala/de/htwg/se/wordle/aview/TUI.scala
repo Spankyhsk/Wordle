@@ -12,68 +12,57 @@ class TUI (controller: ControllerInterface)extends Observer:
   var stepback = false
 
   def run():Unit ={
-    val n = 1
     println("Willkommen zu Wordle")
+    println("Befehle")
+    println("$quit := Spielbeenden, $save := Speichern, $load := Laden, $switch := Schwirigkeit verändern")
     println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
     controller.changeState(readLine.toInt)
-    println(controller.getTargetword())//Entfernen wenn alles funkzioniert
-    println("Errate Wort:")//guess
-    controller.createGameboard()
-    controller.createwinningboard()
-    inputLoop(n)
-    if (continue) println(s"Verloren! Versuche aufgebraucht. Lösung:"+ controller.getTargetword())
   }
-  def inputLoop(n:Int):Unit ={// do while schleife
-    //controller.toString
-    scanInput(readLine,n)
-    if(stepback){
-      stepback = false
-      inputLoop(n-1)
-    }
-    if continue && controller.count(n) then inputLoop(n+1)
-  }
+  
 
-  def scanInput(input: String, n:Int): Unit ={
+  def scanInput(input: String): Unit ={
       input match
         case "$quit" => {
           println(s"Wiedersehen")
-          continue = false
+          sys.exit(0)
         }
         case "$redo"=>{
           controller.undo()
-          stepback = true
         }
         case "$save"=>{
-
+          controller.save()
         }
         case "$load"=>{
-
+          controller.load()
         }
         case "$switch"=>{
-          
+          println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
+          controller.changeState(readLine.toInt)
         }
         case default =>{
           val guess = input.toUpperCase//ändert alle klein buchstaben in großbuchstaben
-          if(controller.areYouWinningSon(guess)){
-            continue = false
-            println(s"Du hast gewonnen! Lösung:"+ controller.getTargetword())
-          } else controller.set(n, controller.evaluateGuess(guess))
+          controller.areYouWinningSon(guess)
+          controller.count(controller.getVersuche())
+          controller.setVersuche(controller.getVersuche() +1)
+          controller.set(controller.getVersuche(), controller.evaluateGuess(guess))
+
         }
   }
   override def update(e:Event):Unit = {
     e match
       case Event.Move=> {
         println(controller.toString)
+        scanInput(readLine)
       }
       case Event.NEW=>{
-        controller.setVersuche(1)
+        controller.setVersuche(0)
         println("Errate Wort:") //guess
         controller.createGameboard()
         controller.createwinningboard()
-        inputLoop(n)
       }
-      case Event.LOAD=>{
-
+      case Event.UNDO=>{
+        println(controller.toString)
+        scanInput(readLine)
       }
       case Event.WIN =>{
         println(s"Du hast gewonnen! Lösung:"+ controller.getTargetword())
@@ -81,7 +70,6 @@ class TUI (controller: ControllerInterface)extends Observer:
         controller.changeState(readLine.toInt)
       }
       case Event.LOSE =>{
-        continue = false
         println(s"Verloren! Versuche aufgebraucht. Lösung:"+ controller.getTargetword())
         println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
         controller.changeState(readLine.toInt)

@@ -12,6 +12,6 @@ trait Observable:
 enum Event:
   case Move
   case NEW
-  case LOAD
+  case UNDO
   case LOSE
   case WIN

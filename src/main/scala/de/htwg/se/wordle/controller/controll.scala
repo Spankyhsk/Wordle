@@ -16,7 +16,10 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
   val gameboard = game.getGamefield()
   private val undoManager = new UndoManager
 
-  def save():Unit={file.save(game)}
+  def save():Unit={
+    file.save(game)
+    notifyObservers(Event.Move)
+  }
 
   def load():Unit={
     file.load(game)
@@ -25,7 +28,11 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
 
   
   def count(n: Int): Boolean = {
-    game.count(n)
+    val continue = game.count(n)
+    if(!continue){
+      notifyObservers(Event.LOSE)
+    }
+    continue
   }
 
   def controllLength(n: Int): Boolean = {
@@ -38,7 +45,6 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
 
   def createGameboard(): Unit = {
     game.createGameboard()
-    notifyObservers(Event.Move)
   }
 
 
@@ -51,6 +57,7 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
 
   def undo(): Unit = {
     undoManager.undoStep
+    notifyObservers(Event.UNDO)
   }
 
  
@@ -67,7 +74,7 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
     game.resetGameboard() // Spielbrett zurücksetzen
     game.changeState(e)
     createGameboard() // Neues Spielbrett initialisieren
-    notifyObservers(Event.Move)
+    notifyObservers(Event.NEW)
   }
 
 
@@ -81,10 +88,15 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
 
   def createwinningboard(): Unit = {
     game.createwinningboard()
+    notifyObservers(Event.Move)
   }
 
   def areYouWinningSon(guess: String): Boolean = {
-    game.areYouWinningSon(guess)
+    val won = game.areYouWinningSon(guess)
+    if(won){
+      notifyObservers(Event.WIN)
+    }
+    won
   }
 
   def GuessTransform(guess: String): String = {

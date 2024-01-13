@@ -462,6 +462,12 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       val guess = controll.GuessTransform(inputTextField.text)
 
       if(controll.controllLength(guess.length)){
+        controll.areYouWinningSon(guess)
+        controll.count(controll.getVersuche())
+
+      }
+      /*
+      if(controll.controllLength(guess.length)){
         controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
         if(controll.areYouWinningSon(guess)){
           updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
@@ -484,7 +490,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
       }
 
-      resetInputField()
+      resetInputField()*/
 
 
     case ButtonClicked(EasymodusButton)=>
@@ -599,26 +605,26 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       case Event.Move =>{
         if (!won) { // Wenn das Spiel noch nicht gewonnen wurde
           val currentGameState = controll.toString
-          //FieldPanel.loadGamefield(currentGameState)    //AUSKOMMENTIERT
-          //val filteredAndColoredText = filterAndColor(currentGameState) //WIEDER HINZU
           FieldPanel.updateFieldPanel(currentGameState)
           OutputPanel.contents.clear()
           OutputPanel.contents += FieldPanel.GameFieldPanel()
           OutputPanel.repaint()
-          //OutputTextField.peer.setText(filteredAndColoredText)    //WIEDER HINZU
-          //OutputTextField.peer.setCaretPosition(0)    //WIEDER HINZU
         }
       }
       case Event.NEW =>{
+        controll.setVersuche(0)
+        controll.createGameboard()
+        controll.createwinningboard()
 
       }
       case Event.WIN =>{
-
+        updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
+        inputTextField.enabled = false
       }
       case Event.LOSE =>{
 
       }
-      case Event.LOAD => {
+      case Event.UNDO => {
 
       }
 
