@@ -609,6 +609,18 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
           //OutputTextField.peer.setCaretPosition(0)    //WIEDER HINZU
         }
       }
+      case Event.NEW =>{
+
+      }
+      case Event.WIN =>{
+
+      }
+      case Event.LOSE =>{
+
+      }
+      case Event.LOAD => {
+
+      }
 
 
   }
