@@ -8,7 +8,6 @@ import scala.util.{Failure, Success, Try}
 
 class TUI (controller: ControllerInterface)extends Observer:
   controller.add(this)
-  var continue = true
   var stepback = false
 
   def run():Unit ={

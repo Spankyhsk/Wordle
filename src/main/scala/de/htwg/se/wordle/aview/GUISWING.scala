@@ -49,8 +49,6 @@ class BackgroundPanel(imagePath: String) extends JPanel {
 }
 
 
-
-
 class TexturedBackground(imagePath: String) extends BorderPanel {
   private val texture = ImageIO.read(new File(imagePath))
   peer.setOpaque(false)
@@ -81,12 +79,6 @@ class TexturedBackground(imagePath: String) extends BorderPanel {
 }
 
 
-
-
-
-
-
-
 class TransparentButton(label: String) extends Button(label) {
   opaque = false
   contentAreaFilled = false
@@ -103,12 +95,7 @@ class TransparentButton(label: String) extends Button(label) {
 
 class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   controll.add(this)
-  controll.setVersuche(1)
-
-
-
-
-
+  //controll.setVersuche(1)
 
   // Fenster-Titel und Skalierbarkeit
   title = "Wordle"
@@ -132,10 +119,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       e.printStackTrace()
       new Font("Arial", Font.PLAIN, 90) // Fallback-Schriftart, falls das Laden fehlschlägt
   }
-
-
-
-
 
   // Stilfunktion für Komponenten
   def styleComponent(component: Component): Unit = {
@@ -186,18 +169,12 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     }
   }
   //------------------------------------
-  val level = new Label("")
 
 
   val EasymodusButton = new TransparentButton("Leicht")
   val MediummodusButton = new TransparentButton("Mittel")
   val HardmodusButton = new TransparentButton("Schwer")
 
-
-  val gamemoduspanel1 = new BoxPanel(Orientation.Horizontal){
-    //contents += new Label("Schwierigkeitsgrad: ")
-    contents += level
-  }
 
   val gamemoduspanel2 = new BoxPanel(Orientation.Horizontal) {
     contents += EasymodusButton
@@ -208,8 +185,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
 
-  val gamemoduspanelMain = new BoxPanel(Orientation.Vertical){
-    contents += gamemoduspanel1
+  val gamemoduspanelMain = new BoxPanel(Orientation.Vertical){//Methode
     contents += gamemoduspanel2
 
   }
@@ -217,14 +193,27 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   var northpanel = new BoxPanel(Orientation.Vertical) {
     contents += menuBar
     contents += headlinepanel
-    contents += gamemoduspanelMain
+    contents += gamemoduspanelMain//muss updatebar sein
   }
 
-  def upgradeNorthpanel():BoxPanel={
-    new BoxPanel(Orientation.Vertical) {
-      contents += menuBar
-      contents += headlinepanel
-      contents += gamemoduspanelMain
+  def upgradegamemoduspanel(clickedButton: Button):Unit={
+    updateButtonColors(clickedButton: Button)
+    gamemoduspanelMain.contents.clear()
+    gamemoduspanelMain.contents += gamemoduspanel2
+    gamemoduspanelMain.revalidate()
+    gamemoduspanelMain.repaint()
+  }
+
+  def updateButtonColors(clickedButton: Button): Unit = {
+    val greenColor = new Color(0, 128, 0) // HTML-Grün
+
+    val buttons = List(EasymodusButton, MediummodusButton, HardmodusButton)
+    buttons.foreach { button =>
+      if (button == clickedButton) {
+        button.foreground = greenColor
+      } else {
+        button.foreground = Color.BLACK
+      }
     }
   }
   // Pfad zu Ihrem Eingabebild
@@ -247,28 +236,18 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     yLayoutAlignment = 0.5
   }
 
-  inputTextField.enabled = false
+  //inputTextField.enabled = true//false
   // Erstellen Sie ein transparentes TextField
   object inputTextField extends TextField {
     columns = 8 // Anzahl der Zeichen festlegen
     opaque = false
+    enabled = false
     border = Swing.EmptyBorder(0, 0, 0, 0)
     background = new Color(0, 0, 0, 0) // Vollständig transparent
     peer.setCaretColor(Color.BLACK) // Farbe des Cursors
     peer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) // Text zentrieren
     font = new Font("Skia", Font.PLAIN, 24) // Schriftgröße
   }
-
-  // JTextPane für Output
-  /*object OutputTextField extends Component {
-    override lazy val peer: JTextPane = new JTextPane() {
-      setContentType("text/html")
-
-      setEditable(false)
-      setBackground(new Color(0, 0, 0, 0)) // Hintergrund transparent machen
-    }
-  }*/
-
 
   // Fügen Sie das Eingabebild und das TextField in einem Panel zusammen
   val InputPanel = new Panel {
@@ -304,15 +283,10 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   //--------------------------------------------------
                    //AUCH ENTFERNT
-  // Das OutputPanel, das das OutputTextField enthält
-  // OutputPanel, das OutputTextField enthält
-  val OutputPanel = new BoxPanel(Orientation.Vertical) {
-    //contents += Component.wrap(OutputTextField.peer)  //WIEDER HINZUGEFÜGT
 
-    contents += FieldPanel.GameFieldPanel()            //AUSKEMMENTIERT MOMENTAN BEIDES DRINWEISS NICHT
-    //contents += Component.wrap(FieldPanel.getJavaPanel)
-    //border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
-  }
+  val OutputPanel = new BoxPanel(Orientation.Vertical) {
+    contents += FieldPanel.GameFieldPanel()
+  }//Klappt
 
   val centerPanelSize = new Dimension(300, 300) // Festgelegte Größe für das centerPanel
 
@@ -352,7 +326,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   //--------------------
   // Erstellen Sie die TextArea für das NewsBoard
-  val newsBoardText = new Component {
+  /*val newsBoardText = new Component {
     override lazy val peer: JTextPane = new JTextPane() {
       setContentType("text/html")
       setText(
@@ -388,10 +362,10 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       setOpaque(false)
       setBorder(null)
     }
-  }
+  }*/
 
 
-  def updateNewsBoardText(newText: String): Unit = {
+  /*def updateNewsBoardText(newText: String): Unit = {
     val htmlContent =
       s"""
     <html>
@@ -422,10 +396,10 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     </html>
     """
     newsBoardText.peer.setText(htmlContent)
-  }
+  }*/
 
 
-  val newsBoardPanel = new BoxPanel(Orientation.Vertical) {
+  /*val newsBoardPanel = new BoxPanel(Orientation.Vertical) {
     opaque = false // Stellen Sie sicher, dass das Panel transparent ist
 
     // Fügen Sie vertikale Struts hinzu, um den Text vertikal zu zentrieren
@@ -434,11 +408,11 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     contents += Swing.VStrut(60) // Abstand unten
 
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
-  }
+  }*/
 
 
   val texturedBackground = new TexturedBackground("texturengui/4rippedpaperneu.png") {
-    layout(newsBoardPanel) = BorderPanel.Position.Center
+    layout(NEWSPanel.NewsBoardPanel()) = BorderPanel.Position.Center
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
 
@@ -450,7 +424,9 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   //-------------------------------------
-  contents = new BorderPanel {
+  contents = updateContent()
+
+  def updateContent() = new BorderPanel {
 
     add(northpanel, BorderPanel.Position.North)
     add(centerPanel, BorderPanel.Position.Center)
@@ -463,16 +439,25 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   val modeSwitchInvoker = new ModeSwitchInvoker()
 
   listenTo(inputTextField, EasymodusButton, MediummodusButton, HardmodusButton)
-  var won = false
+  //var won = false
   reactions +={
     case EditDone(inputTextField) =>
       val guess = controll.GuessTransform(inputTextField.text)
 
       if(controll.controllLength(guess.length)){
+        controll.areYouWinningSon(guess)
+        controll.count(controll.getVersuche())
+        controll.setVersuche(controll.getVersuche()+1)
+        controll.set(controll.getVersuche(),controll.evaluateGuess(guess))
+      }
+
+      resetInputField()
+
+      /*if(controll.controllLength(guess.length)){
         controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
         if(controll.areYouWinningSon(guess)){
           updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
-          inputTextField.enabled = false
+          InputPanel.enabled = false
 
           //controller.set(n, controller.evaluateGuess(guess))
           won = true
@@ -489,56 +474,49 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       } else {
         controll.setVersuche(controll.getVersuche()+1)
 
-      }
+      }*/
 
-      resetInputField()
+      //resetInputField()
 
 
     case ButtonClicked(EasymodusButton)=>
-      //modeSwitchInvoker.setCommand(EasyModeCommand(Some(controll)))
-      //modeSwitchInvoker.executeCommand()
-      updateButtonColors(EasymodusButton)
-      inputTextField.enabled = true
-      level.text = ""
-      updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
-      startNewGame(1)
+
+      upgradegamemoduspanel(EasymodusButton)
+      NEWSPanel.updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
+      controll.resetGameboard()
       controll.changeState(1)
       controll.createGameboard()
       controll.createwinningboard()
-      updateButtonColors(EasymodusButton)
-      inputTextField.enabled = true
-      level.text = ""
-      updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
-      inputTextField.enabled = true
-      controll.setVersuche(1)
-    case ButtonClicked(MediummodusButton)=>
-      //modeSwitchInvoker.setCommand(MediumModeCommand(Some(controll)))
-      //modeSwitchInvoker.executeCommand()
+      //InputPanel.enabled = true
 
-      startNewGame(2)
+      //updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
+      //InputPanel.enabled = true
+      //controll.setVersuche(1)
+    case ButtonClicked(MediummodusButton)=>
+
+      NEWSPanel.updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
+      upgradegamemoduspanel(MediummodusButton)
+      controll.resetGameboard()
       controll.changeState(2)
       controll.createGameboard()
       controll.createwinningboard()
-      updateButtonColors(MediummodusButton)
-      inputTextField.enabled = true
-      level.text = ""
-      updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
-      inputTextField.enabled = true
-      controll.setVersuche(1)
-    case ButtonClicked(HardmodusButton)=>
-      //modeSwitchInvoker.setCommand(HardModeCommand(Some(controll)))
-      //modeSwitchInvoker.executeCommand()
+      //InputPanel.enabled = true
 
-      startNewGame(3)
+      //NEWSPanel.updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
+      //InputPanel.enabled = true
+      //controll.setVersuche(1)
+    case ButtonClicked(HardmodusButton)=>
+
+      NEWSPanel.updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
+      upgradegamemoduspanel(HardmodusButton)
+      controll.resetGameboard()
       controll.changeState(3)
       controll.createGameboard()
       controll.createwinningboard()
-      updateButtonColors(HardmodusButton)
-      inputTextField.enabled = true
-      level.text = ""
-      updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
-      inputTextField.enabled = true
-      controll.setVersuche(1)
+      //InputPanel.enabled = true
+      //NEWSPanel.updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
+      //InputPanel.enabled = true
+      //controll.setVersuche(1)
 
   }
 
@@ -551,7 +529,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   //OutputTextField.peer.setOpaque(false)
   gamemoduspanelMain.peer.setOpaque(false)
   headlinepanel.peer.setOpaque(false)
-  gamemoduspanel1.peer.setOpaque(false)
+  //gamemoduspanel1.peer.setOpaque(false)
   gamemoduspanel2.peer.setOpaque(false)
   InputPanel.peer.setOpaque(false)
   OutputPanel.peer.setOpaque(false)
@@ -573,7 +551,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   // Fügen Sie das scalaBackgroundPanel zum Frame hinzu
   this.contents = scalaBackgroundPanel
 
-  pack()
 
 
   def resetInputField(): Unit = {
@@ -584,46 +561,43 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     })
   }
 
-  def startNewGame(difficulty: Int): Unit = {
+  /*def startNewGame(difficulty: Int): Unit = {
     controll.changeState(difficulty)
-    controll.createGameboard()
-    controll.createwinningboard()
-    level.text = difficultyLevelToString(difficulty)
+    //controll.createGameboard()
+    //controll.createwinningboard()
+    //level.text = difficultyLevelToString(difficulty)
     updateNewsBoardText("Spiel gestartet im Modus: ${level.text}")
     //OutputTextField.peer.setText("") // Text zurücksetzen
     //OutputTextField.peer.repaint() // Komponente neu zeichnen
     won = false
-    controll.setVersuche(1)
-  }
+    //controll.setVersuche(1)
+  }*/
 
 
-  def difficultyLevelToString(difficulty: Int): String = difficulty match {
-    case 1 => "leicht"
-    case 2 => "mittel"
-    case 3 => "schwer"
-    case _ => "unbekannt"
-  }
 
   override def update(e:Event):Unit={
     e match
       case Event.Move =>{
-        if (!won) { // Wenn das Spiel noch nicht gewonnen wurde
+        //if (!won) { // Wenn das Spiel noch nicht gewonnen wurde
           val currentGameState = controll.toString
           FieldPanel.updateFieldPanel(currentGameState)
           OutputPanel.contents.clear()
           OutputPanel.contents += FieldPanel.GameFieldPanel()
           OutputPanel.repaint()
 
-        }
+        //}
       }
-      case Event.NEW =>{
-        updateButtonColors(EasymodusButton)
-
+      case Event.NEW =>{//Hat ein Deadlock oder so bzw wenn man die changestate aufruft
+        controll.setVersuche(0)
+        inputTextField.enabled = true
       }
       case Event.WIN =>{
-
+        NEWSPanel.updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
+        inputTextField.enabled = false
       }
       case Event.LOSE =>{
+        NEWSPanel.updateNewsBoardText("Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
+        inputTextField.enabled = false
 
       }
       case Event.UNDO => {
@@ -634,21 +608,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
 
-
-  def updateButtonColors(clickedButton: Button): Unit = {
-    val greenColor = new Color(0, 128, 0) // HTML-Grün
-
-    val buttons = List(EasymodusButton, MediummodusButton, HardmodusButton)
-    buttons.foreach { button =>
-      if (button == clickedButton) {
-        button.foreground = greenColor
-      } else {
-        button.foreground = Color.BLACK
-      }
-    }
-  }
-
-  object FieldPanel extends Component{
+  object FieldPanel extends Component {
 
     var textPaneSeq: Seq[JTextPaneWrapper] = Seq.empty
 
@@ -665,11 +625,10 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     }
 
 
-
     def GameFieldPanel(): BoxPanel = {
       new BoxPanel(Orientation.Horizontal) {
         contents ++= textPaneSeq
-        background = new Color(0,0,0,0)
+        background = new Color(0, 0, 0, 0)
       }
     }
 
@@ -688,17 +647,104 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
       s"<html><body style='font-family:earwigFactoryFont; font-size:60pt;'>$formattedInput</body></html>"
     }
+  }
+
+  object NEWSPanel{
+      var newsBoardText = new Component {
+        override lazy val peer: JTextPane = new JTextPane() {
+          setContentType("text/html")
+          setText(
+            s"""
+            <html>
+              <head>
+                <style>
+                  body {
+                    font-family: 'Skia';
+                    font-size: 30pt; // Größe anpassen, wie benötigt
+                    font-weight: bold;
+                  }
+                  .centered {
+                    text-align: center;
+                    display: table;
+                    height: 100%;
+                    width: 100%;
+                  }
+                  .centered div {
+                    display: table-cell;
+                    vertical-align: middle;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class='centered'>
+                  <div>Wähle zwischen Leicht, Mittel und Schwer!</div>
+                </div>
+              </body>
+            </html>
+          """)
+          setEditable(false)
+          setOpaque(false)
+          setBorder(null)
+        }
+      }
+
+      def updateNewsBoardText(newText: String): Unit = {
+        val htmlContent =
+          s"""
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: 'Skia';
+                font-size: 30pt; // Größe anpassen, wie benötigt
+                font-weight: bold;
+              }
+              .centered {
+                text-align: center;
+                display: table;
+                height: 100%;
+                width: 100%;
+              }
+              .centered div {
+                display: table-cell;
+                vertical-align: middle;
+              }
+            </style>
+          </head>
+          <body>
+            <div class='centered'>
+              <div>$newText</div>
+            </div>
+          </body>
+        </html>
+        """
+        newsBoardText.peer.setText(htmlContent)
+      }
+
+      def NewsBoardPanel():BoxPanel={
+        new BoxPanel(Orientation.Vertical) {
+          opaque = false // Stellen Sie sicher, dass das Panel transparent ist
+
+          // Fügen Sie vertikale Struts hinzu, um den Text vertikal zu zentrieren
+          contents += Swing.VStrut(80) // Abstand oben
+          contents += newsBoardText
+          contents += Swing.VStrut(60) // Abstand unten
+
+          border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
+        }
+      }
+
+      def updateNewsBoardPanel(): Unit = {
+
+      }
 
 
   }
 
-
-
-
   pack()
   centerOnScreen()
   open()
-  peer.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH) // Fenster maximieren
+  peer.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)// Fenster maximieren
 
 
 }

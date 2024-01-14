@@ -87,8 +87,8 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
 
   def resetGameboard(): Unit = {
     board.reset()
-    createGameboard()
-    createwinningboard()
+    //createGameboard()
+    //createwinningboard()
   }
   
   def setWinningboard(wBoard: Map[Int, Boolean]) = {

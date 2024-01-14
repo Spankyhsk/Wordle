@@ -26,4 +26,6 @@ trait ControllerInterface extends Observable{
   def setVersuche(zahl:Integer):Unit
   
   def getVersuche():Int
+
+  def resetGameboard():Unit
 }
