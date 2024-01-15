@@ -71,9 +71,10 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
   }
 
   def changeState(e: Int): Unit = {
-    //game.resetGameboard() // Spielbrett zurücksetzen
+    game.resetGameboard() // Spielbrett zurücksetzen
     game.changeState(e)
     //createGameboard() // Neues Spielbrett initialisieren
+    //createwinningboard()
     notifyObservers(Event.NEW)
   }
   

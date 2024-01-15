@@ -55,8 +55,8 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
 
   def changeState(e: Int): Unit = {
     mode = gamemode(e)
-    mech.resetWinningBoard(mode.getTargetword().size)
-    resetGameboard()
+    mech.resetWinningBoard(mode.getTargetword().size)//??
+    resetGameboard()//??
   }
 
   
@@ -77,7 +77,7 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
   }
 
   def areYouWinningSon(guess: String): Boolean = {
-    mech.compareTargetGuess(1, getTargetword(), guess)
+    mech.compareTargetGuess(1, getTargetword(), guess)//??
     mech.areYouWinningSon()
   }
 

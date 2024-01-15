@@ -236,7 +236,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     yLayoutAlignment = 0.5
   }
 
-  //inputTextField.enabled = true//false
+  
   // Erstellen Sie ein transparentes TextField
   object inputTextField extends TextField {
     columns = 8 // Anzahl der Zeichen festlegen
@@ -322,94 +322,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     }
     peer.add(scrollPane.peer, c)
   }
-
-
-  //--------------------
-  // Erstellen Sie die TextArea für das NewsBoard
-  /*val newsBoardText = new Component {
-    override lazy val peer: JTextPane = new JTextPane() {
-      setContentType("text/html")
-      setText(
-        s"""
-        <html>
-          <head>
-            <style>
-              body {
-                font-family: 'Skia';
-                font-size: 30pt; // Größe anpassen, wie benötigt
-                font-weight: bold;
-              }
-              .centered {
-                text-align: center;
-                display: table;
-                height: 100%;
-                width: 100%;
-              }
-              .centered div {
-                display: table-cell;
-                vertical-align: middle;
-              }
-            </style>
-          </head>
-          <body>
-            <div class='centered'>
-              <div>Wähle zwischen Leicht, Mittel und Schwer!</div>
-            </div>
-          </body>
-        </html>
-      """)
-      setEditable(false)
-      setOpaque(false)
-      setBorder(null)
-    }
-  }*/
-
-
-  /*def updateNewsBoardText(newText: String): Unit = {
-    val htmlContent =
-      s"""
-    <html>
-      <head>
-        <style>
-          body {
-            font-family: 'Skia';
-            font-size: 30pt; // Größe anpassen, wie benötigt
-            font-weight: bold;
-          }
-          .centered {
-            text-align: center;
-            display: table;
-            height: 100%;
-            width: 100%;
-          }
-          .centered div {
-            display: table-cell;
-            vertical-align: middle;
-          }
-        </style>
-      </head>
-      <body>
-        <div class='centered'>
-          <div>$newText</div>
-        </div>
-      </body>
-    </html>
-    """
-    newsBoardText.peer.setText(htmlContent)
-  }*/
-
-
-  /*val newsBoardPanel = new BoxPanel(Orientation.Vertical) {
-    opaque = false // Stellen Sie sicher, dass das Panel transparent ist
-
-    // Fügen Sie vertikale Struts hinzu, um den Text vertikal zu zentrieren
-    contents += Swing.VStrut(80) // Abstand oben
-    contents += newsBoardText
-    contents += Swing.VStrut(60) // Abstand unten
-
-    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
-  }*/
-
+  
 
   val texturedBackground = new TexturedBackground("texturengui/4rippedpaperneu.png") {
     layout(NEWSPanel.NewsBoardPanel()) = BorderPanel.Position.Center
@@ -424,19 +337,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   //-------------------------------------
-  contents = updateContent()
-
-  def updateContent() = new BorderPanel {
-
-    add(northpanel, BorderPanel.Position.North)
-    add(centerPanel, BorderPanel.Position.Center)
-    add(southPanel, BorderPanel.Position.South)
-    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
-
-  }
-
-
-  val modeSwitchInvoker = new ModeSwitchInvoker()
+  
 
   listenTo(inputTextField, EasymodusButton, MediummodusButton, HardmodusButton)
   //var won = false
@@ -447,51 +348,20 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       if(controll.controllLength(guess.length)){
         controll.areYouWinningSon(guess)
         controll.count(controll.getVersuche())
-        controll.setVersuche(controll.getVersuche()+1)
         controll.set(controll.getVersuche(),controll.evaluateGuess(guess))
+        controll.setVersuche(controll.getVersuche()+1)
       }
 
       resetInputField()
-
-      /*if(controll.controllLength(guess.length)){
-        controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
-        if(controll.areYouWinningSon(guess)){
-          updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
-          InputPanel.enabled = false
-
-          //controller.set(n, controller.evaluateGuess(guess))
-          won = true
-        }
-      }else{
-        updateNewsBoardText("Falsche Eingabe")
-        controll.setVersuche(controll.getVersuche()-1)
-
-      }
-      if (!controll.count(controll.getVersuche()) && !won) {
-        updateNewsBoardText("Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
-        inputTextField.enabled = false
-
-      } else {
-        controll.setVersuche(controll.getVersuche()+1)
-
-      }*/
-
-      //resetInputField()
-
-
+      
     case ButtonClicked(EasymodusButton)=>
 
       upgradegamemoduspanel(EasymodusButton)
       NEWSPanel.updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
-      controll.resetGameboard()
       controll.changeState(1)
       controll.createGameboard()
       controll.createwinningboard()
-      //InputPanel.enabled = true
 
-      //updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
-      //InputPanel.enabled = true
-      //controll.setVersuche(1)
     case ButtonClicked(MediummodusButton)=>
 
       NEWSPanel.updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
@@ -500,11 +370,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       controll.changeState(2)
       controll.createGameboard()
       controll.createwinningboard()
-      //InputPanel.enabled = true
 
-      //NEWSPanel.updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
-      //InputPanel.enabled = true
-      //controll.setVersuche(1)
     case ButtonClicked(HardmodusButton)=>
 
       NEWSPanel.updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
@@ -513,11 +379,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       controll.changeState(3)
       controll.createGameboard()
       controll.createwinningboard()
-      //InputPanel.enabled = true
-      //NEWSPanel.updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
-      //InputPanel.enabled = true
-      //controll.setVersuche(1)
-
+      
   }
 
   // Laden des Hintergrundbilds
@@ -561,20 +423,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     })
   }
 
-  /*def startNewGame(difficulty: Int): Unit = {
-    controll.changeState(difficulty)
-    //controll.createGameboard()
-    //controll.createwinningboard()
-    //level.text = difficultyLevelToString(difficulty)
-    updateNewsBoardText("Spiel gestartet im Modus: ${level.text}")
-    //OutputTextField.peer.setText("") // Text zurücksetzen
-    //OutputTextField.peer.repaint() // Komponente neu zeichnen
-    won = false
-    //controll.setVersuche(1)
-  }*/
-
-
-
   override def update(e:Event):Unit={
     e match
       case Event.Move =>{
@@ -588,7 +436,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         //}
       }
       case Event.NEW =>{//Hat ein Deadlock oder so bzw wenn man die changestate aufruft
-        controll.setVersuche(0)
+        controll.setVersuche(1)
         inputTextField.enabled = true
       }
       case Event.WIN =>{
