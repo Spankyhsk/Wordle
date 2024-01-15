@@ -3,19 +3,27 @@ package de.htwg.se.wordle.aview
 import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.{Event, Observer}
 
-import scala.io.StdIn.readLine
+
 import scala.util.{Failure, Success, Try}
 
 class TUI (controller: ControllerInterface)extends Observer:
   controller.add(this)
-  var stepback = false
+  var newgame = true
+  
+  def getOutput():Unit={
+    if(newgame){
+      println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
+    }
+  }
 
-  def run():Unit ={
-    println("Willkommen zu Wordle")
-    println("Befehle")
-    println("$quit := Spielbeenden, $save := Speichern, $load := Laden, $switch := Schwirigkeit verändern")
-    println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
-    controller.changeState(readLine.toInt)
+  def processInput(input: String): Unit = {
+    if(newgame){
+      controller.changeState(input.toInt)
+      controller.createGameboard()
+      controller.createwinningboard()
+    }else{
+      scanInput(input)
+    }
   }
   
 
@@ -29,21 +37,22 @@ class TUI (controller: ControllerInterface)extends Observer:
           controller.undo()
         }
         case "$save"=>{
+          println("Spielstand wurde gespeichert")
           controller.save()
         }
         case "$load"=>{
+          println("Spielstand wird geladen")
           controller.load()
         }
         case "$switch"=>{
-          println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
-          controller.changeState(readLine.toInt)
+          newgame = true
         }
         case default =>{
           val guess = input.toUpperCase//ändert alle klein buchstaben in großbuchstaben
           controller.areYouWinningSon(guess)
           controller.count(controller.getVersuche())
-          controller.setVersuche(controller.getVersuche() +1)
           controller.set(controller.getVersuche(), controller.evaluateGuess(guess))
+          controller.setVersuche(controller.getVersuche() +1)
 
         }
   }
@@ -51,27 +60,24 @@ class TUI (controller: ControllerInterface)extends Observer:
     e match
       case Event.Move=> {
         println(controller.toString)
-        scanInput(readLine)
+        println("Dein Tipp: ")
       }
       case Event.NEW=>{
-        controller.setVersuche(0)
+        controller.setVersuche(1)
+        newgame = false
         println("Errate Wort:") //guess
-        controller.createGameboard()
-        controller.createwinningboard()
       }
       case Event.UNDO=>{
         println(controller.toString)
-        scanInput(readLine)
       }
       case Event.WIN =>{
         println(s"Du hast gewonnen! Lösung:"+ controller.getTargetword())
-        println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
-        controller.changeState(readLine.toInt)
+        newgame = true
+
       }
       case Event.LOSE =>{
         println(s"Verloren! Versuche aufgebraucht. Lösung:"+ controller.getTargetword())
-        println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
-        controller.changeState(readLine.toInt)
+        newgame = true
 
       }
   }
