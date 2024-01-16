@@ -86,9 +86,26 @@ class TransparentButton(label: String) extends Button(label) {
   focusPainted = false // Fokus-Indikator nicht malen
   background = new Color(0, 0, 0, 0)
   foreground = Color.BLACK
-  font = new Font("Skia", Font.PLAIN, 18)
+  font = LoadCustomFont.loadFont("texturengui/font/Comicmeneu-Regular.ttf").deriveFont(26f) // Comic-Schriftart
   border = Swing.EmptyBorder(0, 0, 0, 0)
   peer.setOpaque(false)
+}
+
+//Um schriften aus Tuxturengui einlesen zu können
+object LoadCustomFont {
+  def loadFont(path: String): Font = {
+    try {
+      val fontStream = new FileInputStream(path)
+      val font = Font.createFont(Font.TRUETYPE_FONT, fontStream)
+      val ge = GraphicsEnvironment.getLocalGraphicsEnvironment
+      ge.registerFont(font)
+      font // Rückgabe des Font-Objekts
+    } catch {
+      case e: Exception =>
+        e.printStackTrace()
+        null
+    }
+  }
 }
 
 
@@ -108,17 +125,9 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   // Schriftart definieren
   val customFont = new Font("Skia", Font.PLAIN, 14)
 
-  val earwigFactoryFont: Font = try {
-    val fontStream = new FileInputStream("texturengui/font/ErpressungNormal-YMDo.ttf")
-    val earwigFactory = Font.createFont(Font.TRUETYPE_FONT, fontStream)
-    val ge = GraphicsEnvironment.getLocalGraphicsEnvironment()
-    ge.registerFont(earwigFactory)
-    earwigFactory.deriveFont(90f) // Setzen Sie die gewünschte Größe hier
-  } catch {
-    case e: Exception =>
-      e.printStackTrace()
-      new Font("Arial", Font.PLAIN, 90) // Fallback-Schriftart, falls das Laden fehlschlägt
-  }
+  val wordleFontPaper: Font = LoadCustomFont.loadFont("texturengui/font/Wordlefont-Regular.ttf").deriveFont(24f)
+  val comicFont: Font = LoadCustomFont.loadFont("texturengui/font/Comicmeneu-Regular.ttf").deriveFont(24F)
+
 
   // Stilfunktion für Komponenten
   def styleComponent(component: Component): Unit = {
@@ -129,8 +138,8 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   menuBar = new MenuBar {
-    contents += new Menu("Menue") {
-      font = customFont.deriveFont(12)
+    contents += new Menu("Menü") {
+      font = comicFont.deriveFont(12)
       contents += new MenuItem(Action("Exit") {
         sys.exit(0)
       }) {
@@ -141,7 +150,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       }) {
         font = customFont.deriveFont(12)
       }
-      contents += new MenuItem(Action("load") {
+      contents += new MenuItem(Action("Load") {
         controll.load()
       }) {
         font = customFont.deriveFont(12)
@@ -514,7 +523,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         }
         .mkString("")
 
-      s"<html><body style='font-family:Wordlefont; font-size:60pt;'>$formattedInput</body></html>"
+      s"<html><body style='font-family:\"${wordleFontPaper.getName}\"; font-size:60pt;'>$formattedInput</body></html>"
     }
   }
 
