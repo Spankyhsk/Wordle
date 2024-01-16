@@ -18,11 +18,20 @@ class TUI (controller: ControllerInterface)extends Observer:
 
   def processInput(input: String): Unit = {
     if(newgame){
-      controller.changeState(input.toInt)
+      controller.changeState(difficultlevel(input.toInt))
       controller.createGameboard()
       controller.createwinningboard()
     }else{
       scanInput(input)
+    }
+  }
+
+  def difficultlevel(input:Int):Int={
+    if(input > 4 && input < 0){
+      println("Falsche angabe, es wird Level Einfach angefangen")
+      1
+    }else{
+      input
     }
   }
   
