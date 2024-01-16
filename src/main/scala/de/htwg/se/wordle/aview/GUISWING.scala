@@ -289,10 +289,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   inputTextField.peer.setCaretColor(Color.BLACK) // Farbe des Cursors
 
 
-
-  //--------------------------------------------------
-                   //AUCH ENTFERNT
-
   val OutputPanel = new BoxPanel(Orientation.Vertical) {
     contents += FieldPanel.GameFieldPanel()
   }//Klappt
@@ -363,6 +359,8 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
           controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
           controll.setVersuche(controll.getVersuche() + 1)
         }
+      }else{
+        NEWSPanel.updateNewsBoardText("Falsche Eingabe")
       }
 
       resetInputField()
