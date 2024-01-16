@@ -357,11 +357,12 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     case EditDone(inputTextField) =>
       val guess = controll.GuessTransform(inputTextField.text)
 
-      if(controll.controllLength(guess.length)){
-        controll.areYouWinningSon(guess)
-        controll.count()
-        controll.set(controll.getVersuche(),controll.evaluateGuess(guess))
-        controll.setVersuche(controll.getVersuche()+1)
+      if(controll.controllLength(guess.length)&& controll.controllRealWord(guess)){
+        if(!controll.areYouWinningSon(guess)){
+          controll.count()
+          controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
+          controll.setVersuche(controll.getVersuche() + 1)
+        }
       }
 
       resetInputField()

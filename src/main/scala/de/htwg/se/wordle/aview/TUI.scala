@@ -57,11 +57,17 @@ class TUI (controller: ControllerInterface)extends Observer:
           newgame = true
         }
         case default =>{
-          val guess = input.toUpperCase//ändert alle klein buchstaben in großbuchstaben
-          controller.areYouWinningSon(guess)
-          controller.count()
-          controller.set(controller.getVersuche(), controller.evaluateGuess(guess))
-          controller.setVersuche(controller.getVersuche() +1)
+          val guess = controller.GuessTransform(input)//ändert alle klein buchstaben in großbuchstaben
+          if(controller.controllLength(guess.length) && controller.controllRealWord(guess)) {
+            if (!controller.areYouWinningSon(guess)) {
+              controller.count()
+              controller.set(controller.getVersuche(), controller.evaluateGuess(guess))
+              controller.setVersuche(controller.getVersuche() + 1)
+            }
+          }else{
+            println("Falsche Eingabe")
+            println("Dein Tipp:")
+          }
 
         }
   }

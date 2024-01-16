@@ -70,7 +70,7 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
     game.createwinningboard()
     notifyObservers(Event.Move)
   }
-  
+
   //----------------------------------------------------------------------------
 
           //board
@@ -103,9 +103,6 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
   def getTargetword(): Map[Int, String] = {
     game.getTargetword()
   }
-
-  
-
 
   //=============================================================================
 
@@ -140,7 +137,7 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
     file.load(game)
     notifyObservers(Event.Move)
   }
-  
+
 }
 
 object controll:
