@@ -59,7 +59,7 @@ class TUI (controller: ControllerInterface)extends Observer:
         case default =>{
           val guess = input.toUpperCase//ändert alle klein buchstaben in großbuchstaben
           controller.areYouWinningSon(guess)
-          controller.count(controller.getVersuche())
+          controller.count()
           controller.set(controller.getVersuche(), controller.evaluateGuess(guess))
           controller.setVersuche(controller.getVersuche() +1)
 

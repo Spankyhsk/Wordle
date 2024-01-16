@@ -4,7 +4,7 @@ import de.htwg.se.wordle.model.GameInterface
 import scala.util.{Failure, Success, Try}
 
 trait ControllerInterface extends Observable{
-  def count(n:Int):Boolean
+  def count():Boolean
   def controllLength(n:Int):Boolean
   def controllRealWord(guess:String):Boolean
   def createGameboard():Unit

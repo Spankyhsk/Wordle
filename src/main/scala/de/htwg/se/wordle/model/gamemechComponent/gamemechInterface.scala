@@ -1,7 +1,7 @@
 package de.htwg.se.wordle.model.gamemechComponent
 
 trait gamemechInterface {
-  def count(n:Int, limit:Int):Boolean
+  def count( limit:Int):Boolean
   def controllLength(n:Int, wordLength:Int):Boolean
   def controllRealWord(guess:String, wordList:Array[String]):Boolean
   def buildwinningboard(n:Int, key:Int):Unit

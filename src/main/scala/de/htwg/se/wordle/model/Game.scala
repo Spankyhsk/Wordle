@@ -18,8 +18,8 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
     mech
   }
 
-  def count(n: Int): Boolean = {
-    mech.count(n, mode.getLimit())
+  def count(): Boolean = {
+    mech.count(mode.getLimit())
   }
 
   def controllLength(n: Int): Boolean = {

@@ -15,7 +15,7 @@ import scala.util.Random
     var winningBoard = Map.empty[Int, Boolean]
     var n = 1
 
-    def count(n: Int, limit: Int): Boolean = {
+    def count( limit: Int): Boolean = {
       if (n < limit) true else false
     }
 

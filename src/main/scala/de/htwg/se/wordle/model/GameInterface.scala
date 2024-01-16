@@ -8,7 +8,7 @@ trait GameInterface {
   def getGamefield():GamefieldInterface[GamefieldInterface[String]]
   def getGamemode():GamemodeInterface
 
-  def count(n: Int): Boolean
+  def count(): Boolean
 
   def controllLength(n: Int): Boolean
 

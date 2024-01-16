@@ -26,8 +26,8 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
 
   val gamemech = game.getGamemech()
 
-  def count(n: Int): Boolean = {
-    val continue = game.count(n)
+  def count(): Boolean = {
+    val continue = game.count()
     if (!continue) {
       notifyObservers(Event.LOSE)
     }

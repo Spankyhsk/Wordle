@@ -350,7 +350,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
       if(controll.controllLength(guess.length)){
         controll.areYouWinningSon(guess)
-        controll.count(controll.getVersuche())
+        controll.count()
         controll.set(controll.getVersuche(),controll.evaluateGuess(guess))
         controll.setVersuche(controll.getVersuche()+1)
       }
