@@ -1,22 +1,12 @@
 package de.htwg.se.wordle.model.gamemechComponent
 
-import java.beans.Encoder
-import scala.util.Random
-
-
-  // Abstrakte Strategie für das Erraten von Wörtern
-  
-
-  // Konkrete Implementierung der Strategie
-
-
   // Klasse für den Spielmechanismus mit Strategie
   case class GameMech(guessStrategy: GuessStrategy = new SimpleGuessStrategy)extends gamemechInterface {
     var winningBoard = Map.empty[Int, Boolean]
-    var n = 1
+    var versuch = 1
 
     def count( limit: Int): Boolean = {
-      if (n < limit) true else false
+      if (versuch < limit) true else false
     }
 
     def controllLength(n: Int, wordLength: Int): Boolean = {
@@ -66,11 +56,11 @@ import scala.util.Random
     }
     
     def getN(): Int = {
-      n
+      versuch
     }
 
     def setN(zahl: Integer): Unit = {
-      n = zahl
+      versuch = zahl
     }
     
     def getWinningboard():Map[Int, Boolean]={

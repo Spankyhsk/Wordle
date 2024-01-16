@@ -1,7 +1,10 @@
 package de.htwg.se.wordle.model.gamemodeComponnent
 
-import scala.util.Random
+//====================================================================
 
+              //!!!Gamemode1!!!
+
+//====================================================================
 case class gamemode1(wordObject: Word) extends GamemodeInterface {
   def this() = this(new Word())
   
@@ -35,6 +38,12 @@ case class gamemode1(wordObject: Word) extends GamemodeInterface {
     targetword.map { case (key, value) => s"Wort $key: $value" }.mkString(" ")
   }
 }
+
+//====================================================================
+
+                    //!!!Gamemode2!!!
+
+//====================================================================
 
 case class gamemode2(wordObject: Word) extends GamemodeInterface {
   def this() = this(new Word())
@@ -70,6 +79,13 @@ case class gamemode2(wordObject: Word) extends GamemodeInterface {
     targetword.map { case (key, value) => s"Wort $key: $value" }.mkString(" ")
   }
 }
+
+//====================================================================
+
+                      //!!!Gamemode3!!!
+
+//====================================================================
+
 
 case class gamemode3(wordObject: Word) extends GamemodeInterface {
   def this() = this(new Word())
@@ -111,7 +127,6 @@ case class gamemode3(wordObject: Word) extends GamemodeInterface {
 
 
 object gamemode{
-  import play.api.libs.json._
   
   var state: GamemodeInterface = gamemode1(new Word())//targetword und limit nimmt die werte als erstes
 

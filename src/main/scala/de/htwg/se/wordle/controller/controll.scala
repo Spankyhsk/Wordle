@@ -70,11 +70,7 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
     game.createwinningboard()
     notifyObservers(Event.Move)
   }
-
-  def resetGameboard(): Unit = {
-    game.resetGameboard()
-  }
-
+  
   //----------------------------------------------------------------------------
 
           //board
@@ -100,7 +96,6 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
   var gamemode = game.getGamemode()
 
   def changeState(e: Int): Unit = {
-    game.resetGameboard() // Spielbrett zurücksetzen
     game.changeState(e)
     notifyObservers(Event.NEW)
   }
@@ -109,9 +104,7 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
     game.getTargetword()
   }
 
-  def getLimit(): Int = {
-    game.getLimit()
-  }
+  
 
 
   //=============================================================================

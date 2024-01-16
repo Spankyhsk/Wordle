@@ -10,7 +10,7 @@ class SetCommand( key:Int, feedback: Map[Int, String], controller:controll)exten
   override def redoStep: Unit = {}
 
   def blankfeedback(feedback:Map[Int, String]):Map[Int,String]={
-    val updatefeedback: Map[Int,String] = feedback.map{ case(key, _) => key -> "_"*controller.getTargetword()(1).length}
+    val updatefeedback: Map[Int,String] = feedback.map{ case(key, _) => key -> "-"*controller.getTargetword()(1).length}
     updatefeedback
   }
 

@@ -98,25 +98,23 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
             //!!!Mode!!!
 
   //===========================================================================
-  
+
   def getGamemode(): GamemodeInterface ={
     mode
   }
 
   def changeState(e: Int): Unit = {
     mode = gamemode(e)
-    mech.resetWinningBoard(mode.getTargetword().size)//??
-    resetGameboard()//??
+    mech.resetWinningBoard(mode.getTargetword().size)
+    resetGameboard()
   }
 
   def getTargetword(): Map[Int, String] = {
-    val targetword = mode.getTargetword()
-    targetword
+    mode.getTargetword()
   }
 
   def getLimit(): Int = {
-    val limit = mode.getLimit()
-    limit
+    mode.getLimit()
   }
 
   def setTargetWord(targetWordMap: Map[Int, String]): Unit={
