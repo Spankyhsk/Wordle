@@ -354,8 +354,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       val guess = controll.GuessTransform(inputTextField.text)
 
       if(controll.controllLength(guess.length)&& controll.controllRealWord(guess)){
-        if(!controll.areYouWinningSon(guess)){
-          controll.count()
+        if(!controll.areYouWinningSon(guess) && controll.count()){
           controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
           controll.setVersuche(controll.getVersuche() + 1)
         }
@@ -460,9 +459,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
           }
         })
 
-
-
-        //}
       }
       case Event.NEW =>{//Hat ein Deadlock oder so bzw wenn man die changestate aufruft
         controll.setVersuche(1)
@@ -478,7 +474,27 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
       }
       case Event.UNDO => {
+        SwingUtilities.invokeLater(new Runnable {
+          def run(): Unit = {
+            // Speichern der aktuellen Scroll-Position
+            val scrollPos = scrollPane.verticalScrollBar.value
 
+            // Aktualisieren des OutputPanel
+            val currentGameState = controll.toString
+            FieldPanel.updateFieldPanel(currentGameState)
+            OutputPanel.contents.clear()
+            OutputPanel.contents += FieldPanel.GameFieldPanel()
+            OutputPanel.revalidate()
+            OutputPanel.repaint()
+
+            // Wiederherstellen der Scroll-Position nach dem Repaint/Revalidate
+            SwingUtilities.invokeLater(new Runnable {
+              def run(): Unit = {
+                scrollPane.verticalScrollBar.value = scrollPos
+              }
+            })
+          }
+        })
       }
 
 

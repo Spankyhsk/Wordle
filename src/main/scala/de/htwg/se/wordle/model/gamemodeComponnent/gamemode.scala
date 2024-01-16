@@ -35,7 +35,7 @@ case class gamemode1(wordObject: Word) extends GamemodeInterface {
   }
 
   override def toString(): String = {
-    targetword.map { case (key, value) => s"Wort $key: $value" }.mkString(" ")
+    targetword.map { case (key, value) => s"Wort$key: $value" }.mkString(" ")
   }
 }
 
@@ -76,7 +76,7 @@ case class gamemode2(wordObject: Word) extends GamemodeInterface {
   }
 
   override def toString(): String = {
-    targetword.map { case (key, value) => s"Wort $key: $value" }.mkString(" ")
+    targetword.map { case (key, value) => s"Wort$key: $value" }.mkString(", ")
   }
 }
 
@@ -120,7 +120,7 @@ case class gamemode3(wordObject: Word) extends GamemodeInterface {
   }
 
   override def toString(): String = {
-    targetword.map { case (key, value) => s"Wort $key: $value" }.mkString(" ")
+    targetword.map { case (key, value) => s"Wort$key: $value" }.mkString(", ")
   }
 }
 

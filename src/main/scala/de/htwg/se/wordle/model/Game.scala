@@ -124,6 +124,10 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
   def setLimit(Limit: Int): Unit={
     mode.setLimit(Limit)
   }
+  def TargetwordToString():String={
+    mode.toString()
+  }
+  
 
 }
 

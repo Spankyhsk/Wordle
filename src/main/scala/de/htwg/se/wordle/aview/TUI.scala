@@ -18,7 +18,7 @@ class TUI (controller: ControllerInterface)extends Observer:
 
   def processInput(input: String): Unit = {
     if(newgame){
-      controller.changeState(difficultlevel(input.toInt))
+      controller.changeState(difficultyLevel(input))
       controller.createGameboard()
       controller.createwinningboard()
     }else{
@@ -26,12 +26,19 @@ class TUI (controller: ControllerInterface)extends Observer:
     }
   }
 
-  def difficultlevel(input:Int):Int={
-    if(input > 4 && input < 0){
-      println("Falsche angabe, es wird Level Einfach angefangen")
-      1
-    }else{
-      input
+  def difficultyLevel(input: String): Int = {
+    try {
+      val level = input.toInt
+      if (level > 0 && level < 4) {
+        level
+      } else {
+        println("Falsche Angabe, es wird Level Einfach angefangen")
+        1
+      }
+    } catch {
+      case _: NumberFormatException =>
+        println("Falsche Angabe, es wird Level Einfach angefangen")
+        1
     }
   }
   
@@ -42,7 +49,7 @@ class TUI (controller: ControllerInterface)extends Observer:
           println(s"Wiedersehen")
           sys.exit(0)
         }
-        case "$redo"=>{
+        case "$undo"=>{
           controller.undo()
         }
         case "$save"=>{
@@ -59,8 +66,7 @@ class TUI (controller: ControllerInterface)extends Observer:
         case default =>{
           val guess = controller.GuessTransform(input)//ändert alle klein buchstaben in großbuchstaben
           if(controller.controllLength(guess.length) && controller.controllRealWord(guess)) {
-            if (!controller.areYouWinningSon(guess)) {
-              controller.count()
+            if (!controller.areYouWinningSon(guess)&&controller.count()) {
               controller.set(controller.getVersuche(), controller.evaluateGuess(guess))
               controller.setVersuche(controller.getVersuche() + 1)
             }
@@ -86,12 +92,12 @@ class TUI (controller: ControllerInterface)extends Observer:
         println(controller.toString)
       }
       case Event.WIN =>{
-        println(s"Du hast gewonnen! Lösung:"+ controller.getTargetword())
+        println(s"Du hast gewonnen! Lösung: "+ controller.TargetwordToString())
         newgame = true
 
       }
       case Event.LOSE =>{
-        println(s"Verloren! Versuche aufgebraucht. Lösung:"+ controller.getTargetword())
+        println(s"Verloren! Versuche aufgebraucht. Lösung: "+ controller.TargetwordToString())
         newgame = true
 
       }

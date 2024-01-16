@@ -104,6 +104,10 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
     game.getTargetword()
   }
 
+  def TargetwordToString():String ={
+    game.TargetwordToString()
+  }
+
   //=============================================================================
 
           //!!!undoManger!!!

@@ -63,6 +63,8 @@ trait GameInterface {
   
   def setTargetWord(targetWordMap: Map[Int, String]): Unit
   def setLimit(Limit: Int): Unit
+  
+  def TargetwordToString():String
 
   
 
