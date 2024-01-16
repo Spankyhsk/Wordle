@@ -7,32 +7,71 @@ import de.htwg.se.wordle.model.gamemodeComponnent.*
 
 case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterface[String]],var mode:GamemodeInterface)extends GameInterface{
   def this() = this(new GameMech, new gameboard(), gamemode(1))
-  def getGamemech(): gamemechInterface ={
+
+  //===========================================================================
+
+              //!!!Mech!!!
+
+  //===========================================================================
+
+  def getGamemech(): gamemechInterface = {
     mech
   }
 
-  def getGamefield(): GamefieldInterface[GamefieldInterface[String]] ={
-    board
+  def count(n: Int): Boolean = {
+    mech.count(n, mode.getLimit())
   }
 
-  def getGamemode(): GamemodeInterface ={
-    mode
+  def controllLength(n: Int): Boolean = {
+    mech.controllLength(n, mode.getTargetword()(1).length())
   }
 
-  def count(n: Int): Boolean ={
-    mech.count(n,mode.getLimit())
-  }
-
-  def controllLength(n: Int): Boolean ={
-    mech.controllLength(n,mode.getTargetword()(1).length())
-  }
-
-  def controllRealWord(guess: String): Boolean={
+  def controllRealWord(guess: String): Boolean = {
     mech.controllRealWord(guess, mode.getWordList())
   }
 
+  def evaluateGuess(guess: String): Map[Int, String] = {
+    val keys: List[Int] = getTargetword().keys.toList.sorted // Stellen Sie sicher, dass die Schlüssel sortiert sind
+    val feedback: Map[Int, String] = keys.map(key => key -> mech.evaluateGuess(getTargetword()(key), guess)).toMap
+    feedback
+  }
+
+  def createwinningboard(): Unit = {
+    mech.buildwinningboard(board.getMap().size, 1)
+  }
+
+  def areYouWinningSon(guess: String): Boolean = {
+    mech.compareTargetGuess(1, getTargetword(), guess) //??
+    mech.areYouWinningSon()
+  }
+
+  def GuessTransform(guess: String): String = {
+    mech.GuessTransform(guess)
+  }
+
+  def setWinningboard(wBoard: Map[Int, Boolean]) = {
+    mech.setWinningboard(wBoard)
+  }
+
+  def setN(zahl: Integer): Unit = {
+    mech.setN(zahl)
+  }
+
+  def getN(): Int = {
+    mech.getN()
+  }
+
+  //===========================================================================
+
+            //!!!Board!!!
+
+  //===========================================================================
+
+  def getGamefield(): GamefieldInterface[GamefieldInterface[String]] = {
+    board
+  }
+
   def createGameboard(): Unit = {
-    //gameboard().map = Map.empty[Int, GamefieldInterface[String]]
     board.buildGameboard(mode.getTargetword().size, 1)
     createGamefieldR(1)
   }
@@ -42,15 +81,26 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
     if (n < board.getMap().size) createGamefieldR(n + 1)
   }
 
-  def evaluateGuess(guess: String): Map[Int, String] = {
-    val keys: List[Int] = getTargetword().keys.toList.sorted // Stellen Sie sicher, dass die Schlüssel sortiert sind
-    val feedback: Map[Int, String] = keys.map(key => key -> mech.evaluateGuess(getTargetword()(key), guess)).toMap
-    feedback
-  }
-
-
   override def toString(): String = {
     board.toString
+  }
+
+  def resetGameboard(): Unit = {
+    board.reset()
+  }
+
+  def setMap(boardmap: Map[Int, Map[Int, String]]): Unit = {
+    board.setMap(boardmap)
+  }
+
+  //===========================================================================
+
+            //!!!Mode!!!
+
+  //===========================================================================
+  
+  def getGamemode(): GamemodeInterface ={
+    mode
   }
 
   def changeState(e: Int): Unit = {
@@ -58,8 +108,6 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
     mech.resetWinningBoard(mode.getTargetword().size)//??
     resetGameboard()//??
   }
-
-  
 
   def getTargetword(): Map[Int, String] = {
     val targetword = mode.getTargetword()
@@ -71,37 +119,6 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
     limit
   }
 
-  def createwinningboard(): Unit = {
-    //GameMech().winningBoard = Map.empty[Int, Boolean]
-    mech.buildwinningboard(board.getMap().size, 1)
-  }
-
-  def areYouWinningSon(guess: String): Boolean = {
-    mech.compareTargetGuess(1, getTargetword(), guess)//??
-    mech.areYouWinningSon()
-  }
-
-  def GuessTransform(guess: String): String = {
-    mech.GuessTransform(guess)
-  }
-
-  def resetGameboard(): Unit = {
-    board.reset()
-    //createGameboard()
-    //createwinningboard()
-  }
-  
-  def setWinningboard(wBoard: Map[Int, Boolean]) = {
-    mech.setWinningboard(wBoard)
-  }
-
-  def setN(zahl: Integer): Unit={
-    mech.setN(zahl)
-  }
-  def getN():Int={
-    mech.getN()
-  }
-
   def setTargetWord(targetWordMap: Map[Int, String]): Unit={
     mode.setTargetWord(targetWordMap)
   }
@@ -110,14 +127,7 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
     mode.setLimit(Limit)
   }
 
-  def setMap(boardmap:Map[Int, Map[Int, String]]):Unit={
-    board.setMap(boardmap)
-  }
-
-
 }
-
-
 
 object Game:
   def apply(kind:String)={
