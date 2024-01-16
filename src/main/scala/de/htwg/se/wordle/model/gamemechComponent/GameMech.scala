@@ -13,9 +13,10 @@ package de.htwg.se.wordle.model.gamemechComponent
       if (n == wordLength) true else false
     }
 
-    def controllRealWord(guess: String, wordList: Array[String]): Boolean = {
-      if (wordList.contains(guess)) true else false
+    def controllRealWord(guess: String): Boolean = {
+      guess.forall(_.isLetter)
     }
+
 
     def buildwinningboard(n: Int, key: Int): Unit = {
       winningBoard += (key -> false)

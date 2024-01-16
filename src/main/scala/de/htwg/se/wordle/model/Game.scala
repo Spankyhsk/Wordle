@@ -27,7 +27,7 @@ case class Game(mech:gamemechInterface, board:GamefieldInterface[GamefieldInterf
   }
 
   def controllRealWord(guess: String): Boolean = {
-    mech.controllRealWord(guess, mode.getWordList())
+    mech.controllRealWord(guess)
   }
 
   def evaluateGuess(guess: String): Map[Int, String] = {
