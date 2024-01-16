@@ -1,30 +1,35 @@
 package de.htwg.se.wordle.model.gamefieldComponent
 
+//=====================================================================
+
+              //!!!GAMEFIELD!!!
+
+//=====================================================================
 
 case class gamefield() extends GamefieldInterface[String] {
 
-  var map = Map.empty[Int, String]
+  var Field = Map.empty[Int, String]
 
   def getMap(): Map[Int, String] = {
-    map
+    Field
   }
 
   def setMap(boardmap: Map[Int, Map[Int, String]]): Unit = {
   }
 
   def SetMapper(field: Map[Int, String]): Unit = {
-    map = field
+    Field = field
   }
 
 
   def set(key: Int, feedback: String): Unit = {
-    map = map.updated(key, feedback)
+    Field = Field.updated(key, feedback)
   }
 
   def setR(n: Int, key: Int, feedback: Map[Int, String]): Unit = {}
 
   def buildGamefield(n: Int, key: Int, value: String): Unit = {
-    map += (key -> value)
+    Field += (key -> value)
     if (key < n) buildGamefield(n, key + 1, value)
 
   }
@@ -33,22 +38,27 @@ case class gamefield() extends GamefieldInterface[String] {
 
 
   override def toString: String = {
-    map.toSeq.sortBy(_._1).map(_._2).mkString("\n")
+    Field.toSeq.sortBy(_._1).map(_._2).mkString("\n")
   }
 
   override def reset(): Unit = {
-    map = Map.empty[Int, String]
-    // Fügen Sie hier weitere Schritte zur Neuinitialisierung hinzu, falls benötigt
+    Field = Map.empty[Int, String]
   }
 
 
 }
 
+//=====================================================================
+
+                //!!!GAMEBOARD!!!
+
+//=====================================================================
+
 case class gameboard() extends GamefieldInterface[GamefieldInterface[String]] {
-  var map = Map.empty[Int, GamefieldInterface[String]]
+  var Board = Map.empty[Int, GamefieldInterface[String]]
 
   def getMap(): Map[Int, GamefieldInterface[String]] = {
-    map
+    Board
   }
 
   def setMap(boardmap: Map[Int, Map[Int, String]]): Unit = {
@@ -58,33 +68,32 @@ case class gameboard() extends GamefieldInterface[GamefieldInterface[String]] {
   def setMapR(n: Int, key: Int, boardmap: Map[Int, Map[Int, String]]): Unit = {
     val GameField = new gamefield()
     GameField.SetMapper(boardmap(key))
-    map += (key -> GameField)
+    Board += (key -> GameField)
     if (key < n) setMapR(n, key + 1, boardmap)
   }
 
   override def set(key: Int, feedback: String): Unit = {}
 
   def setR(n: Int, key: Int, feedback: Map[Int, String]): Unit = {
-    map.get(n).foreach(_.set(key, feedback.getOrElse(n, "")))
-    if (n < map.size) setR(n + 1, key, feedback)
+    Board.get(n).foreach(_.set(key, feedback.getOrElse(n, "")))
+    if (n < Board.size) setR(n + 1, key, feedback)
   }
 
 
   override def buildGamefield(n: Int, key: Int, value: String): Unit = {}
 
   def buildGameboard(n: Int, key: Int): Unit = {
-    map += (key -> new gamefield())
+    Board += (key -> new gamefield())
     if (key < n) buildGameboard(n, key + 1)
   }
 
   override def reset(): Unit = {
-    map = Map.empty[Int, GamefieldInterface[String]]
-    // Hier können Sie weitere Schritte zur Neuinitialisierung durchführen
+    Board = Map.empty[Int, GamefieldInterface[String]]
   }
 
 
   override def toString: String = {
-    val gamefieldsString = map.toSeq.sortBy(_._1).map { case (_, field) => field.toString }
+    val gamefieldsString = Board.toSeq.sortBy(_._1).map { case (_, field) => field.toString }
     gamefieldsString.mkString("\n\n") // Zwei Zeilenumbrüche für die Trennung zwischen den Gamefields
   }
 
