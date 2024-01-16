@@ -357,28 +357,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
       resetInputField()
 
-      /*SwingUtilities.invokeLater(new Runnable {
-        def run(): Unit = {
-          // Speichern der aktuellen Scroll-Position
-          val scrollPos = scrollPane.verticalScrollBar.value
-
-          // Aktualisieren des OutputPanel
-          val currentGameState = controll.toString
-          FieldPanel.updateFieldPanel(currentGameState)
-          OutputPanel.contents.clear()
-          OutputPanel.contents += FieldPanel.GameFieldPanel()
-          OutputPanel.revalidate()
-          OutputPanel.repaint()
-
-          // Wiederherstellen der Scroll-Position nach dem Repaint/Revalidate
-          SwingUtilities.invokeLater(new Runnable {
-            def run(): Unit = {
-              scrollPane.verticalScrollBar.value = scrollPos
-            }
-          })
-        }
-      })
-      */
 
       
     case ButtonClicked(EasymodusButton)=>
@@ -393,7 +371,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
       NEWSPanel.updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
       upgradegamemoduspanel(MediummodusButton)
-      controll.resetGameboard()
       controll.changeState(2)
       controll.createGameboard()
       controll.createwinningboard()
@@ -402,7 +379,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
       NEWSPanel.updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
       upgradegamemoduspanel(HardmodusButton)
-      controll.resetGameboard()
       controll.changeState(3)
       controll.createGameboard()
       controll.createwinningboard()
@@ -453,12 +429,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   override def update(e:Event):Unit={
     e match
       case Event.Move =>{
-        //if (!won) { // Wenn das Spiel noch nicht gewonnen wurde
-          val currentGameState = controll.toString
-          FieldPanel.updateFieldPanel(currentGameState)
-          OutputPanel.contents.clear()
-          OutputPanel.contents += FieldPanel.GameFieldPanel()
-          OutputPanel.repaint()
 
         SwingUtilities.invokeLater(new Runnable {
           def run(): Unit = {
@@ -481,8 +451,8 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
             })
           }
         })
-        
-        
+
+
 
         //}
       }
