@@ -290,6 +290,14 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   val centerPanelSize = new Dimension(300, 300) // Festgelegte Größe für das centerPanel
 
+  val scrollPane = new ScrollPane(OutputPanel) {
+    border = Swing.EmptyBorder(0, 0, 0, 0)
+    override lazy val peer: JScrollPane = new JScrollPane(OutputPanel.peer) with SuperMixin {
+      setOpaque(false)
+      getViewport.setOpaque(false)
+    }
+  }
+
   val centerPanel = new BoxPanel(Orientation.Vertical) {
     preferredSize = centerPanelSize
     minimumSize = centerPanelSize
@@ -313,13 +321,8 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     c.gridy = 1
     c.weighty = 1.0 // Das restliche Gewicht wird dem OutputPanel zugewiesen
     c.fill = GridBagConstraints.BOTH
-    val scrollPane = new ScrollPane(OutputPanel) {
-      border = Swing.EmptyBorder(0, 0, 0, 0)
-      override lazy val peer: JScrollPane = new JScrollPane(OutputPanel.peer) with SuperMixin {
-        setOpaque(false)
-        getViewport.setOpaque(false)
-      }
-    }
+
+
     peer.add(scrollPane.peer, c)
   }
   
@@ -353,6 +356,29 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       }
 
       resetInputField()
+
+      SwingUtilities.invokeLater(new Runnable {
+        def run(): Unit = {
+          // Speichern der aktuellen Scroll-Position
+          val scrollPos = scrollPane.verticalScrollBar.value
+
+          // Aktualisieren des OutputPanel
+          val currentGameState = controll.toString
+          FieldPanel.updateFieldPanel(currentGameState)
+          OutputPanel.contents.clear()
+          OutputPanel.contents += FieldPanel.GameFieldPanel()
+          OutputPanel.revalidate()
+          OutputPanel.repaint()
+
+          // Wiederherstellen der Scroll-Position nach dem Repaint/Revalidate
+          SwingUtilities.invokeLater(new Runnable {
+            def run(): Unit = {
+              scrollPane.verticalScrollBar.value = scrollPos
+            }
+          })
+        }
+      })
+
       
     case ButtonClicked(EasymodusButton)=>
 
@@ -493,7 +519,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         }
         .mkString("")
 
-      s"<html><body style='font-family:earwigFactoryFont; font-size:60pt;'>$formattedInput</body></html>"
+      s"<html><body style='font-family:Wordlefont; font-size:60pt;'>$formattedInput</body></html>"
     }
   }
 
