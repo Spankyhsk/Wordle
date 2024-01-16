@@ -357,7 +357,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
       resetInputField()
 
-      SwingUtilities.invokeLater(new Runnable {
+      /*SwingUtilities.invokeLater(new Runnable {
         def run(): Unit = {
           // Speichern der aktuellen Scroll-Position
           val scrollPos = scrollPane.verticalScrollBar.value
@@ -378,6 +378,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
           })
         }
       })
+      */
 
       
     case ButtonClicked(EasymodusButton)=>
@@ -458,6 +459,30 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
           OutputPanel.contents.clear()
           OutputPanel.contents += FieldPanel.GameFieldPanel()
           OutputPanel.repaint()
+
+        SwingUtilities.invokeLater(new Runnable {
+          def run(): Unit = {
+            // Speichern der aktuellen Scroll-Position
+            val scrollPos = scrollPane.verticalScrollBar.value
+
+            // Aktualisieren des OutputPanel
+            val currentGameState = controll.toString
+            FieldPanel.updateFieldPanel(currentGameState)
+            OutputPanel.contents.clear()
+            OutputPanel.contents += FieldPanel.GameFieldPanel()
+            OutputPanel.revalidate()
+            OutputPanel.repaint()
+
+            // Wiederherstellen der Scroll-Position nach dem Repaint/Revalidate
+            SwingUtilities.invokeLater(new Runnable {
+              def run(): Unit = {
+                scrollPane.verticalScrollBar.value = scrollPos
+              }
+            })
+          }
+        })
+        
+        
 
         //}
       }
