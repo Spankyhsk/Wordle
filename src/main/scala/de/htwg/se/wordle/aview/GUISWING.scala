@@ -143,17 +143,17 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       contents += new MenuItem(Action("Exit") {
         sys.exit(0)
       }) {
-        font = customFont.deriveFont(12)
+        font = comicFont.deriveFont(12)
       }
       contents += new MenuItem(Action("Save") {
         controll.save()
       }) {
-        font = customFont.deriveFont(12)
+        font = comicFont.deriveFont(12)
       }
       contents += new MenuItem(Action("Load") {
         controll.load()
       }) {
-        font = customFont.deriveFont(12)
+        font = comicFont.deriveFont(12)
       }
     }
 
