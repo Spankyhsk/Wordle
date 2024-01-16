@@ -125,7 +125,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   // Schriftart definieren
   val customFont = new Font("Skia", Font.PLAIN, 14)
 
-  val wordleFontPaper: Font = LoadCustomFont.loadFont("texturengui/font/Wordlefont-Regular.ttf").deriveFont(24f)
+  val wordleFontPaper: Font = LoadCustomFont.loadFont("texturengui/font/Wordlefont2-Regular.ttf").deriveFont(24f)
   val comicFont: Font = LoadCustomFont.loadFont("texturengui/font/Comicmeneu-Regular.ttf").deriveFont(24F)
 
 
@@ -536,7 +536,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
               <head>
                 <style>
                   body {
-                    font-family: 'Skia';
+                    font-family: \"${comicFont.getName}\";
                     font-size: 30pt; // Größe anpassen, wie benötigt
                     font-weight: bold;
                   }
@@ -572,7 +572,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
           <head>
             <style>
               body {
-                font-family: 'Skia';
+                font-family: \"${comicFont.getName}\";
                 font-size: 30pt; // Größe anpassen, wie benötigt
                 font-weight: bold;
               }
