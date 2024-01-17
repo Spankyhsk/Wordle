@@ -32,7 +32,7 @@ class TUISpec extends AnyWordSpec with Matchers {
 
     override def controllRealWord(guess: String): Boolean = true
 
-    override def count(n: Int): Boolean = true
+    override def count(): Boolean = true
 
     override def createGameboard(): Unit = {}
 
@@ -40,13 +40,13 @@ class TUISpec extends AnyWordSpec with Matchers {
 
     override def evaluateGuess(guess: String): Map[Int, String] = Map()
 
-    override def getLimit(): Int = 0
 
     override def getTargetword(): Map[Int, String] = Map()
 
-    override def resetGameboard(): Unit = {}
 
     override def set(key: Int, feedback: Map[Int, String]): Unit = {}
+
+    override def TargetwordToString(): String = ""
   }
 
   "A TUI" should {
@@ -132,7 +132,7 @@ class TUISpec extends AnyWordSpec with Matchers {
 
     "process using all attempts and losing" in {
       val controller = new MockController {
-        override def count(n: Int): Boolean = false // Simulieren, dass alle Versuche aufgebraucht sind
+        override def count(): Boolean = false // Simulieren, dass alle Versuche aufgebraucht sind
 
         override def getTargetword(): Map[Int, String] = Map(0 -> "CORRECT")
       }
@@ -142,7 +142,7 @@ class TUISpec extends AnyWordSpec with Matchers {
       Console.withOut(output) {
         for (_ <- 1 to 6) {
           tui.scanInput("WRONG")
-          if (!controller.count(controller.getVersuche())) {
+          if (!controller.count()) {
             println("Verloren! Versuche aufgebraucht. Lösung: " )
 
           }

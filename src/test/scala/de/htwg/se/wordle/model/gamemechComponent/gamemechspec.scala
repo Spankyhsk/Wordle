@@ -29,8 +29,8 @@ class gamemechspec extends AnyWordSpec with Matchers{
     "GameMech" should{
       "count checked if n smaller as limit" in{
         val gamemech = new GameMech()
-        val check1 = gamemech.count(1, 2)
-        val check2 = gamemech.count(2,1)
+        val check1 = gamemech.count(0)
+        val check2 = gamemech.count(2)
 
         check1 should be(true)
         check2 should be(false)
@@ -45,10 +45,9 @@ class gamemechspec extends AnyWordSpec with Matchers{
       }
       "controllRealWord checked that guess is in wordList" in{
         val gamemech = new GameMech()
-        val wordList = Array("Apfel", "Birne")
 
-        val check1 = gamemech.controllRealWord("Apfel", wordList)
-        val check2 = gamemech.controllRealWord("Karotte", wordList)
+        val check1 = gamemech.controllRealWord("Apfel")
+        val check2 = gamemech.controllRealWord("2cool4school")
 
         check1 should be(true)
         check2 should be(false)
