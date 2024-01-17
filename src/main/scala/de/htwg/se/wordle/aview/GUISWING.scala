@@ -6,7 +6,7 @@ import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand,
 
 import de.htwg.se.wordle.aview.JTextPaneWrapper
 import sun.tools.jconsole.LabeledComponent.layout
-
+import java.awt.event.{ComponentAdapter, ComponentEvent}
 import java.awt.Font
 import java.awt.GraphicsEnvironment
 import java.io.FileInputStream
@@ -30,22 +30,14 @@ class BackgroundPanel(imagePath: String) extends JPanel {
 
   override def paintComponent(g: Graphics): Unit = {
     super.paintComponent(g)
-
-    // Ermitteln der Größe des Panels
     val panelWidth = this.getWidth
     val panelHeight = this.getHeight
 
-    // Festlegen der neuen Größe des Bildes
-    val newWidth = 1752
-    val newHeight = 1236
 
-    // Berechnen der Position, um das Bild in der Mitte des Panels zu zentrieren
-    val x = (panelWidth - newWidth) / 2
-    val y = (panelHeight - newHeight) / 2
-
-    // Zeichnen des skalierten Bildes in der Mitte des Panels
-    g.drawImage(backgroundImage, x, y, newWidth, newHeight, this)
+    // Skalieren des Bildes, um das gesamte Panel zu bedecken
+    g.drawImage(backgroundImage, 0, 0, panelWidth, panelHeight, this)
   }
+
 }
 
 
@@ -55,28 +47,23 @@ class TexturedBackground(imagePath: String) extends BorderPanel {
   border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
 
   override def paintComponent(g: Graphics2D): Unit = {
-
     super.paintComponent(g)
     if (texture != null) {
-      // Erhalten Sie die Breite und Höhe des übergeordneten Containers
-      val containerBreite = this.peer.getParent.getWidth
-      val containerHoehe = this.peer.getParent.getHeight
+      val containerWidth = this.peer.getParent.getWidth
+      val containerHeight = this.peer.getParent.getHeight
+      val aspectRatio = texture.getHeight.toDouble / texture.getWidth.toDouble
+      val scaledHeight = (containerWidth * 0.12).toInt // Höhe basierend auf dem Seitenverhältnis
 
-      // Setzen Sie die Höhe des Bildes so, dass es in das OutputPanel hineinragt
-      val bildHoehe = (containerHoehe * 1.0).toInt // 40% der Containerhöhe, anpassen nach Bedarf
+      // Berechnen der y-Position, um das Bild am unteren Rand zu positionieren
+      val yPosition = containerHeight - scaledHeight
 
-      // Skalieren Sie das Bild basierend auf der Containerbreite und der festgelegten Höhe
-      val scaledImage = texture.getScaledInstance(containerBreite, bildHoehe, java.awt.Image.SCALE_SMOOTH)
-
-      // Berechnen Sie die y-Position, um das Bild nach oben in das OutputPanel hineinragen zu lassen
-      // Hier setzen wir es direkt am unteren Rand des Panels
-      val yPosition = containerHoehe - bildHoehe
-
-      // Zeichnen Sie das skalierte Bild an der berechneten y-Position
-      g.drawImage(scaledImage, 0, yPosition, this.peer)
+      // Skalieren des Bildes
+      val scaledImage = texture.getScaledInstance(containerWidth, scaledHeight, java.awt.Image.SCALE_SMOOTH)
+      g.drawImage(scaledImage, 0, yPosition, containerWidth, scaledHeight, this.peer)
     }
   }
 }
+
 
 
 class TransparentButton(label: String) extends Button(label) {
@@ -108,6 +95,26 @@ object LoadCustomFont {
   }
 }
 
+class ResizableBannerPanel(bannerPath: String) extends FlowPanel {
+  val originalIcon = new ImageIcon(bannerPath)
+  border = Swing.EmptyBorder(0, 0, 0, 0)
+
+  val bannerLabel = new Label {
+    icon = new ImageIcon(originalIcon.getImage.getScaledInstance(514, 157, java.awt.Image.SCALE_SMOOTH))
+    border = Swing.EmptyBorder(0, 0, 10, 0)
+  }
+
+  contents += bannerLabel
+
+  def updateBannerSize(frameWidth: Int): Unit = {
+    val bannerWidth = frameWidth / 3
+    val bannerHeight = (bannerWidth * 0.3).toInt
+
+    val scaledImage = originalIcon.getImage.getScaledInstance(bannerWidth, bannerHeight, java.awt.Image.SCALE_SMOOTH)
+    bannerLabel.icon = new ImageIcon(scaledImage)
+  }
+}
+
 
 
 class GUISWING(controll:ControllerInterface) extends Frame with Observer {
@@ -118,9 +125,9 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   title = "Wordle"
   resizable = true
   // Ändern Sie diese Werte, um die Startgröße des Fensters zu beeinflussen
-  minimumSize = new Dimension(853, 682) // Erhöht von 300x600
+  //minimumSize = new Dimension(640, 512) // Erhöht von 300x600
 
-  maximumSize = new Dimension(1280, 1024) // Erhöht von 1024x768
+  //maximumSize = new Dimension(1280, 1024) // Erhöht von 1024x768
 
   // Schriftart definieren
   val customFont = new Font("Skia", Font.PLAIN, 14)
@@ -129,12 +136,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   val comicFont: Font = LoadCustomFont.loadFont("texturengui/font/Comicmeneu-Regular.ttf").deriveFont(24F)
 
 
-  // Stilfunktion für Komponenten
-  def styleComponent(component: Component): Unit = {
-    component.font = new Font("Skia", Font.PLAIN, 14)
-    component.foreground = Color.BLACK
-    component.background = Color.WHITE
-  }
+
 
 
   menuBar = new MenuBar {
@@ -159,24 +161,21 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   }
 
+  peer.addComponentListener(new ComponentAdapter {
+    override def componentResized(e: ComponentEvent): Unit = {
+      headlinepanel.updateBannerSize(peer.getSize().width)
+    }
+  })
+
 
   //-------------------------------------
-  val headlinepanel = new FlowPanel {
-    // Pfad zu Ihrem Bannerbild
-    val bannerPath = "texturengui/Wordlebanner2.png"
-    val originalIcon = new ImageIcon(bannerPath)
-    border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
+  val headlinepanel = new ResizableBannerPanel("texturengui/Wordlebanner2.png")
 
-
-    // Skalieren des Bildes
-    val scaledImage = originalIcon.getImage.getScaledInstance(514, 157, java.awt.Image.SCALE_SMOOTH)
-    val bannerIcon = new ImageIcon(scaledImage)
-
-    contents += new Label {
-      icon = bannerIcon
-      border = Swing.EmptyBorder(0, 0, 10, 0)
+  peer.addComponentListener(new ComponentAdapter {
+    override def componentResized(e: ComponentEvent): Unit = {
+      headlinepanel.updateBannerSize(peer.getSize().width)
     }
-  }
+  })
   //------------------------------------
 
 
@@ -304,9 +303,9 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
   val centerPanel = new BoxPanel(Orientation.Vertical) {
-    preferredSize = centerPanelSize
-    minimumSize = centerPanelSize
-    maximumSize = centerPanelSize
+    //preferredSize = centerPanelSize
+    //minimumSize = centerPanelSize
+    //maximumSize = centerPanelSize
 
     peer.setLayout(new GridBagLayout())
 
@@ -337,9 +336,9 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
 
-  val southPanel = new BorderPanel {
+  val southPanel = new BoxPanel(Orientation.Vertical) {
     border = Swing.LineBorder(java.awt.Color.BLACK)
-    add(texturedBackground, BorderPanel.Position.Center)
+    contents += texturedBackground
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
 
