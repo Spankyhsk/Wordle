@@ -357,6 +357,8 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         if(!controll.areYouWinningSon(guess) && controll.count()){
           controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
           controll.setVersuche(controll.getVersuche() + 1)
+        }else{
+          controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
         }
       }else{
         NEWSPanel.updateNewsBoardText("Falsche Eingabe")

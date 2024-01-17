@@ -69,6 +69,8 @@ class TUI (controller: ControllerInterface)extends Observer:
             if (!controller.areYouWinningSon(guess)&&controller.count()) {
               controller.set(controller.getVersuche(), controller.evaluateGuess(guess))
               controller.setVersuche(controller.getVersuche() + 1)
+            }else{
+              controller.set(controller.getVersuche(), controller.evaluateGuess(guess))
             }
           }else{
             println("Falsche Eingabe")
@@ -81,7 +83,9 @@ class TUI (controller: ControllerInterface)extends Observer:
     e match
       case Event.Move=> {
         println(controller.toString)
-        println("Dein Tipp: ")
+        if(!newgame) {
+          println("Dein Tipp: ")
+        }
       }
       case Event.NEW=>{
         controller.setVersuche(1)
