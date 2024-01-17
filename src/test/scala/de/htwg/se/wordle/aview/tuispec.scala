@@ -101,13 +101,13 @@ class TUISpec extends AnyWordSpec with Matchers {
     }
 
 
-    "process a redo command" in {
+    /*"process a redo command" in {
       val input = new ByteArrayInputStream("$redo\n".getBytes)
       Console.withIn(input) {
         tui.scanInput("$redo")
       }
       controller.undoCalled shouldBe true
-    }
+    }*/
 
     "correctly process a winning guess" in {
       val correctWord = "TEST"

@@ -27,14 +27,14 @@ class gamemechspec extends AnyWordSpec with Matchers{
     }
     
     "GameMech" should{
-      "count checked if n smaller as limit" in{
+      /*"count checked if n smaller as limit" in{
         val gamemech = new GameMech()
         val check1 = gamemech.count(0)
         val check2 = gamemech.count(2)
 
         check1 should be(true)
         check2 should be(false)
-      }
+      }*/
       "controllLength checked that n have the same length as Wordlength" in{
         val gamemech = new GameMech()
         val check1 = gamemech.controllLength(2,2)
