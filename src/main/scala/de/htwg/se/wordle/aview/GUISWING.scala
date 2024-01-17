@@ -2,7 +2,7 @@ package de.htwg.se.wordle.aview
 
 import com.sun.glass.ui.Cursor.setVisible
 import de.htwg.se.wordle.controller.ControllerInterface
-import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand, MediumModeCommand, ModeSwitchInvoker, Observer}
+import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand, MediumModeCommand, Observer}
 
 import de.htwg.se.wordle.aview.JTextPaneWrapper
 import sun.tools.jconsole.LabeledComponent.layout
