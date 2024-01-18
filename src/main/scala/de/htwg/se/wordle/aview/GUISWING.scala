@@ -349,39 +349,38 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   //-------------------------------------
   
-
+  var editDoneEventFired = false
   listenTo(inputTextField, EasymodusButton, MediummodusButton, HardmodusButton)
-  //var won = false
   reactions +={
     case EditDone(inputTextField) =>
       val guess = controll.GuessTransform(inputTextField.text)
 
-      if(controll.controllLength(guess.length)&& controll.controllRealWord(guess)){
-        if(!controll.areYouWinningSon(guess) && controll.count()){
-          controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
-          controll.setVersuche(controll.getVersuche() + 1)
-        }else{
-          controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
+      if(!editDoneEventFired) {
+        if (controll.controllLength(guess.length) && controll.controllRealWord(guess)) {
+            if (!controll.areYouWinningSon(guess) && controll.count()) {
+              controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
+              controll.setVersuche(controll.getVersuche() + 1)
+            } else {
+              controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
+            }
+        } else {
+          NEWSPanel.updateNewsBoardText("Falsche Eingabe")
         }
-      }else{
-        NEWSPanel.updateNewsBoardText("Falsche Eingabe")
       }
-
       resetInputField()
 
 
-      
     case ButtonClicked(EasymodusButton)=>
 
       upgradegamemoduspanel(EasymodusButton)
-      NEWSPanel.updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
+      //NEWSPanel.updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
       controll.changeState(1)
       controll.createGameboard()
       controll.createwinningboard()
 
     case ButtonClicked(MediummodusButton)=>
 
-      NEWSPanel.updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
+      //NEWSPanel.updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
       upgradegamemoduspanel(MediummodusButton)
       controll.changeState(2)
       controll.createGameboard()
@@ -389,7 +388,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
     case ButtonClicked(HardmodusButton)=>
 
-      NEWSPanel.updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
+      //NEWSPanel.updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
       upgradegamemoduspanel(HardmodusButton)
       controll.changeState(3)
       controll.createGameboard()
@@ -467,15 +466,19 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       }
       case Event.NEW =>{//Hat ein Deadlock oder so bzw wenn man die changestate aufruft
         controll.setVersuche(1)
+        NEWSPanel.updateNewsBoardText("Errate die Gesuchten Wörter, innerhalb der Angegeben Versuche")
         inputTextField.enabled = true
+        editDoneEventFired = false
       }
       case Event.WIN =>{
-        NEWSPanel.updateNewsBoardText("Glückwunsch!! Du hast Gewonnen.\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
+        NEWSPanel.updateNewsBoardText(s"Gewonnen! Lösung: ${controll.TargetwordToString()}\n Zum erneuten Spielen Schwierigkeitsgrad aussuchen")
         inputTextField.enabled = false
+        editDoneEventFired = true
       }
       case Event.LOSE =>{
-        NEWSPanel.updateNewsBoardText("Verloren!\n zum erneuten Spielen Schwierigkeitsgrad aussuchen")
+        NEWSPanel.updateNewsBoardText(s"Verloren! Lösung:  ${controll.TargetwordToString()}\n Zum erneuten Spielen Schwierigkeitsgrad aussuchen")
         inputTextField.enabled = false
+        editDoneEventFired = true
 
       }
       case Event.UNDO => {
