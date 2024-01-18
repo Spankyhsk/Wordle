@@ -12,7 +12,7 @@ trait Command {
 
   def undoStep: Unit
 
-  def redoStep: Unit
+
 
 
 }
@@ -31,7 +31,7 @@ case class EasyModeCommand(controller: Option[controll]) extends Command {
 
   override def undoStep: Unit={}
 
-  override def redoStep: Unit={}
+
 
 }
 
@@ -49,7 +49,7 @@ case class MediumModeCommand(controller: Option[controll]) extends Command {
 
   override def undoStep: Unit={}
 
-  override def redoStep: Unit={}
+
 
 }
 
@@ -67,7 +67,7 @@ case class HardModeCommand(controller: Option[controll]) extends Command {
 
   override def undoStep: Unit={}
 
-  override def redoStep: Unit={}
+
 
 }
 
@@ -94,13 +94,7 @@ class UndoManager {
 
 
   
-  def clearUndoStack(): Unit = {
-    undoStack = Nil
-  }
 
-  def clearRedoStack(): Unit = {
-    redoStack = Nil
-  }
 
   
   
