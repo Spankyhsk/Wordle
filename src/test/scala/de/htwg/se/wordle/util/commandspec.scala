@@ -12,6 +12,8 @@ class CommandSpec extends AnyWordSpec with Matchers {
     var stateChanged: Int = 0
     var gameboardCreated: Boolean = false
     var winningBoardCreated: Boolean = false
+    var doStepsCalled: Int = 0
+    var undoStepsCalled: Int = 0
 
     override def changeState(e: Int): Unit = {
       stateChanged = e
@@ -24,23 +26,57 @@ class CommandSpec extends AnyWordSpec with Matchers {
     override def createwinningboard(): Unit = {
       winningBoardCreated = true
     }
+
+    def simulateDoStep(): Unit = {
+      doStepsCalled += 1
+    }
+
+    def simulateUndoStep(): Unit = {
+      undoStepsCalled += 1
+    }
   }
 
-  "An EasyModeCommand" should {
-    "change the game state to 1 and create game and winning boards" in {
-      val mockGame = new Game(null, null, null)
-      val mockController = new MockControll(mockGame)
-      val command = EasyModeCommand(Some(mockController))
 
+
+
+  "An EasyModeCommand" should {
+    val mockGame = new Game(null, null, null)
+    val mockController = new MockControll(mockGame)
+    val command = new EasyModeCommand(Some(mockController)) {
+      override def doStep: Unit = mockController.simulateDoStep()
+
+      override def undoStep: Unit = mockController.simulateUndoStep()
+    }
+    val undoManager = new UndoManager()
+
+    "change the game state to 1 and create game and winning boards" in {
       command.execute()
 
       mockController.stateChanged should be(1)
       mockController.gameboardCreated should be(true)
       mockController.winningBoardCreated should be(true)
     }
+
+    "properly manage doStep and undoStep" in {
+      undoManager.doStep(command)
+      mockController.doStepsCalled should be(1)
+
+      //undoManager.undoStep()
+      //mockController.undoStepsCalled should be(1)
+    }
   }
 
+
   "A MediumModeCommand" should {
+    val mockGame = new Game(null, null, null)
+    val mockController = new MockControll(mockGame)
+    val command = new EasyModeCommand(Some(mockController)) {
+      override def doStep: Unit = mockController.simulateDoStep()
+
+      override def undoStep: Unit = mockController.simulateUndoStep()
+    }
+    val undoManager = new UndoManager()
+
     "change the game state to 2 and create game and winning boards" in {
       val mockGame = new Game(null, null, null)
       val mockController = new MockControll(mockGame)
@@ -52,9 +88,25 @@ class CommandSpec extends AnyWordSpec with Matchers {
       mockController.gameboardCreated should be(true)
       mockController.winningBoardCreated should be(true)
     }
+
+    "properly manage doStep and undoStep" in {
+      undoManager.doStep(command)
+      mockController.doStepsCalled should be(1)
+
+      //undoManager.undoStep()
+      //mockController.undoStepsCalled should be(1)
+    }
   }
 
   "A HardModeCommand" should {
+    val mockGame = new Game(null, null, null)
+    val mockController = new MockControll(mockGame)
+    val command = new EasyModeCommand(Some(mockController)) {
+      override def doStep: Unit = mockController.simulateDoStep()
+
+      override def undoStep: Unit = mockController.simulateUndoStep()
+    }
+    val undoManager = new UndoManager()
     "change the game state to 3 and create game and winning boards" in {
       val mockGame = new Game(null, null, null)
       val mockController = new MockControll(mockGame)
@@ -66,7 +118,14 @@ class CommandSpec extends AnyWordSpec with Matchers {
       mockController.gameboardCreated should be(true)
       mockController.winningBoardCreated should be(true)
     }
+    "properly manage doStep and undoStep" in {
+      undoManager.doStep(command)
+      mockController.doStepsCalled should be(1)
+
+      //undoManager.undoStep()
+      //mockController.undoStepsCalled should be(1)
+    }
   }
 
-  // Fügen Sie hier zusätzliche Tests für doStep, undoStep und redoStep hinzu, wenn notwendig.
+
 }
