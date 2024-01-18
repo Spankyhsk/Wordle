@@ -11,7 +11,7 @@ object wordle {
     val injector = Guice.createInjector(new WordleModuleJson)
     val controll = injector.getInstance(classOf[ControllerInterface])
     val tui = new TUI(controll)
-    //val gui = new GUISWING(controll)
+    val gui = new GUISWING(controll)
 
 
     println("Willkommen zu Wordle")
