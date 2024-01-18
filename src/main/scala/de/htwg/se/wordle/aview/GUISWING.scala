@@ -2,26 +2,18 @@ package de.htwg.se.wordle.aview
 
 
 import de.htwg.se.wordle.controller.ControllerInterface
-import de.htwg.se.wordle.util.{Command, EasyModeCommand, Event, HardModeCommand, MediumModeCommand, Observer}
+import de.htwg.se.wordle.util.{ Event, Observer}
 
-import de.htwg.se.wordle.aview.JTextPaneWrapper
-import sun.tools.jconsole.LabeledComponent.layout
+
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 import java.awt.Font
-import java.awt.GraphicsEnvironment
-import java.io.FileInputStream
-import java.awt.event.ComponentAdapter
-import javax.swing.{JPanel, JScrollPane, JTextPane, SwingUtilities}
+import javax.swing.{JPanel, JScrollPane, SwingUtilities}
 import scala.swing.*
 import scala.swing.event.*
-import java.awt.{BorderLayout, Color, FlowLayout, Graphics, Graphics2D, GraphicsEnvironment, GridBagConstraints, GridBagLayout, Image, RenderingHints}
-import javax.swing.text.*
-import javax.imageio.ImageIO
-import java.io.{File, FileInputStream}
+import java.awt.{BorderLayout, Color, GridBagConstraints, GridBagLayout, Image}
 import scala.swing.MenuBar.NoMenuBar.revalidate
-import javax.imageio.ImageIO
 import javax.swing.ImageIcon
-import scala.swing.Action.NoAction.text
+
 
 class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   controll.add(this)
@@ -30,18 +22,64 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   title = "Wordle"
   resizable = true
 
-  //=========================================================================
+//=========================================================================
 
               //!!!Schriften!!!
 
-  //=========================================================================
+//=========================================================================
 
   // Schriftart definieren
   val customFont = new Font("Skia", Font.PLAIN, 14)
-
   val comicFont: Font = LoadCustomFont.loadFont("texturengui/font/Comicmeneu-Regular.ttf").deriveFont(24F)
 
 
+//========================================================================
+
+            //!!!UPDATE!!!
+
+//========================================================================
+
+  override def update(e:Event):Unit={
+    e match
+      case Event.Move =>{
+        upgradeOutput()
+      }
+      case Event.NEW =>{//Hat ein Deadlock oder so bzw wenn man die changestate aufruft
+        controll.setVersuche(1)
+        NEWSPanel.updateNewsBoardText("Errate die Gesuchten Wörter, innerhalb der Angegeben Versuche")
+        inputTextField.enabled = true
+        editDoneEventFired = false
+      }
+      case Event.WIN =>{
+        NEWSPanel.updateNewsBoardText(s"Gewonnen! Lösung: ${controll.TargetwordToString()}\n Zum erneuten Spielen Schwierigkeitsgrad aussuchen")
+        inputTextField.enabled = false
+        editDoneEventFired = true
+      }
+      case Event.LOSE =>{
+        NEWSPanel.updateNewsBoardText(s"Verloren! Lösung:  ${controll.TargetwordToString()}\n Zum erneuten Spielen Schwierigkeitsgrad aussuchen")
+        inputTextField.enabled = false
+        editDoneEventFired = true
+
+      }
+      case Event.UNDO => {
+        upgradeOutput()
+      }
+
+
+  }
+
+//=======================================================================================
+
+                //!!!PANELS!!!
+
+//=======================================================================================
+
+
+//---------------------------------------------------------------------------------------
+
+            //!!!NorthPanel!!!
+
+//---------------------------------------------------------------------------------------
 
   menuBar = new MenuBar {
     contents += new Menu("Menü") {
@@ -72,7 +110,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   })
 
 
-  //-------------------------------------
   val headlinepanel = new ResizableBannerPanel("texturengui/Wordlebanner2.png")
 
   peer.addComponentListener(new ComponentAdapter {
@@ -80,7 +117,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       headlinepanel.updateBannerSize(peer.getSize().width)
     }
   })
-  //------------------------------------
 
 
   val EasymodusButton = new TransparentButton("Leicht")
@@ -88,7 +124,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   val HardmodusButton = new TransparentButton("Schwer")
 
 
-  val gamemoduspanel2 = new BoxPanel(Orientation.Horizontal) {
+  val gamemoduspanel = new BoxPanel(Orientation.Horizontal) {
     contents += EasymodusButton
     contents += Swing.HStrut(20) // Fügt einen horizontalen Abstand von 10 Pixeln hinzu
     contents += MediummodusButton
@@ -97,17 +133,22 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
 
-  val gamemoduspanelMain = new BoxPanel(Orientation.Vertical){//Methode
-    contents += gamemoduspanel2
+  val gamemoduspanelMain = new BoxPanel(Orientation.Vertical) { //Methode
+    contents += gamemoduspanel
 
   }
 
   var northpanel = new BoxPanel(Orientation.Vertical) {
     contents += menuBar
     contents += headlinepanel
-    contents += gamemoduspanelMain//muss updatebar sein
+    contents += gamemoduspanelMain //muss updatebar sein
   }
 
+//---------------------------------------------------------------------------------------
+
+            //!!!CENTERPANEL!!!
+
+//----------------------------------------------------------------------------------------
 
   // Pfad zu Ihrem Eingabebild
   val inputImagePath = "texturengui/eingabepaper2.png"
@@ -163,7 +204,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   val OutputPanel = new BoxPanel(Orientation.Vertical) {
     contents += FieldPanel.GameFieldPanel()
-  }//Klappt
+  } //Klappt
 
   val centerPanelSize = new Dimension(300, 300) // Festgelegte Größe für das centerPanel
 
@@ -197,6 +238,11 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     peer.add(scrollPane.peer, c)
   }
 
+//----------------------------------------------------------------------------------------
+
+            //!!!SouthPANEL!!!
+
+//----------------------------------------------------------------------------------------
 
   val texturedBackground = new TexturedBackground("texturengui/4rippedpaperneu.png") {
     layout(NEWSPanel.NewsBoardPanel()) = BorderPanel.Position.Center
@@ -209,8 +255,12 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
   }
 
+//----------------------------------------------------------------------------------------
 
-  // Laden des Hintergrundbilds
+            //!!!MainPanel!!!
+
+//----------------------------------------------------------------------------------------
+
   val backgroundPanel = new BackgroundPanel("texturengui/7background.jpg")
   northpanel.peer.setOpaque(false)
   centerPanel.peer.setOpaque(false)
@@ -218,7 +268,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   inputTextField.peer.setOpaque(false)
   gamemoduspanelMain.peer.setOpaque(false)
   headlinepanel.peer.setOpaque(false)
-  gamemoduspanel2.peer.setOpaque(false)
+  gamemoduspanel.peer.setOpaque(false)
   InputPanel.peer.setOpaque(false)
   OutputPanel.peer.setOpaque(false)
 
@@ -236,114 +286,15 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   // Fügen Sie das scalaBackgroundPanel zum Frame hinzu
   this.contents = scalaBackgroundPanel
 
-
-//========================================================================
-
-            //!!!UPDATE!!!
-
-//========================================================================
-
-  def upgradegamemoduspanel(clickedButton: Button): Unit = {
-    updateButtonColors(clickedButton: Button)
-    gamemoduspanelMain.contents.clear()
-    gamemoduspanelMain.contents += gamemoduspanel2
-    gamemoduspanelMain.revalidate()
-    gamemoduspanelMain.repaint()
-  }
-
-  def updateButtonColors(clickedButton: Button): Unit = {
-    val greenColor = new Color(0, 128, 0) // HTML-Grün
-
-    val buttons = List(EasymodusButton, MediummodusButton, HardmodusButton)
-    buttons.foreach { button =>
-      if (button == clickedButton) {
-        button.foreground = greenColor
-      } else {
-        button.foreground = Color.BLACK
-      }
-    }
-  }
-
-  def resetInputField(): Unit = {
-    javax.swing.SwingUtilities.invokeLater(new Runnable {
-      def run(): Unit = {
-        inputTextField.text = ""
-      }
-    })
-  }
-  override def update(e:Event):Unit={
-    e match
-      case Event.Move =>{
-
-        SwingUtilities.invokeLater(new Runnable {
-          def run(): Unit = {
-            // Speichern der aktuellen Scroll-Position
-            val scrollPos = scrollPane.verticalScrollBar.value
-
-            // Aktualisieren des OutputPanel
-            val currentGameState = controll.toString
-            FieldPanel.updateFieldPanel(currentGameState)
-            OutputPanel.contents.clear()
-            OutputPanel.contents += FieldPanel.GameFieldPanel()
-            OutputPanel.revalidate()
-            OutputPanel.repaint()
-
-            // Wiederherstellen der Scroll-Position nach dem Repaint/Revalidate
-            SwingUtilities.invokeLater(new Runnable {
-              def run(): Unit = {
-                scrollPane.verticalScrollBar.value = scrollPos
-              }
-            })
-          }
-        })
-
-      }
-      case Event.NEW =>{//Hat ein Deadlock oder so bzw wenn man die changestate aufruft
-        controll.setVersuche(1)
-        NEWSPanel.updateNewsBoardText("Errate die Gesuchten Wörter, innerhalb der Angegeben Versuche")
-        inputTextField.enabled = true
-        editDoneEventFired = false
-      }
-      case Event.WIN =>{
-        NEWSPanel.updateNewsBoardText(s"Gewonnen! Lösung: ${controll.TargetwordToString()}\n Zum erneuten Spielen Schwierigkeitsgrad aussuchen")
-        inputTextField.enabled = false
-        editDoneEventFired = true
-      }
-      case Event.LOSE =>{
-        NEWSPanel.updateNewsBoardText(s"Verloren! Lösung:  ${controll.TargetwordToString()}\n Zum erneuten Spielen Schwierigkeitsgrad aussuchen")
-        inputTextField.enabled = false
-        editDoneEventFired = true
-
-      }
-      case Event.UNDO => {
-        SwingUtilities.invokeLater(new Runnable {
-          def run(): Unit = {
-            // Speichern der aktuellen Scroll-Position
-            val scrollPos = scrollPane.verticalScrollBar.value
-
-            // Aktualisieren des OutputPanel
-            val currentGameState = controll.toString
-            FieldPanel.updateFieldPanel(currentGameState)
-            OutputPanel.contents.clear()
-            OutputPanel.contents += FieldPanel.GameFieldPanel()
-            OutputPanel.revalidate()
-            OutputPanel.repaint()
-
-            // Wiederherstellen der Scroll-Position nach dem Repaint/Revalidate
-            SwingUtilities.invokeLater(new Runnable {
-              def run(): Unit = {
-                scrollPane.verticalScrollBar.value = scrollPos
-              }
-            })
-          }
-        })
-      }
+  pack()
+  centerOnScreen()
+  open()
+  peer.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)// Fenster maximieren
 
 
-  }
 //=======================================================================================
 
-                  //!!!REACTION!!!
+  //!!!REACTION!!!
 
 //=======================================================================================
 
@@ -371,14 +322,12 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     case ButtonClicked(EasymodusButton) =>
 
       upgradegamemoduspanel(EasymodusButton)
-      //NEWSPanel.updateNewsBoardText("Errate 1 Wort aus 5 Buchstaben, du hast 3 Versuche")
       controll.changeState(1)
       controll.createGameboard()
       controll.createwinningboard()
 
     case ButtonClicked(MediummodusButton) =>
 
-      //NEWSPanel.updateNewsBoardText("Errate 2 Wörter mit je 5 Buchstaben, du hast 4 Versuche")
       upgradegamemoduspanel(MediummodusButton)
       controll.changeState(2)
       controll.createGameboard()
@@ -386,7 +335,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
     case ButtonClicked(HardmodusButton) =>
 
-      //NEWSPanel.updateNewsBoardText("Errate 4 Wörter mit je 5 Buchstaben, du hast 5 Versuche")
       upgradegamemoduspanel(HardmodusButton)
       controll.changeState(3)
       controll.createGameboard()
@@ -394,17 +342,64 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   }
 
-//=======================================================================================
+//========================================================================================
 
-                //!!!PANELS!!!
+            //!!!Kleinere Methoden!!!
 
-//=======================================================================================
+//========================================================================================
 
-  pack()
-  centerOnScreen()
-  open()
-  peer.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)// Fenster maximieren
+  def upgradegamemoduspanel(clickedButton: Button): Unit = {
+    updateButtonColors(clickedButton: Button)
+    gamemoduspanelMain.contents.clear()
+    gamemoduspanelMain.contents += gamemoduspanel
+    gamemoduspanelMain.revalidate()
+    gamemoduspanelMain.repaint()
+  }
 
+  def updateButtonColors(clickedButton: Button): Unit = {
+    val greenColor = new Color(0, 128, 0) // HTML-Grün
+
+    val buttons = List(EasymodusButton, MediummodusButton, HardmodusButton)
+    buttons.foreach { button =>
+      if (button == clickedButton) {
+        button.foreground = greenColor
+      } else {
+        button.foreground = Color.BLACK
+      }
+    }
+  }
+
+  def resetInputField(): Unit = {
+    javax.swing.SwingUtilities.invokeLater(new Runnable {
+      def run(): Unit = {
+        inputTextField.text = ""
+      }
+    })
+  }
+
+  def upgradeOutput(): Unit = {
+    SwingUtilities.invokeLater(new Runnable {
+      def run(): Unit = {
+        // Speichern der aktuellen Scroll-Position
+        val scrollPos = scrollPane.verticalScrollBar.value
+
+        // Aktualisieren des OutputPanel
+        val currentGameState = controll.toString
+        FieldPanel.updateFieldPanel(currentGameState)
+        OutputPanel.contents.clear()
+        OutputPanel.contents += FieldPanel.GameFieldPanel()
+        OutputPanel.revalidate()
+        OutputPanel.repaint()
+
+        // Wiederherstellen der Scroll-Position nach dem Repaint/Revalidate
+        SwingUtilities.invokeLater(new Runnable {
+          def run(): Unit = {
+            scrollPane.verticalScrollBar.value = scrollPos
+          }
+        })
+      }
+    })
+  }
 
 }
 
