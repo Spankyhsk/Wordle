@@ -34,35 +34,39 @@ class BackgroundPanel(imagePath: String) extends JPanel {
     val panelHeight = this.getHeight
 
 
-    // Skalieren des Bildes, um das gesamte Panel zu bedecken
     g.drawImage(backgroundImage, 0, 0, panelWidth, panelHeight, this)
   }
 
+  def getPanelHeight: Int = this.getHeight
 }
+
 
 
 class TexturedBackground(imagePath: String) extends BorderPanel {
   private val texture = ImageIO.read(new File(imagePath))
   peer.setOpaque(false)
-  border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
+  border = Swing.EmptyBorder(0, 0, 0, 0)
 
   override def paintComponent(g: Graphics2D): Unit = {
     super.paintComponent(g)
     if (texture != null) {
-      val containerWidth = this.peer.getParent.getWidth
-      val containerHeight = this.peer.getParent.getHeight
-      val aspectRatio = texture.getHeight.toDouble / texture.getWidth.toDouble
-      val scaledHeight = (containerWidth * 0.12).toInt // Höhe basierend auf dem Seitenverhältnis
+      val parentComponent = SwingUtilities.getAncestorOfClass(classOf[BackgroundPanel], this.peer)
+      parentComponent match {
+        case backgroundPanel: BackgroundPanel =>
+          val scaledHeight = backgroundPanel.getPanelHeight / 6
+          val containerWidth = this.peer.getParent.getWidth
+          val containerHeight = this.peer.getParent.getHeight
+          val scaledImage = texture.getScaledInstance(containerWidth, scaledHeight, java.awt.Image.SCALE_SMOOTH)
+          // Berechnen der y-Position, um das Bild am unteren Rand zu positionieren
+          val yPosition = containerHeight - scaledHeight
+          g.drawImage(scaledImage, 0, yPosition, containerWidth, scaledHeight, this.peer)
+        case _ =>
 
-      // Berechnen der y-Position, um das Bild am unteren Rand zu positionieren
-      val yPosition = containerHeight - scaledHeight
-
-      // Skalieren des Bildes
-      val scaledImage = texture.getScaledInstance(containerWidth, scaledHeight, java.awt.Image.SCALE_SMOOTH)
-      g.drawImage(scaledImage, 0, yPosition, containerWidth, scaledHeight, this.peer)
+      }
     }
   }
 }
+
 
 
 
@@ -134,7 +138,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   val wordleFontPaper: Font = LoadCustomFont.loadFont("texturengui/font/Wordlefont2-Regular.ttf").deriveFont(24f)
   val comicFont: Font = LoadCustomFont.loadFont("texturengui/font/Comicmeneu-Regular.ttf").deriveFont(24F)
-
+  val inputFont: Font = LoadCustomFont.loadFont("texturengui/font/Skia.ttf").deriveFont(24F)
 
 
 
@@ -254,7 +258,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     background = new Color(0, 0, 0, 0) // Vollständig transparent
     peer.setCaretColor(Color.BLACK) // Farbe des Cursors
     peer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER) // Text zentrieren
-    font = new Font("Skia", Font.PLAIN, 24) // Schriftgröße
+    font = inputFont.deriveFont(24f)
   }
 
   // Fügen Sie das Eingabebild und das TextField in einem Panel zusammen
@@ -329,7 +333,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
     peer.add(scrollPane.peer, c)
   }
-  
+
 
   val texturedBackground = new TexturedBackground("texturengui/4rippedpaperneu.png") {
     layout(NEWSPanel.NewsBoardPanel()) = BorderPanel.Position.Center
@@ -394,7 +398,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
   // Laden des Hintergrundbilds
-  val backgroundPanel = new BackgroundPanel("texturengui/3background.jpg")
+  val backgroundPanel = new BackgroundPanel("texturengui/6background.jpg")
   northpanel.peer.setOpaque(false)
   centerPanel.peer.setOpaque(false)
   southPanel.peer.setOpaque(false)
@@ -622,7 +626,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
           // Fügen Sie vertikale Struts hinzu, um den Text vertikal zu zentrieren
           contents += Swing.VStrut(80) // Abstand oben
           contents += newsBoardText
-          contents += Swing.VStrut(60) // Abstand unten
+          contents += Swing.VStrut(35) // Abstand unten
 
           border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
         }
