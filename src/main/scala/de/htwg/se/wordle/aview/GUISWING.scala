@@ -3,8 +3,6 @@ package de.htwg.se.wordle.aview
 
 import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.{ Event, Observer}
-
-
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 import java.awt.Font
 import javax.swing.{JPanel, JScrollPane, SwingUtilities}
@@ -41,10 +39,8 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   override def update(e:Event):Unit={
     e match
-      case Event.Move =>{
-        upgradeOutput()
-      }
-      case Event.NEW =>{//Hat ein Deadlock oder so bzw wenn man die changestate aufruft
+      case Event.Move =>upgradeOutput()
+      case Event.NEW =>{
         controll.setVersuche(1)
         NEWSPanel.updateNewsBoardText("Errate die Gesuchten Wörter, innerhalb der Angegeben Versuche")
         inputTextField.enabled = true
@@ -61,10 +57,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         editDoneEventFired = true
 
       }
-      case Event.UNDO => {
-        upgradeOutput()
-      }
-
+      case Event.UNDO => upgradeOutput()
 
   }
 
@@ -111,7 +104,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 
   val headlinepanel = new ResizableBannerPanel("texturengui/Wordlebanner2.png")
-
+  headlinepanel.peer.setOpaque(false)
   peer.addComponentListener(new ComponentAdapter {
     override def componentResized(e: ComponentEvent): Unit = {
       headlinepanel.updateBannerSize(peer.getSize().width)
@@ -130,18 +123,20 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     contents += MediummodusButton
     contents += Swing.HStrut(20) // Fügt einen weiteren horizontalen Abstand von 10 Pixeln hinzu
     contents += HardmodusButton
+    peer.setOpaque(false)
   }
 
 
   val gamemoduspanelMain = new BoxPanel(Orientation.Vertical) { //Methode
     contents += gamemoduspanel
-
+    peer.setOpaque(false)
   }
 
   var northpanel = new BoxPanel(Orientation.Vertical) {
     contents += menuBar
     contents += headlinepanel
-    contents += gamemoduspanelMain //muss updatebar sein
+    contents += gamemoduspanelMain
+    peer.setOpaque(false)
   }
 
 //---------------------------------------------------------------------------------------
@@ -153,7 +148,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   // Pfad zu Ihrem Eingabebild
   val inputImagePath = "texturengui/eingabepaper2.png"
   val originalIcon = new ImageIcon(inputImagePath)
-
 
   // Skalieren des Bildes
   var scaledImage = originalIcon.getImage.getScaledInstance(
@@ -191,19 +185,13 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     c.gridy = 1
     c.insets = new Insets(-68, 10, 0, 0)
     peer.add(inputImageLabel.peer, c)
-
     border = Swing.EmptyBorder(0, 0, 0, 0)
     opaque = false
   }
 
-  inputTextField.opaque = false
-  inputTextField.border = Swing.EmptyBorder(0, 0, 0, 0)
-  inputTextField.background = new Color(0, 0, 0, 0) // Vollständig transparent
-  inputTextField.peer.setCaretColor(Color.BLACK) // Farbe des Cursors
-
-
   val OutputPanel = new BoxPanel(Orientation.Vertical) {
     contents += FieldPanel.GameFieldPanel()
+    peer.setOpaque(false)
   } //Klappt
 
   val centerPanelSize = new Dimension(300, 300) // Festgelegte Größe für das centerPanel
@@ -219,6 +207,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   val centerPanel = new BoxPanel(Orientation.Vertical) {
 
     peer.setLayout(new GridBagLayout())
+    peer.setOpaque(false)
 
     // Konfiguration für das Eingabefeld
     val c = new GridBagConstraints()
@@ -253,6 +242,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     border = Swing.LineBorder(java.awt.Color.BLACK)
     contents += texturedBackground
     border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
+    peer.setOpaque(false)
   }
 
 //----------------------------------------------------------------------------------------
@@ -262,28 +252,16 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 //----------------------------------------------------------------------------------------
 
   val backgroundPanel = new BackgroundPanel("texturengui/7background.jpg")
-  northpanel.peer.setOpaque(false)
-  centerPanel.peer.setOpaque(false)
-  southPanel.peer.setOpaque(false)
-  inputTextField.peer.setOpaque(false)
-  gamemoduspanelMain.peer.setOpaque(false)
-  headlinepanel.peer.setOpaque(false)
-  gamemoduspanel.peer.setOpaque(false)
-  InputPanel.peer.setOpaque(false)
-  OutputPanel.peer.setOpaque(false)
 
-  // Erstellen Sie ein Scala Swing Panel, das das BackgroundPanel beinhaltet
-  val scalaBackgroundPanel = new Panel {
-    override lazy val peer: JPanel = backgroundPanel
-  }
-
-  // Fügen Sie Ihre Panels zum BackgroundPanel hinzu
   backgroundPanel.setLayout(new BorderLayout())
   backgroundPanel.add(northpanel.peer, BorderLayout.NORTH)
   backgroundPanel.add(centerPanel.peer, BorderLayout.CENTER)
   backgroundPanel.add(southPanel.peer, BorderLayout.SOUTH)
 
-  // Fügen Sie das scalaBackgroundPanel zum Frame hinzu
+  val scalaBackgroundPanel = new Panel {
+    override lazy val peer: JPanel = backgroundPanel
+  }
+
   this.contents = scalaBackgroundPanel
 
   pack()
