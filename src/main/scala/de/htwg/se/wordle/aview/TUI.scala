@@ -9,11 +9,9 @@ import scala.util.{Failure, Success, Try}
 class TUI (controller: ControllerInterface)extends Observer:
   controller.add(this)
   var newgame = true
-  
-  def getOutput():Unit={
-    if(newgame){
-      println("Gamemode aussuchen: \n1:= leicht\n2:=mittel\n3:=schwer")
-    }
+
+  def getnewgame(): Boolean = {
+    newgame
   }
 
   def processInput(input: String): Unit = {

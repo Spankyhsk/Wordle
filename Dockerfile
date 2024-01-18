@@ -1,4 +1,4 @@
 FROM hseeberger/scala-sbt
-WORKDIR /Wordle
-ADD ./Wordle
+WORKDIR /wordle
+ADD . /wordle
 CMD sbt test
