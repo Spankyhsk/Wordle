@@ -73,6 +73,6 @@ trait ControllerInterface extends Observable{
   
   def save(): Unit
 
-  def load():Unit
+  def load():String
   
 }

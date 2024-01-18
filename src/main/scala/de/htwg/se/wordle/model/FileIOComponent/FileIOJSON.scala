@@ -11,38 +11,42 @@ import de.htwg.se.wordle.model.GameInterface
 
 class FileIOJSON extends FileIOInterface{
 
-  override def load(game:GameInterface):Unit={
-    val source:String = Source.fromFile("game.json").getLines().mkString
-    val json: JsValue = Json.parse(source)
-    
-    
-    implicit val intKeyReads:Reads[Int] = Reads.IntReads.map(_.toInt)
-    
-    val winningBoard: Map[Int, Boolean] = (json\"game"\"mech"\"winningboard").as[Map[Int,Boolean]]
-    val versuch = (json\"game"\"mech"\"Versuch").as[Int]
-    
-    winningBoard.size match{
-      case 1 =>
-        game.changeState(1)
-      case 2 =>
-        game.changeState(2)
-      case 4 =>
-        game.changeState(3)
-        
+  override def load(game: GameInterface): String = {
+    try {
+      val source: String = scala.io.Source.fromFile("game.json").getLines().mkString
+      val json: JsValue = Json.parse(source)
+
+      implicit val intKeyReads: Reads[Int] = Reads.IntReads.map(_.toInt)
+
+      val winningBoard: Map[Int, Boolean] = (json \ "game" \ "mech" \ "winningboard").as[Map[Int, Boolean]]
+      val versuch = (json \ "game" \ "mech" \ "Versuch").as[Int]
+
+      winningBoard.size match {
+        case 1 =>
+          game.changeState(1)
+        case 2 =>
+          game.changeState(2)
+        case 4 =>
+          game.changeState(3)
+      }
+      game.setWinningboard(winningBoard)
+      game.setN(versuch)
+
+      val gameBoard: Seq[JsValue] = (json \ "game" \ "board" \ "gameboard").as[Seq[JsValue]]
+
+      game.setMap(gameboardFromJason(gameBoard))
+
+      val targetWord: Map[Int, String] = (json \ "game" \ "mode" \ "TargetWord").as[Map[Int, String]]
+      val limit: Int = (json \ "game" \ "mode" \ "limit").as[Int]
+
+      game.setTargetWord(targetWord)
+      game.setLimit(limit)
+
+      s"Laden des Spiels game.json war erfolgreich"
+    } catch {
+      case e: Exception =>
+        s"Fehler beim Laden des Spiels: ${e.getMessage}"
     }
-    game.setWinningboard(winningBoard)
-    game.setN(versuch)
-    
-    val gameBoard:Seq[JsValue] =(json\"game"\"board"\"gameboard").as[Seq[JsValue]]
-    
-    game.setMap(gameboardFromJason(gameBoard))
-    
-    val targetWord:Map[Int, String] = (json\"game"\"mode"\"TargetWord").as[Map[Int, String]]
-    val limit:Int = (json\"game"\"mode"\"limit").as[Int]
-    
-    game.setTargetWord(targetWord)
-    game.setLimit(limit)
-    
   }
 
   override def save(game:GameInterface):Unit={

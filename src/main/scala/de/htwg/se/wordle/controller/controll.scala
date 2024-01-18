@@ -137,9 +137,10 @@ case class controll (game:GameInterface, file:FileIOInterface)extends Controller
     notifyObservers(Event.Move)
   }
 
-  def load():Unit={
-    file.load(game)
+  def load():String={
+    val message = file.load(game)
     notifyObservers(Event.Move)
+    message
   }
 
 }

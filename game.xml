@@ -4,16 +4,19 @@
             <winningboard>
                 <entry key="1" value="false"/>
             </winningboard>
-            <anzahl> 1 </anzahl>
+            <anzahl> 2 </anzahl>
         </Gamemech>
     </Mech>
     <board>
         <gameboard>
             <entry key="1">
                 <Gamefield>
-                    <Innerentry key="1" value="AF"/>
-                    <Innerentry key="2" value="__"/>
-                    <Innerentry key="3" value="__"/>
+                    <Innerentry key="5" value="?????"/>
+                    <Innerentry key="1" value="[33mA[0mDLE[33mR[0m"/>
+                    <Innerentry key="6" value="?????"/>
+                    <Innerentry key="2" value="?????"/>
+                    <Innerentry key="3" value="?????"/>
+                    <Innerentry key="4" value="?????"/>
                 </Gamefield>
             </entry>
         </gameboard>
@@ -21,9 +24,9 @@
     <mode>
         <Gamemode>
             <TargetWord>
-                <entry key="1" value="DE"/>
+                <entry key="1" value="QUARK"/>
             </TargetWord>
-            <limit>3</limit>
+            <limit>6</limit>
         </Gamemode>
     </mode>
 </game>

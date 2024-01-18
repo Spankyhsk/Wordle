@@ -11,45 +11,52 @@ import scala.xml.*
 
 class FileIOXML extends FileIOInterface {
   
-  override def load(game:GameInterface):Unit={
-    val file = scala.xml.XML.loadFile("game.xml")
-    
-    val winningboard:Seq[(Int, Boolean)] =(file\\"game"\"Mech"\"Gamemech"\"winningboard"\"entry").map{ entry =>
-      val key = (entry\"@key").text.toInt
-      val value = (entry\"@value").text.toBoolean
-      key -> value
-    }
-    val anzahl = (file\\"game"\"Mech"\"Gamemech"\"anzahl").text.trim.toInt
+  override def load(game:GameInterface):String={
+    try {
+      val file = scala.xml.XML.loadFile("game.xml")
 
-    val winboard =winningboard.toMap
-    winboard.size match{
-      case 1 =>
-        game.changeState(1)
-      case 2 =>
-        game.changeState(2)
-      case 4 =>
-        game.changeState(3)
+      val winningboard: Seq[(Int, Boolean)] = (file \\ "game" \ "Mech" \ "Gamemech" \ "winningboard" \ "entry").map { entry =>
+        val key = (entry \ "@key").text.toInt
+        val value = (entry \ "@value").text.toBoolean
+        key -> value
+      }
+      val anzahl = (file \\ "game" \ "Mech" \ "Gamemech" \ "anzahl").text.trim.toInt
 
+      val winboard = winningboard.toMap
+      winboard.size match {
+        case 1 =>
+          game.changeState(1)
+        case 2 =>
+          game.changeState(2)
+        case 4 =>
+          game.changeState(3)
+
+      }
+      game.setWinningboard(winboard)
+      game.setN(anzahl)
+
+      val gameboard: Seq[(Int, Map[Int, String])] = (file \\ "game" \ "board" \ "gameboard" \ "entry").map { entry =>
+        val key = (entry \ "@key").text.toInt
+        val value = InnerMapFromXML(entry)
+        key -> value
+      }
+      game.setMap(gameboard.toMap)
+
+      val targetword: Seq[(Int, String)] = (file \\ "game" \ "mode" \ "Gamemode" \ "TargetWord" \ "entry").map { entry =>
+        val key = (entry \ "@key").text.toInt
+        val value = (entry \ "@value").text
+        key -> value
+      }
+      game.setTargetWord(targetword.toMap)
+
+      val limit = (file \\ "game" \ "mode" \ "Gamemode" \ "limit").text.trim.toInt
+      game.setLimit(limit)
+      
+      s"Laden des Spiels game.xml war erfolgreich"
+    } catch {
+      case e: Exception =>
+        s"Fehler beim Laden des Spiels: ${e.getMessage}"
     }
-    game.setWinningboard(winboard)
-    game.setN(anzahl)
-    
-    val gameboard:Seq[(Int, Map[Int, String])] =(file\\"game"\"board"\"gameboard"\"entry").map{ entry =>
-      val key = (entry\"@key").text.toInt
-      val value = InnerMapFromXML(entry)
-      key -> value
-    }
-    game.setMap(gameboard.toMap)
-    
-    val targetword:Seq[(Int, String)] =(file\\"game"\"mode"\"Gamemode"\"TargetWord"\"entry").map{ entry =>
-      val key = (entry\"@key").text.toInt
-      val value = (entry\"@value").text
-      key -> value
-    }
-    game.setTargetWord(targetword.toMap)
-    
-    val limit =(file\\"game"\"mode"\"Gamemode"\"limit").text.trim.toInt
-    game.setLimit(limit)
   }
   
   override def save(game:GameInterface)={

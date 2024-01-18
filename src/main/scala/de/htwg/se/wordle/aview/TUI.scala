@@ -58,7 +58,8 @@ class TUI (controller: ControllerInterface)extends Observer:
         }
         case "$load"=>{
           println("Spielstand wird geladen")
-          controller.load()
+          val message = controller.load()
+          println(message)
         }
         case "$switch"=>{
           newgame = true
