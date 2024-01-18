@@ -19,7 +19,12 @@ class TUISpec extends AnyWordSpec with Matchers {
 
     override def changeState(e: Int): Unit = { modeChanged = true }
     override def save(): Unit = { saveCalled = true }
-    override def load(): Unit = { loadCalled = true }
+
+    override def load(): String = {
+      loadCalled = true
+      "Mock load message" // oder ein relevanter Rückgabewert für Ihre Tests
+    }
+
     override def undo(): Unit = { undoCalled = true }
     override def setVersuche(zahl: Integer): Unit = { versuche = zahl }
     override def getVersuche(): Int = versuche

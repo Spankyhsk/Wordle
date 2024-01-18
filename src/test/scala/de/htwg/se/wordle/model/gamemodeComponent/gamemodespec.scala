@@ -1,74 +1,35 @@
-/*
+package de.htwg.se.wordle.model.gamemodeComponnent
+
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
 
-class GamemodeSpec extends AnyWordSpec with Matchers {
+class GamemodeSpec extends AnyWordSpec {
 
-  "A Gamemode" when {
-    "in gamemode1" should {
-      val gamemode = gamemode(1)
+  "Gamemode1" should {
+    val wordObject = new Word() // Ersetzen Sie dies durch eine tatsächliche Implementierung von Word
+    val gamemode1Instance = gamemode1(wordObject)
 
-      "have a target word map with one word" in {
-        gamemode.getTargetword().size should be(1)
-      }
-
-      "have a limit of 3" in {
-        gamemode.getLimit() should be(3)
-      }
-
-      "have a word list with words of length 2" in {
-        gamemode.getWordList().forall(_.length == 2) should be(true)
-      }
-
-      "have a string representation" in {
-        gamemode.toString() should include("Wort 1:")
-      }
+    "correctly get the target word" in {
+      assert(gamemode1Instance.getTargetword().nonEmpty)
     }
 
-    "in gamemode2" should {
-      val gamemode = gamemode(2)
-
-      "have a target word map with two words" in {
-        gamemode.getTargetword().size should be(2)
-      }
-
-      "have a limit of 4" in {
-        gamemode.getLimit() should be(4)
-      }
-
-      "have a word list with words of length 2" in {
-        gamemode.getWordList().forall(_.length == 2) should be(true)
-      }
-
-      "have a string representation" in {
-        gamemode.toString() should include("Wort 1:")
-        gamemode.toString() should include("Wort 2:")
-      }
+    "correctly get the limit" in {
+      assert(gamemode1Instance.getLimit() == 6)
     }
 
-    "in gamemode3" should {
-      val gamemode = gamemode(3)
+    "correctly get the word list" in {
+      assert(gamemode1Instance.getWordList().nonEmpty)
+    }
 
-      "have a target word map with four words" in {
-        gamemode.getTargetword().size should be(4)
-      }
+    "allow setting a new target word" in {
+      gamemode1Instance.setTargetWord(Map(1 -> "testWord"))
+      assert(gamemode1Instance.getTargetword() == Map(1 -> "testWord"))
+    }
 
-      "have a limit of 6" in {
-        gamemode.getLimit() should be(6)
-      }
-
-      "have a word list with words of length 2" in {
-        gamemode.getWordList().forall(_.length == 2) should be(true)
-      }
-
-      "have a string representation" in {
-        gamemode.toString() should include("Wort 1:")
-        gamemode.toString() should include("Wort 2:")
-        gamemode.toString() should include("Wort 3:")
-        gamemode.toString() should include("Wort 4:")
-      }
+    "allow setting a new limit" in {
+      gamemode1Instance.setLimit(10)
+      assert(gamemode1Instance.getLimit() == 10)
     }
   }
-}
-*/
 
+  // Ähnliche Tests für Gamemode2 und Gamemode3
+}
