@@ -29,6 +29,10 @@ class GamemodeSpec extends AnyWordSpec {
       gamemode1Instance.setLimit(10)
       assert(gamemode1Instance.getLimit() == 10)
     }
+    "correctly implement toString" in {
+      val expectedString = gamemode1Instance.getTargetword().map { case (key, value) => s"Wort$key: $value" }.mkString(" ")
+      assert(gamemode1Instance.toString == expectedString)
+    }
   }
 
   "Gamemode2" should {
@@ -56,6 +60,10 @@ class GamemodeSpec extends AnyWordSpec {
       gamemode2Instance.setLimit(9)
       assert(gamemode2Instance.getLimit() == 9)
     }
+    "correctly implement toString" in {
+      val expectedString = gamemode2Instance.getTargetword().map { case (key, value) => s"Wort$key: $value" }.mkString(", ")
+      assert(gamemode2Instance.toString == expectedString)
+    }
   }
 
   "Gamemode3" should {
@@ -82,6 +90,10 @@ class GamemodeSpec extends AnyWordSpec {
     "allow setting a new limit" in {
       gamemode3Instance.setLimit(11)
       assert(gamemode3Instance.getLimit() == 11)
+    }
+    "correctly implement toString" in {
+      val expectedString = gamemode3Instance.getTargetword().map { case (key, value) => s"Wort$key: $value" }.mkString(", ")
+      assert(gamemode3Instance.toString == expectedString)
     }
   }
 
