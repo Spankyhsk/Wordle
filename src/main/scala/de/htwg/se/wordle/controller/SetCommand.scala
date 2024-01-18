@@ -1,7 +1,7 @@
 package de.htwg.se.wordle.controller
 import de.htwg.se.wordle.util.Command
 class SetCommand( key:Int, feedback: Map[Int, String], controller:controll)extends Command{
-  override def execute(): Unit = {}
+  
 
   override def doStep: Unit = {controller.gameboard.setR(1, key, feedback)}
 
