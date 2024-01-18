@@ -145,7 +145,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 //----------------------------------------------------------------------------------------
 
-  // Pfad zu Ihrem Eingabebild
+ 
   val inputImagePath = "texturengui/eingabepaper2.png"
   val originalIcon = new ImageIcon(inputImagePath)
 
@@ -157,15 +157,14 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   )
   val inputImageIcon = new ImageIcon(scaledImage)
 
-  // Erstellen Sie ein JLabel mit dem skalierten Bild als Hintergrund
+ 
   val inputImageLabel = new Label {
     icon = inputImageIcon
     xLayoutAlignment = 0.5
     yLayoutAlignment = 0.5
   }
 
-
-  // Fügen Sie das Eingabebild und das TextField in einem Panel zusammen
+  
   val InputPanel = new Panel {
     peer.setLayout(new GridBagLayout())
     val c = new GridBagConstraints()

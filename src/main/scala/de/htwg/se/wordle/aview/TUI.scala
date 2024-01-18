@@ -4,8 +4,6 @@ import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.util.{Event, Observer}
 
 
-import scala.util.{Failure, Success, Try}
-
 class TUI (controller: ControllerInterface)extends Observer:
   controller.add(this)
   var newgame = true

@@ -228,9 +228,8 @@ object NEWSPanel {
 
   def NewsBoardPanel(): BoxPanel = {
     new BoxPanel(Orientation.Vertical) {
-      opaque = false // Stellen Sie sicher, dass das Panel transparent ist
-
-      // Fügen Sie vertikale Struts hinzu, um den Text vertikal zu zentrieren
+      opaque = false 
+      
       contents += Swing.VStrut(80) // Abstand oben
       contents += newsBoardText
       contents += Swing.VStrut(35) // Abstand unten
