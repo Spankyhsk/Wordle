@@ -5,8 +5,6 @@ import de.htwg.se.wordle.model.GameInterface
 import de.htwg.se.wordle.model.FileIOComponent.*
 import de.htwg.se.wordle.model.Game
 import de.htwg.se.wordle.util.Event
-
-import scala.util.{Failure, Success, Try}
 import de.htwg.se.wordle.util.UndoManager
 
 case class controll (game:GameInterface, file:FileIOInterface)extends ControllerInterface with Observable {
