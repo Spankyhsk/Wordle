@@ -398,7 +398,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   }
 
   // Laden des Hintergrundbilds
-  val backgroundPanel = new BackgroundPanel("texturengui/6background.jpg")
+  val backgroundPanel = new BackgroundPanel("texturengui/7background.jpg")
   northpanel.peer.setOpaque(false)
   centerPanel.peer.setOpaque(false)
   southPanel.peer.setOpaque(false)
