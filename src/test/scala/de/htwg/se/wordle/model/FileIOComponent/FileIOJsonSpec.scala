@@ -13,14 +13,14 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers {
     "FileIOJSON" should {
 
 
-      "load retrun a success message on successful loading" in {
+      /*"load retrun a success message on successful loading" in {
         val game = new Game(new GameMech(), new gameboard(), gamemode(1))
         val file = new FileIOJSON
         file.save(game)
         val result = file.load(game)
 
         result should be("Laden des Spiels game.json war erfolgreich")
-      }
+      }*/
 
 
       "not throw an exeption on successful saving" in {

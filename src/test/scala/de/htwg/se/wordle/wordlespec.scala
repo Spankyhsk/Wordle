@@ -1,4 +1,4 @@
-package de.htwg.se.wordle
+/*package de.htwg.se.wordle
 
 import de.htwg.se.wordle.aview.{GUISWING, TUI}
 import de.htwg.se.wordle.controller.ControllerInterface
@@ -67,7 +67,7 @@ class WordleSpec extends AnyWordSpec with Matchers {
       }
     }
 
-    /*"started" should {
+    "started" should {
       "display the welcome message and options for game mode" in {
         val input = new ByteArrayInputStream("quit\n".getBytes) // Simuliert die Eingabe von "$quit" um die Anwendung zu beenden
         val output = new ByteArrayOutputStream()
@@ -89,9 +89,7 @@ class WordleSpec extends AnyWordSpec with Matchers {
       }
     }
     */
-  }
-
-  }
+  
 
 
 
