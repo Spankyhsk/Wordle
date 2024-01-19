@@ -5,6 +5,9 @@ import de.htwg.se.wordle.model.gamemechComponent.gamemechInterface
 import de.htwg.se.wordle.model.gamemodeComponnent.GamemodeInterface
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import de.htwg.se.wordle.util.{Observer, Event} // Angenommen, diese Typen befinden sich im util-Paket
+
+
 
 class ControllSpec extends AnyWordSpec with Matchers {
 
@@ -22,13 +25,28 @@ class ControllSpec extends AnyWordSpec with Matchers {
     var setNCalled = false
     var buildWinningBoardCalled = false
 
+
+
+    var gameOver = false
+    var playerWon = false
+
     override def count(limit: Int): Boolean = {
       countCalled = true
-      true // Ändern Sie diesen Wert bei Bedarf
+      if (gameOver) false else true
     }
 
+    override def areYouWinningSon(): Boolean = {
+      playerWon
+    }
 
+    // Methoden, um Test-Szenarien zu setzen
+    def setGameOverScenario(): Unit = {
+      gameOver = true
+    }
 
+    def setWinningScenario(): Unit = {
+      playerWon = true
+    }
 
 
     override def controllLength(n: Int, wordLength: Int): Boolean = {
@@ -49,7 +67,7 @@ class ControllSpec extends AnyWordSpec with Matchers {
 
     override def getWin(key: Int): Boolean = false
 
-    override def areYouWinningSon(): Boolean = false
+
 
     override def GuessTransform(guess: String): String = {
       guessTransformCalled = true
@@ -133,6 +151,16 @@ class ControllSpec extends AnyWordSpec with Matchers {
     override def toString(): String = "Gamemode"
   }
 
+  class TestObserver extends Observer {
+    var lastEvent: Option[Event] = None
+
+    override def update(e: Event): Unit = {
+      lastEvent = Some(e)
+    }
+  }
+
+
+
   // Tests
   "A Controll object" should {
     val stubGameMech = new StubGameMech
@@ -157,9 +185,10 @@ class ControllSpec extends AnyWordSpec with Matchers {
     }
 
     "evaluateGuess delegates to GameMech's evaluateGuess" in {
-      //controllInstance.evaluateGuess("test") shouldBe "Feedback"
-      stubGameMech.evaluateGuessCalled shouldBe false
+      controllInstance.evaluateGuess("test")
+      stubGameMech.evaluateGuessCalled shouldBe true
     }
+
 
     "GuessTransform delegates to GameMech's GuessTransform" in {
       controllInstance.GuessTransform("test") shouldBe "TEST"
@@ -208,5 +237,72 @@ class ControllSpec extends AnyWordSpec with Matchers {
       controllInstance.TargetwordToString() should include("Wort1:")
     }
 
+    "count method" should {
+      "notify observers with LOSE event when the game is over" in {
+        val stubGameMech = new StubGameMech
+        val stubGameField = new StubGameField
+        val stubGameMode = new StubGameMode
+        val game = new Game(stubGameMech, stubGameField, stubGameMode)
+        val testObserver = new TestObserver
+        val controllInstance = new controll(game, null)
+        controllInstance.add(testObserver)
+
+        stubGameMech.setGameOverScenario()
+        controllInstance.count() shouldBe false
+        testObserver.lastEvent shouldBe Some(Event.LOSE)
+      }
+    }
+
+    "areYouWinningSon method" should {
+      "notify observers with WIN event when the player wins" in {
+        val stubGameMech = new StubGameMech
+        val stubGameField = new StubGameField
+        val stubGameMode = new StubGameMode
+        val game = new Game(stubGameMech, stubGameField, stubGameMode)
+        val testObserver = new TestObserver
+        val controllInstance = new controll(game, null)
+        controllInstance.add(testObserver)
+        stubGameMech.setWinningScenario()
+        controllInstance.areYouWinningSon("someGuess") shouldBe true
+        testObserver.lastEvent shouldBe Some(Event.WIN)
+      }
+    }
+
+
+    "apply method" should {
+      "create a new Controll instance with the specified configuration" in {
+        val xmlControl = controll.apply("XML")
+        xmlControl shouldBe a[controll]
+
+        val jsonControl = controll.apply("JSON")
+        jsonControl shouldBe a[controll]
+      }
+    }
+
+
+
+    "toString method" should {
+      "return the string representation from the Game object" in {
+        val expectedStringRepresentation = "Game Representation"
+        val stubGameMech = new StubGameMech
+        val stubGameField = new StubGameField
+        val stubGameMode = new StubGameMode
+
+        // Stub für Game, um eine vordefinierte Zeichenkette zurückzugeben
+        class StubGame extends Game(stubGameMech, stubGameField, stubGameMode) {
+          override def toString: String = expectedStringRepresentation
+        }
+
+        val stubGame = new StubGame
+        val controllInstance = new controll(stubGame, null)
+
+        controllInstance.toString shouldBe expectedStringRepresentation
+      }
+    }
+
+
   }
+
+
+
 }
