@@ -232,7 +232,7 @@ object NEWSPanel {
       
       contents += Swing.VStrut(80) // Abstand oben
       contents += newsBoardText
-      contents += Swing.VStrut(20) // Abstand unten
+      contents += Swing.VStrut(35) // Abstand unten
 
       border = Swing.EmptyBorder(0, 0, 0, 0) // Keine sichtbare Grenze
     }

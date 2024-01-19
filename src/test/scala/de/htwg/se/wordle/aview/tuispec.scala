@@ -60,22 +60,25 @@ class TUISpec extends AnyWordSpec with Matchers {
     val output = new ByteArrayOutputStream()
 
     "display the welcome message and game mode options when initialized" in {
-      val input = new ByteArrayInputStream("1\n".getBytes)
-      val output = new ByteArrayOutputStream()
+    val controller = new MockController()
+    val tui = new TUI(controller)
+    val output = new ByteArrayOutputStream()
+    val input = new ByteArrayInputStream("1\n".getBytes)
 
-      Console.withOut(output) {
-        Console.withIn(input) {
-          tui.getnewgame() // Aufruf von getOutput, um die Begrüßungsnachricht auszugeben
-          tui.processInput("1") // Verarbeitet die Eingabe "1"
-        }
+    Console.withOut(output) {
+      Console.withIn(input) {
+        // Rufen Sie hier die Methode auf, die normalerweise die Begrüßungsnachricht ausgibt
+        tui.getnewgame()
+        tui.processInput("1")
       }
-
-      val outputString = output.toString.trim
-      //outputString should include("Willkommen zu Wordle")
-      //outputString should include("Befehle")
-      //outputString should include("$quit := Spielbeenden, $save := Speichern, $load := Laden, $switch := Schwirigkeit verändern")
-      //output.toString.trim should include("Gamemode aussuchen")
     }
+
+    val outputString = output.toString.trim
+    outputString should include("Willkommen zu Wordle")
+    outputString should include("Befehle")
+    outputString should include("$quit := Spielbeenden, $save := Speichern, $load := Laden, $switch := Schwierigkeit verändern")
+    outputString should include("Gamemode aussuchen")
+  }
 
 
     "process a save command" in {
