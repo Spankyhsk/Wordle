@@ -106,13 +106,13 @@ class TUISpec extends AnyWordSpec with Matchers {
     }
 
 
-    /*"process a redo command" in {
-      val input = new ByteArrayInputStream("$redo\n".getBytes)
+    "process a redo command" in {
+      val input = new ByteArrayInputStream("$undo\n".getBytes)
       Console.withIn(input) {
-        tui.scanInput("$redo")
+        tui.scanInput("$undo")
       }
       controller.undoCalled shouldBe true
-    }*/
+    }
 
     "correctly process a winning guess" in {
       val correctWord = "TEST"
@@ -156,7 +156,8 @@ class TUISpec extends AnyWordSpec with Matchers {
 
       output.toString.trim should include("Verloren! Versuche aufgebraucht.")
     }
-
+   
+    
 
 
   }

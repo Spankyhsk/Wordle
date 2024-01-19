@@ -145,7 +145,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
 //----------------------------------------------------------------------------------------
 
- 
+
   val inputImagePath = "texturengui/eingabepaper2.png"
   val originalIcon = new ImageIcon(inputImagePath)
 
@@ -157,14 +157,14 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
   )
   val inputImageIcon = new ImageIcon(scaledImage)
 
- 
+
   val inputImageLabel = new Label {
     icon = inputImageIcon
     xLayoutAlignment = 0.5
     yLayoutAlignment = 0.5
   }
 
-  
+
   val InputPanel = new Panel {
     peer.setLayout(new GridBagLayout())
     val c = new GridBagConstraints()
@@ -281,7 +281,6 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     case EditDone(inputTextField) =>
       val guess = controll.GuessTransform(inputTextField.text)
 
-      if (!editDoneEventFired) {
         if (controll.controllLength(guess.length) && controll.controllRealWord(guess)) {
           if (!controll.areYouWinningSon(guess) && controll.count()) {
             controll.set(controll.getVersuche(), controll.evaluateGuess(guess))
@@ -292,7 +291,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         } else {
           NEWSPanel.updateNewsBoardText("Falsche Eingabe")
         }
-      }
+
       resetInputField()
 
 
