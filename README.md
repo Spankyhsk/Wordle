@@ -1,3 +1,5 @@
+<img src="texturengui/Wordlebanner2.png" />
+
 # Wordle
  Wordle: 
 
