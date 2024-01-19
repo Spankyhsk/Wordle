@@ -42,7 +42,7 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       case Event.Move =>upgradeOutput()
       case Event.NEW =>{
         controll.setVersuche(1)
-        NEWSPanel.updateNewsBoardText("Errate die Gesuchten Wörter, innerhalb der Angegeben Versuche")
+        NEWSPanel.updateNewsBoardText("Finde das versteckte Wort! Gib dein Tipp ab...")
         inputTextField.enabled = true
         editDoneEventFired = false
       }
