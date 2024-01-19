@@ -1,7 +1,7 @@
-<img src="texturengui/Wordlebanner2.png" />
+
 
 # Wordle
- Wordle: 
+ 
 
 Wordle ist ein Rätselspiel, bei dem es darum geht, verborgene Wörter zu identifizieren. 
 Deine Mission ist klar: Finde das versteckte Wort innerhalb einer limitierten Anzahl an Versuchen.
