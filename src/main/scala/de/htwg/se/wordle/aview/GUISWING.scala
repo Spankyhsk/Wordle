@@ -39,10 +39,12 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
 
   override def update(e:Event):Unit={
     e match
-      case Event.Move =>upgradeOutput()
+      case Event.Move =>{
+        upgradeOutput()
+        NEWSPanel.updateNewsBoardText("Finde das versteckte Wort! Gib dein Tipp ab...")
+      }
       case Event.NEW =>{
         controll.setVersuche(1)
-        NEWSPanel.updateNewsBoardText("Finde das versteckte Wort! Gib dein Tipp ab...")
         inputTextField.enabled = true
         editDoneEventFired = false
       }
@@ -57,7 +59,10 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
         editDoneEventFired = true
 
       }
-      case Event.UNDO => upgradeOutput()
+      case Event.UNDO => {
+        upgradeOutput()
+        NEWSPanel.updateNewsBoardText("Finde das versteckte Wort! Gib dein Tipp ab...")
+      }
 
   }
 
