@@ -32,7 +32,7 @@ case class Word(){
       "PFOTE",
       "SPIEL",
       "RÄUME",
-      "LÄCHS",
+      "LACHS",
       "STEIN",
       "WOLKE",
       "EICHE",
@@ -57,7 +57,7 @@ case class Word(){
       "PISTE",
       "ZOBEL",
       "QUARK",
-      "NYMPH",
+      "NONNE",
       "NUDEL",
       "KATZE")
   )
