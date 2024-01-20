@@ -18,5 +18,28 @@ Möchtest du deine Rätsel-Skills weiter herausfordern? Versuche dich an höhere
 
 Viel Spaß! 
 
+(Coverage Status hat aktuell einen Bug, bitte einmal auf Coverage Icon klicken um den echten zu sehen)
+
+
+## Spielmodus Leicht
+
+Das Wordle Original! Du suchst ein Wort und hast dafür sechs Versuche. Das Lösen sollte für dich kein Problem sein, falls doch, empfehlen wir dir noch einmal die Buchstaben zu üben.
+
+<img src="texturengui/screenshotleicht.png" width="300">
+
+## Spielmodus Mittel
+
+Hier wird es schon interessanter. Behältst du den Überblick und kannst zwei Wörter gleichzeitig lösen?
+
+<img src="texturengui/screenshotmittel.png" width="300">
+
+## Spielmodus Schwer
+
+Nur was für Wordle Maestros! Bezwingst du den Wordle Olymp? Falls ja, bist du ein ganz Großer.
+
+<img src="texturengui/screenshotschwer.png" width="300">
+
+
+
  [![Tests](https://github.com/spankyhsk/wordle/actions/workflows/scala.yml/badge.svg)](https://github.com/spankyhsk/wordle/actions/workflows/scala.yml)
  [![Coverage Status](https://coveralls.io/repos/github/Spankyhsk/Wordle/badge.svg?branch=main)](https://coveralls.io/github/Spankyhsk/Wordle?branch=main)
