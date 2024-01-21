@@ -1,7 +1,9 @@
-import de.htwg.se.wordle.aview.{BackgroundPanel, FieldPanel, JTextPaneWrapper, NEWSPanel, ResizableBannerPanel, TexturedBackground, TransparentButton}
+import de.htwg.se.wordle.aview.{BackgroundPanel, FieldPanel, JTextPaneWrapper, NEWSPanel, ResizableBannerPanel, TexturedBackground, TransparentButton, inputTextField}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+import java.awt.{Color, Graphics2D}
+import java.awt.image.BufferedImage
 import javax.swing.JTextPane
 import javax.swing.border.EmptyBorder
 import scala.swing.{Insets, Swing}
@@ -21,7 +23,7 @@ class JTextPaneWrapperSpec extends AnyFlatSpec with Matchers {
     val imagePath = "texturengui/7background.jpg"
     val panel = new BackgroundPanel(imagePath)
     panel.getBackgroundImage should not be (null)
-    //panel.getPanelHeight should be > 0
+
   }
 
 
@@ -65,5 +67,38 @@ class JTextPaneWrapperSpec extends AnyFlatSpec with Matchers {
     val wrapper = new JTextPaneWrapper(htmlString)
     wrapper.peer.getText() should include("Test")
   }
+
+  "TexturedBackground" should "correctly execute paintComponent" in {
+    val imagePath = "texturengui/4rippedpaperneu.png"
+    val texturedBackground = new TexturedBackground(imagePath)
+    val image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)
+    val g: Graphics2D = image.createGraphics()
+
+
+    texturedBackground.paintComponent(g)
+    g.dispose()
+    image should not be (null)
+  }
+
+  "FieldPanel" should "create a GameFieldPanel with JTextPaneWrappers" in {
+    val input = "Test\n\nTest2"
+    FieldPanel.updateFieldPanel(input)
+    val panel = FieldPanel.GameFieldPanel()
+    panel.contents.size shouldBe 2
+  }
+
+  "NEWSPanel" should "create a NewsBoardPanel correctly" in {
+    val panel = NEWSPanel.NewsBoardPanel()
+    panel.contents.size should be > 0
+  }
+
+  "inputTextField" should "be correctly configured" in {
+    inputTextField.columns shouldBe 8
+    inputTextField.opaque shouldBe false
+    inputTextField.enabled shouldBe false
+    inputTextField.border.asInstanceOf[EmptyBorder].getBorderInsets shouldBe new Insets(0, 0, 0, 0)
+    inputTextField.peer.getCaretColor shouldBe Color.BLACK
+  }
+
 
 }
