@@ -206,7 +206,9 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
       setOpaque(false)
       getViewport.setOpaque(false)
     }
+
   }
+  def getScrollPane: ScrollPane = scrollPane
 
   val centerPanel = new BoxPanel(Orientation.Vertical) {
 
