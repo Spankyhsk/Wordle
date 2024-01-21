@@ -2,11 +2,11 @@ import de.htwg.se.wordle.aview.{BackgroundPanel, FieldPanel, JTextPaneWrapper, N
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-import java.awt.{Color, Graphics2D}
-import java.awt.image.BufferedImage
-import javax.swing.JTextPane
+import java.awt.{Color, Graphics2D, Image}
+import java.awt.image.{BufferedImage, ImageObserver}
+import javax.swing.{JPanel, JTextPane}
 import javax.swing.border.EmptyBorder
-import scala.swing.{Insets, Swing}
+import scala.swing.{BorderPanel, Insets, Panel, Swing}
 
 class JTextPaneWrapperSpec extends AnyFlatSpec with Matchers {
 
@@ -71,14 +71,27 @@ class JTextPaneWrapperSpec extends AnyFlatSpec with Matchers {
   "TexturedBackground" should "correctly execute paintComponent" in {
     val imagePath = "texturengui/4rippedpaperneu.png"
     val texturedBackground = new TexturedBackground(imagePath)
-    val image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)
-    val g: Graphics2D = image.createGraphics()
 
+    val parentWidth = 120
+    val parentHeight = 180
 
-    texturedBackground.paintComponent(g)
-    g.dispose()
-    image should not be (null)
+    // Simulieren der Größe des übergeordneten Elements
+    texturedBackground.peer.setSize(parentWidth, parentHeight)
+
+    // Erstellen eines BufferedImage als Grafik-Kontext
+    val bufferedImage = new BufferedImage(parentWidth, parentHeight, BufferedImage.TYPE_INT_RGB)
+    val g2d = bufferedImage.createGraphics()
+
+    // Ausführen der paintComponent Methode
+    texturedBackground.paintComponent(g2d)
+
+    // Prüfen, ob auf dem BufferedImage gezeichnet wurde
+    bufferedImage should not be null
+    texturedBackground should not be (0)
+
+    g2d.dispose()
   }
+
 
   "FieldPanel" should "create a GameFieldPanel with JTextPaneWrappers" in {
     val input = "Test\n\nTest2"
