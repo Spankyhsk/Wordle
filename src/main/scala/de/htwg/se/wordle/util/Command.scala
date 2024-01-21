@@ -6,14 +6,8 @@ import de.htwg.se.wordle.model.gamemodeComponnent.gamemode
 import scala.util.{Failure, Success, Try}
 
 trait Command {
-
-
   def doStep: Unit
-
   def undoStep: Unit
-
-
-
 }
 
 
@@ -26,7 +20,6 @@ class UndoManager {
     undoStack = command :: undoStack
     command.doStep
   }
-
   def undoStep = {
     undoStack match {
       case Nil =>
