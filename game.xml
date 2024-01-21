@@ -12,7 +12,7 @@
             <entry key="1">
                 <Gamefield>
                     <Innerentry key="5" value="?????"/>
-                    <Innerentry key="1" value="[33mA[0mDLE[33mR[0m"/>
+                    <Innerentry key="1" value="FJORD"/>
                     <Innerentry key="6" value="?????"/>
                     <Innerentry key="2" value="?????"/>
                     <Innerentry key="3" value="?????"/>
@@ -24,7 +24,7 @@
     <mode>
         <Gamemode>
             <TargetWord>
-                <entry key="1" value="QUARK"/>
+                <entry key="1" value="BLICK"/>
             </TargetWord>
             <limit>6</limit>
         </Gamemode>

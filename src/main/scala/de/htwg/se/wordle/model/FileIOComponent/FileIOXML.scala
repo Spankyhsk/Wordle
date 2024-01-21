@@ -10,7 +10,6 @@ import de.htwg.se.wordle.model.gamemodeComponnent.GamemodeInterface
 import scala.xml.*
 
 class FileIOXML extends FileIOInterface {
-  
   override def load(game:GameInterface):String={
     try {
       val file = scala.xml.XML.loadFile("game.xml")
@@ -58,7 +57,6 @@ class FileIOXML extends FileIOInterface {
         s"Fehler beim Laden des Spiels: ${e.getMessage}"
     }
   }
-  
   override def save(game:GameInterface)={
     import java.io._
     val pw = new PrintWriter(new File("game.xml"))
@@ -67,7 +65,6 @@ class FileIOXML extends FileIOInterface {
     pw.write(xml)
     pw.close()
   }
-  
   def gameToXML(game:GameInterface):xml.Node={
     <game>{
       <Mech>{
@@ -83,7 +80,6 @@ class FileIOXML extends FileIOInterface {
       }</game>
 
   }
-
   def GameMechToXML(mech:gamemechInterface):xml.Elem={
     <Gamemech>{
       <winningboard>
@@ -95,20 +91,17 @@ class FileIOXML extends FileIOInterface {
       </anzahl>
       }</Gamemech>
   }
-
   def GameboardToXML(board:GamefieldInterface[GamefieldInterface[String]]): xml.Elem={
     <gameboard>
       {board.getMap().map{case(key, value)=> <entry key={key.toString}>{InnerMapToXML(value.getMap())}</entry>}}
     </gameboard>
   }
-  
   def InnerMapToXML(gamefield:Map[Int, String]): Elem ={
     <Gamefield>{
       gamefield.map{case(key, value)=> <Innerentry key={key.toString} value={value.toString}/>}
       }
     </Gamefield>
   }
-  
   def InnerMapFromXML(xml:NodeSeq):Map[Int, String]={
     val gamefield:Seq[(Int, String)] = (xml\"Gamefield"\"Innerentry").map{ entry =>
       val key = (entry\"@key").text.toInt
@@ -117,7 +110,6 @@ class FileIOXML extends FileIOInterface {
     }
     gamefield.toMap
   }
-  
   def GamemodeTOXML(mode:GamemodeInterface):xml.Elem={
     <Gamemode>{
       <TargetWord>{
