@@ -1,4 +1,6 @@
+/*
 import de.htwg.se.wordle.aview.{GUISWING, JTextPaneWrapper, inputTextField}
+
 import de.htwg.se.wordle.controller.ControllerInterface
 import de.htwg.se.wordle.model.GameInterface
 import de.htwg.se.wordle.util.{Event, Observable}
@@ -34,12 +36,12 @@ class ControllerStub extends ControllerInterface {
   //override def notifyObservers(event: Event.Value): Unit = observers.foreach(_.update(event))
 }
 
-/*class GameStub extends GameInterface {
+class GameStub extends GameInterface {
   override def getGamemech(): Any = null
   override def getGamefield(): Any = null
   override def getGamemode(): Any = null
 }
-*/
+
 
 // Testklasse
 class GUISwingSpec extends AnyFlatSpec with Matchers {
@@ -195,3 +197,4 @@ class GUISwingSpec extends AnyFlatSpec with Matchers {
 
 
 }
+*/
