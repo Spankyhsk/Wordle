@@ -31,6 +31,7 @@ class BackgroundPanel(imagePath: String) extends JPanel {
   }
 
   def getPanelHeight: Int = this.getHeight
+  def getBackgroundImage: Image = backgroundImage
 }
 
 
@@ -55,8 +56,10 @@ class TexturedBackground(imagePath: String) extends BorderPanel {
         case _ =>
 
       }
+      
     }
   }
+  def gettextureImage: Image = texture
 }
 
 
