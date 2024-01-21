@@ -12,28 +12,21 @@ case class gamemode1(wordObject: Word) extends GamemodeInterface {
   var targetword = Map(1 -> wordObject.selectRandomWord(wordObject.words(wordlength)))
   var limit = 6
 
-  
-
   override def getTargetword(): Map[Int, String] = {
     targetword
   }
-
   override def getLimit(): Int = {
     limit
   }
-
   override def getWordList(): Array[String] = {
     wordObject.words(wordlength)
   }
-  
   def setTargetWord(targetWordMap:Map[Int, String]): Unit = {
     targetword = targetWordMap
   }
-  
   def setLimit(Limit:Int): Unit = {
     limit = Limit
   }
-
   override def toString(): String = {
     targetword.map { case (key, value) => s"Wort$key: $value" }.mkString(" ")
   }
@@ -128,7 +121,7 @@ case class gamemode3(wordObject: Word) extends GamemodeInterface {
 
 object gamemode{
   
-  var state: GamemodeInterface = gamemode1(new Word())//targetword und limit nimmt die werte als erstes
+  var state: GamemodeInterface = gamemode1(new Word())
 
   def apply(e: Int) = {
     e match {
