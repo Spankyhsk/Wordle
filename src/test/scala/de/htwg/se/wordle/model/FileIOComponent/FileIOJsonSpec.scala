@@ -6,7 +6,7 @@ import de.htwg.se.wordle.model.gamemechComponent.GameMech
 import de.htwg.se.wordle.model.gamemodeComponnent.gamemode
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 
 import java.io.{File, PrintWriter}
 
@@ -152,39 +152,37 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers {
         val fileIO = new FileIOJSON
         val fileName = "game.json"
 
-        // Funktion zum Schreiben einer Test-JSON-Datei
-        def writeTestJson(jsonContent: JsObject): Unit = {
-          val pw = new PrintWriter(new File(fileName))
-          try {
-            pw.write(Json.prettyPrint(jsonContent))
-          } finally {
-            pw.close()
-          }
-        }
-
-        // Beispiel für JSON-Inhalt mit einem Gameboard
         val jsonWithGameBoard = Json.obj(
           "game" -> Json.obj(
             "board" -> Json.obj(
               "gameboard" -> Json.toJson(
                 Seq(
-                  Json.obj("key" -> 1, "gamefield" -> Map("1" -> "A", "2" -> "B")),
-                  Json.obj("key" -> 2, "gamefield" -> Map("1" -> "C", "2" -> "D"))
+                  Json.obj("key" -> 1, "gamefield" -> Json.obj("1" -> "A", "2" -> "B")),
+                  Json.obj("key" -> 2, "gamefield" -> Json.obj("1" -> "C", "2" -> "D"))
                 )
               )
             )
           )
         )
 
-        // Schreiben des JSON-Inhalts in eine Datei und Laden des Spiels
-        writeTestJson(jsonWithGameBoard)
+        // Schreiben des JSON-Inhalts in eine Datei
+        val pw = new PrintWriter(new File(fileName))
+        try {
+          pw.write(Json.prettyPrint(jsonWithGameBoard))
+        } finally {
+          pw.close()
+        }
+
+        // Laden des Spiels
         val game: GameInterface = new Game(new GameMech(), new gameboard(), gamemode(1))
         fileIO.load(game)
 
         // Überprüfen, ob das Gameboard korrekt deserialisiert wurde
         game.getGamefield().getMap()(1).getMap() should contain allOf(1 -> "A", 2 -> "B")
         game.getGamefield().getMap()(2).getMap() should contain allOf(1 -> "C", 2 -> "D")
-      }*/
+      }
+      */
+
 
       "set the correct game mode based on the targetWord size" in {
         val fileIO = new FileIOJSON
@@ -216,6 +214,28 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers {
 
         // Überprüfen, ob der richtige Spielmodus basierend auf der Größe des Zielworts gesetzt wurde
         game.getGamemode().toString should include("Wort1:")
+      }
+    }
+
+    "deserializing a gameboard from JSON" should {
+      "correctly convert JSON to the gameboard map structure" in {
+        val fileIO = new FileIOJSON
+
+        // Erstellen eines JSON-Objekts, das das Gameboard repräsentiert
+        val jsonGameBoard = Json.arr(
+          Json.obj("key" -> 1, "gamefield" -> Json.toJson(Map("1" -> "A", "2" -> "B"))),
+          Json.obj("key" -> 2, "gamefield" -> Json.toJson(Map("1" -> "C", "2" -> "D")))
+        )
+
+        // Konvertieren des JsArray in eine Seq[JsValue]
+        val gameBoardSeq: Seq[JsValue] = jsonGameBoard.value.toSeq
+
+        // Aufruf der gameboardFromJason Methode
+        val result = fileIO.gameboardFromJason(gameBoardSeq)
+
+        // Überprüfen, ob die resultierende Map die erwarteten Werte enthält
+        result(1) should contain allOf(1 -> "A", 2 -> "B")
+        result(2) should contain allOf(1 -> "C", 2 -> "D")
       }
     }
 
