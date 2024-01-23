@@ -39,6 +39,13 @@ Nur was für Wordle Maestros! Bezwingst du den Wordle Olymp? Falls ja, bist du e
 
 <img src="texturengui/screenshotschwer.png" width="300">
 
+## Tests
+
+sbt clean coverage test
+sbt coverageReport
+(inklusive Testklasse der GUI)
+<img src="texturengui/coverageReportAktuell.png" width="300">
+
 
 
  [![Tests](https://github.com/spankyhsk/wordle/actions/workflows/scala.yml/badge.svg)](https://github.com/spankyhsk/wordle/actions/workflows/scala.yml)
