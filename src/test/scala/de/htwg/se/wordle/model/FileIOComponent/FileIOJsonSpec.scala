@@ -3,7 +3,7 @@ package de.htwg.se.wordle.model.FileIOComponent
 import de.htwg.se.wordle.model.{Game, GameInterface}
 import de.htwg.se.wordle.model.gamefieldComponent.gameboard
 import de.htwg.se.wordle.model.gamemechComponent.GameMech
-import de.htwg.se.wordle.model.gamemodeComponnent.gamemode
+import de.htwg.se.wordle.model.gamemodeComponnent.{gamemode, gamemode3}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -13,9 +13,6 @@ import java.io.{File, PrintWriter}
 class FileIOJsonSpec extends AnyWordSpec with Matchers {
   "FileIOJSON" when {
     "FileIOJSON" should {
-
-
-
 
 
       "not throw an exeption on successful saving" in {
@@ -439,7 +436,107 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers {
       }
     }
 
+    "loading game mechanics" should {
+      "correctly restore winningboard and attempts from JSON" in {
+        val fileIO = new FileIOJSON
+        val game: GameInterface = new Game(new GameMech(), new gameboard(), gamemode(1))
+        val jsonWithMechanics = Json.obj(
+          "game" -> Json.obj(
+            "mech" -> Json.obj(
+              "winningboard" -> Json.obj("1" -> true, "2" -> false),
+              "Versuch" -> 3
+            ),
+            "board" -> Json.obj("gameboard" -> Json.arr()),
+            "mode" -> Json.obj("TargetWord" -> Json.obj(), "limit" -> 5)
+          )
+        )
 
+        val pw = new PrintWriter(new File("game.json"))
+        try {
+          pw.write(Json.prettyPrint(jsonWithMechanics))
+        } finally {
+          pw.close()
+        }
+
+        fileIO.load(game)
+        game.getGamemech().getWinningboard() should contain allOf(1 -> true, 2 -> false)
+        game.getGamemech().getN() should be(3)
+      }
+    }
+    /*"loading game with specific winningboard size" should {
+      "change game state based on winningboard size" in {
+        val fileIO = new FileIOJSON
+        val game: GameInterface = new Game(new GameMech(), new gameboard(), gamemode(1))
+        val jsonWithFourElementsWinningBoard = Json.obj(
+          "game" -> Json.obj(
+            "mech" -> Json.obj("winningboard" -> Json.obj("1" -> false, "2" -> false, "3" -> false, "4" -> false)),
+            "board" -> Json.obj("gameboard" -> Json.arr()),
+            "mode" -> Json.obj("TargetWord" -> Json.obj("1" -> "WORD1", "2" -> "WORD2", "3" -> "WORD3", "4" -> "WORD4"), "limit" -> 5)
+          )
+        )
+
+        val pw = new PrintWriter(new File("game.json"))
+        try {
+          pw.write(Json.prettyPrint(jsonWithFourElementsWinningBoard))
+        } finally {
+          pw.close()
+        }
+
+        fileIO.load(game)
+
+        // Überprüfen der winningboard-Größe nach dem Laden
+        val actualWinningBoardSize = game.getGamemech().getWinningboard().size
+        val expectedWinningBoardSize = jsonWithFourElementsWinningBoard("game")("mech")("winningboard").as[Map[Int, Boolean]].size
+        actualWinningBoardSize should be(expectedWinningBoardSize)
+
+        // Überprüfen der Größe des TargetWords
+        game.getGamemode().getTargetword().size shouldBe 4
+      }
+    }*/
+
+
+
+    /*"loading game with specific board and mode" should {
+      "loading game with specific board and mode" should {
+        "correctly restore gameboard, target words and limit from JSON" in {
+          val fileIO = new FileIOJSON
+          val game: GameInterface = new Game(new GameMech(), new gameboard(), gamemode(1))
+          val jsonWithBoardAndMode = Json.obj(
+            "game" -> Json.obj(
+              "mech" -> Json.obj("winningboard" -> Json.obj("1" -> false)),
+              "board" -> Json.obj(
+                "gameboard" -> Json.arr(
+                  Json.obj("key" -> 1, "gamefield" -> Json.obj("1" -> "A", "2" -> "B"))
+                )
+              ),
+              "mode" -> Json.obj(
+                "TargetWord" -> Json.obj("1" -> "APPLE"),
+                "limit" -> 6
+              )
+            )
+          )
+
+          val pw = new PrintWriter(new File("game.json"))
+          try {
+            pw.write(Json.prettyPrint(jsonWithBoardAndMode))
+          } finally {
+            pw.close()
+          }
+
+          fileIO.load(game)
+          game.getGamefield().getMap()(1).getMap() should contain allOf(1 -> "A", 2 -> "B")
+          game.getGamemode().getTargetword() should contain(1 -> "APPLE")
+          game.getGamemode().getLimit() should be(6)
+
+          // Zusätzliche Überprüfungen
+          game.getGamemech().getWinningboard() should contain key 1
+          game.getGamemech().getN() shouldBe a[Integer]
+        }
+      }
+    }*/
+
+
+    }
   }
-}
+
   
