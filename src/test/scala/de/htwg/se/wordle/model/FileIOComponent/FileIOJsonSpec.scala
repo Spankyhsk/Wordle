@@ -148,40 +148,76 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers {
     }
 
     "loading a game" should {
-      /*"correctly deserialize the gameboard from JSON" in {
-        val fileIO = new FileIOJSON
-        val fileName = "game.json"
+      "loading a game" should {
+        "correctly deserialize the gameboard from JSON" in {
+          val fileIO = new FileIOJSON
+          val fileName = "game.json"
 
-        val jsonWithGameBoard = Json.obj(
-          "game" -> Json.obj(
-            "board" -> Json.obj(
-              "gameboard" -> Json.toJson(
-                Seq(
-                  Json.obj("key" -> 1, "gamefield" -> Json.obj("1" -> "A", "2" -> "B")),
-                  Json.obj("key" -> 2, "gamefield" -> Json.obj("1" -> "C", "2" -> "D"))
-                )
-              )
-            )
-          )
-        )
+          // JSON-Struktur basierend auf Ihrem Beispiel
+          val jsonWithGameBoard = Json.parse(
+            """
+                {
+                  "game": {
+                    "mech": {
+                      "winningboard": {"1": false, "2": false},
+                      "Versuch": 2
+                    },
+                    "board": {
+                      "gameboard": [
+                        {
+                          "key": 1,
+                          "gamefield": {
+                            "5": "?????", "1": "SPIEL", "6": "?????", "2": "?????",
+                            "7": "?????", "3": "?????", "4": "?????"
+                          }
+                        },
+                        {
+                          "key": 2,
+                          "gamefield": {
+                            "5": "?????", "1": "SPIEL", "6": "?????", "2": "?????",
+                            "7": "?????", "3": "?????", "4": "?????"
+                          }
+                        }
+                      ]
+                    },
+                    "mode": {
+                      "TargetWord": {"1": "BLICK", "2": "BLICK"},
+                      "limit": 7
+                    }
+                  }
+                }
+              """)
 
-        // Schreiben des JSON-Inhalts in eine Datei
-        val pw = new PrintWriter(new File(fileName))
-        try {
-          pw.write(Json.prettyPrint(jsonWithGameBoard))
-        } finally {
-          pw.close()
+          // Schreiben des JSON-Inhalts in eine Datei
+          val pw = new PrintWriter(new File(fileName))
+          try {
+            pw.write(Json.prettyPrint(jsonWithGameBoard))
+          } finally {
+            pw.close()
+          }
+
+          // Laden des Spiels
+          val game: GameInterface = new Game(new GameMech(), new gameboard(), gamemode(1))
+          fileIO.load(game)
+
+          // Überprüfen, ob das Gameboard korrekt deserialisiert wurde
+          val gameboardMap = game.getGamefield().getMap()
+
+          // Überprüfen, ob die Schlüssel wie erwartet vorhanden sind
+          gameboardMap should contain key 1
+          gameboardMap should contain key 2
+
+          // Überprüfen des Inhalts des ersten Gamefields
+          val gamefield1 = gameboardMap(1).getMap()
+          gamefield1 should contain(1 -> "SPIEL")
+          gamefield1 should contain(5 -> "?????")
+
+          // Überprüfen des Inhalts des zweiten Gamefields
+          val gamefield2 = gameboardMap(2).getMap()
+          gamefield2 should contain(1 -> "SPIEL")
+          gamefield2 should contain(5 -> "?????")
         }
-
-        // Laden des Spiels
-        val game: GameInterface = new Game(new GameMech(), new gameboard(), gamemode(1))
-        fileIO.load(game)
-
-        // Überprüfen, ob das Gameboard korrekt deserialisiert wurde
-        game.getGamefield().getMap()(1).getMap() should contain allOf(1 -> "A", 2 -> "B")
-        game.getGamefield().getMap()(2).getMap() should contain allOf(1 -> "C", 2 -> "D")
       }
-      */
 
 
       "set the correct game mode based on the targetWord size" in {
@@ -236,6 +272,98 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers {
         // Überprüfen, ob die resultierende Map die erwarteten Werte enthält
         result(1) should contain allOf(1 -> "A", 2 -> "B")
         result(2) should contain allOf(1 -> "C", 2 -> "D")
+      }
+    }
+
+    "gameboardFromJason" should {
+      "correctly convert JSON sequence to gameboard map structure" in {
+        val fileIO = new FileIOJSON
+
+        // Erstellen einer JSON-Seq, die ein Gameboard repräsentiert
+        val jsonSeq = Seq(
+          Json.obj("key" -> 1, "gamefield" -> Json.obj("1" -> "A", "2" -> "B")),
+          Json.obj("key" -> 2, "gamefield" -> Json.obj("1" -> "C", "2" -> "D"))
+        )
+
+        // Konvertieren der JSON-Seq in eine Map
+        val result = fileIO.gameboardFromJason(jsonSeq)
+
+        // Überprüfen der korrekten Umwandlung
+        result(1) should be(Map(1 -> "A", 2 -> "B"))
+        result(2) should be(Map(1 -> "C", 2 -> "D"))
+      }
+    }
+
+    "loading a game with incorrect JSON format" should {
+      "return an error message" in {
+        val fileIO = new FileIOJSON
+        val game: GameInterface = new Game(new GameMech(), new gameboard(), gamemode(1))
+
+        // Schreiben einer fehlerhaften JSON-Datei
+        val incorrectJson = Json.obj("game" -> "incorrectFormat")
+        val pw = new PrintWriter(new File("game.json"))
+        try {
+          pw.write(Json.prettyPrint(incorrectJson))
+        } finally {
+          pw.close()
+        }
+
+        // Laden des Spiels aus der fehlerhaften JSON-Datei
+        val loadResult = fileIO.load(game)
+
+        // Überprüfen, ob eine Fehlermeldung zurückgegeben wird
+        loadResult should include("Fehler beim Laden des Spiels")
+      }
+    }
+    "loading a game with one target word" should {
+      "correctly load the game state from JSON" in {
+        val fileIO = new FileIOJSON
+        val game: GameInterface = new Game(new GameMech(), new gameboard(), gamemode(1))
+
+        // Erstellen einer JSON-Datei mit einem Zielwort
+        val jsonWithOneTargetWord = Json.parse(
+          """
+            {
+              "game": {
+                "mech": {
+                  "winningboard": {"1": false},
+                  "Versuch": 2
+                },
+                "board": {
+                  "gameboard": [
+                    {
+                      "key": 1,
+                      "gamefield": {
+                        "5": "?????", "1": "TISCH", "6": "?????", "2": "?????",
+                        "3": "?????", "4": "?????"
+                      }
+                    }
+                  ]
+                },
+                "mode": {
+                  "TargetWord": {"1": "FLUSS"},
+                  "limit": 6
+                }
+              }
+            }
+          """)
+
+        // Schreiben des JSON-Inhalts in eine Datei
+        val pw = new PrintWriter(new File("game.json"))
+        try {
+          pw.write(Json.prettyPrint(jsonWithOneTargetWord))
+        } finally {
+          pw.close()
+        }
+
+        // Laden des Spiels
+        fileIO.load(game)
+
+        // Überprüfen, ob das Spiel korrekt geladen wurde
+        game.getGamemech().getN() should be(2)
+        game.getGamemode().getLimit() should be(6)
+        game.getGamemode().getTargetword() should contain(1 -> "FLUSS")
+        game.getGamefield().getMap()(1).getMap() should contain(1 -> "TISCH")
       }
     }
 
