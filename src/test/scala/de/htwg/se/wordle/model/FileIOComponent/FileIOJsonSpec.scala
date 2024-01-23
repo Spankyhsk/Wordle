@@ -405,6 +405,40 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers {
       }
     }
 
+    "gameboardFromJason" should {
+      "correctly apply map function to convert gamefield keys to Int" in {
+        val fileIO = new FileIOJSON
+        val jsonGameBoard = Json.arr(
+          Json.obj(
+            "key" -> 1,
+            "gamefield" -> Json.obj("1" -> "X", "2" -> "Y", "3" -> "Z")
+          )
+        )
+
+        val result = fileIO.gameboardFromJason(jsonGameBoard.value.toSeq)
+
+        // Überprüfen, ob die Schlüssel im inneren Map als Java-Integer (Scala Int) vorliegen
+        all(result(1).keys.map(_.asInstanceOf[AnyRef])) shouldBe a[java.lang.Integer]
+      }
+    }
+
+    "gameboardFromJason" should {
+      "correctly extract and store gamefield values from JSON" in {
+        val fileIO = new FileIOJSON
+        val jsonGameBoard = Json.arr(
+          Json.obj(
+            "key" -> 1,
+            "gamefield" -> Json.obj("1" -> "A", "2" -> "B", "3" -> "C")
+          )
+        )
+
+        val result = fileIO.gameboardFromJason(jsonGameBoard.value.toSeq)
+
+        // Überprüfen, ob die Werte im inneren Map korrekt sind
+        result(1) should contain allOf(1 -> "A", 2 -> "B", 3 -> "C")
+      }
+    }
+
 
   }
 }
