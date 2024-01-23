@@ -4,37 +4,34 @@ import de.htwg.se.wordle.model.gamemechComponent.GameMech
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 class gamemechspec extends AnyWordSpec with Matchers{
+  // Mock-Implementierung der GuessStrategy
+  class MockGuessStrategy extends GuessStrategy {
+    override def compareTargetGuess(target: String, guess: String, key: Int, winningBoard: Map[Int, Boolean]): Map[Int, Boolean] = {
+      // Implementieren Sie die Logik, die für Ihre Tests erforderlich ist
+      // Zum Beispiel: Wenn das geratene Wort mit dem Zielwort übereinstimmt, setzen Sie den Schlüssel auf `true`
+      if (target.equalsIgnoreCase(guess)) {
+        winningBoard.updated(key, true)
+      } else {
+        winningBoard
+      }
+    }
+
+    override def evaluateGuess(targetWord: String, guess: String): String = {
+      // Implementieren Sie eine einfache Logik oder geben Sie einen festen Wert zurück
+      // Dieser Teil kann angepasst werden, um verschiedene Testszenarien zu unterstützen
+      "some feedback"
+    }
+  }
+
+
   "Gamemech" when{
     "SimpleGuessStrategy" should{
-      /*"evaluate guess and display feedback (green letter)" in {
-        val GuessStrategy = new SimpleGuessStrategy()
-        val targetWord = "abc"
-        val guess = "abc"
-        val feedback = GuessStrategy.evaluateGuess(targetWord, guess)
 
-        feedback should be("\u001B[32ma\u001B[0m\u001B[32mb\u001B[0m\u001B[32mc\u001B[0m")
-      }
-
-      "evaluate guess handle incorrect guess" in {
-        val GuessStrategy = new SimpleGuessStrategy()
-        val targetWord = controller.targetword
-        val guess = "xyzer"
-        val feedback = GuessStrategy.evaluateGuess(targetWord, guess)
-
-        feedback.trim should be("xyzer")
-      }*/
 
     }
     
     "GameMech" should{
-      /*"count checked if n smaller as limit" in{
-        val gamemech = new GameMech()
-        val check1 = gamemech.count(0)
-        val check2 = gamemech.count(2)
 
-        check1 should be(true)
-        check2 should be(false)
-      }*/
       "controllLength checked that n have the same length as Wordlength" in{
         val gamemech = new GameMech()
         val check1 = gamemech.controllLength(2,2)
@@ -107,6 +104,44 @@ class gamemechspec extends AnyWordSpec with Matchers{
         val testo = gamemech.evaluateGuess("gg", "tz")
 
         testo should be("tz")
+      }
+
+      "build a winning board recursively" in {
+        val gamemech = new GameMech()
+        gamemech.buildwinningboard(3, 1)
+
+        gamemech.getWinningboard() should be(Map(1 -> false, 2 -> false, 3 -> false))
+      }
+
+      "reset the winning board with a given size" in {
+        val gamemech = new GameMech()
+        gamemech.resetWinningBoard(2)
+
+        gamemech.getWinningboard() should be(Map(1 -> false, 2 -> false))
+      }
+
+      "compare target and guess when the key is in the winning board and not already won" in {
+        val gamemech = new GameMech(new MockGuessStrategy())
+        gamemech.buildwinningboard(2, 1)
+        val targetWord = Map(1 -> "apple", 2 -> "banana")
+        val guess = "apple"
+
+        gamemech.compareTargetGuess(1, targetWord, guess)
+
+        // Überprüfen Sie, ob das winningBoard entsprechend aktualisiert wurde
+        gamemech.getWinningboard()(1) should be(true)
+      }
+
+      "not update the winning board for keys beyond its size" in {
+        val gamemech = new GameMech(new MockGuessStrategy())
+        gamemech.buildwinningboard(2, 1)
+        val targetWord = Map(1 -> "apple", 2 -> "banana")
+        val guess = "apple"
+
+        gamemech.compareTargetGuess(3, targetWord, guess)
+
+        // Das winningBoard sollte keine Änderungen für Schlüssel außerhalb seiner Größe haben
+        gamemech.getWinningboard().size should be(2)
       }
 
 

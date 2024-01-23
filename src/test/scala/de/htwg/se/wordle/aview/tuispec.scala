@@ -59,27 +59,7 @@ class TUISpec extends AnyWordSpec with Matchers {
     val tui = new TUI(controller)
     val output = new ByteArrayOutputStream()
 
-    /*"display the welcome message and game mode options when initialized" in {
-    val controller = new MockController()
-    val tui = new TUI(controller)
-    val output = new ByteArrayOutputStream()
-    val input = new ByteArrayInputStream("1\n".getBytes)
 
-    Console.withOut(output) {
-      Console.withIn(input) {
-        // Rufen Sie hier die Methode auf, die normalerweise die Begrüßungsnachricht ausgibt
-        tui.getnewgame()
-        tui.processInput("1")
-      }
-    }
-
-    val outputString = output.toString.trim
-    outputString should include("Willkommen zu Wordle")
-    outputString should include("Befehle")
-    outputString should include("$quit := Spielbeenden, $save := Speichern, $load := Laden, $switch := Schwierigkeit verändern")
-    outputString should include("Gamemode aussuchen")
-  }
-  */
 
     "process a save command" in {
       val input = new ByteArrayInputStream("$save\n".getBytes)
@@ -159,6 +139,101 @@ class TUISpec extends AnyWordSpec with Matchers {
 
       output.toString.trim should include("Verloren! Versuche aufgebraucht.")
     }
+
+
+    "handle valid difficulty level input" in {
+      val controller = new MockController()
+      val tui = new TUI(controller)
+      tui.difficultyLevel("2") shouldBe 2
+    }
+
+    "handle invalid difficulty level input" in {
+      val output = new ByteArrayOutputStream()
+      val controller = new MockController()
+      val tui = new TUI(controller)
+      Console.withOut(output) {
+        tui.difficultyLevel("invalid") shouldBe 1
+      }
+      output.toString.trim should include("Falsche Angabe, es wird Level Einfach angefangen")
+    }
+
+    "handle incorrect guess input" in {
+      val output = new ByteArrayOutputStream()
+      val controller = new MockController() {
+        override def controllLength(n: Int): Boolean = false
+
+        override def controllRealWord(guess: String): Boolean = false
+      }
+      val tui = new TUI(controller)
+      Console.withOut(output) {
+        tui.scanInput("incorrect")
+      }
+      output.toString.trim should include("Falsche Eingabe")
+      output.toString.trim should include("Dein Tipp:")
+    }
+
+    "handle MOVE event" in {
+      val controller = new MockController() {
+        override def toString: String = "MockControllerOutput"
+      }
+      val tui = new TUI(controller)
+      tui.newgame = false // Setzen Sie newgame auf false
+      val output = new ByteArrayOutputStream()
+      Console.withOut(output) {
+        tui.update(Event.Move)
+      }
+      output.toString should include("Dein Tipp: ")
+    }
+
+    "handle NEW event" in {
+      val controller = new MockController()
+      val tui = new TUI(controller)
+      val output = new ByteArrayOutputStream()
+      Console.withOut(output) {
+        tui.update(Event.NEW)
+      }
+      output.toString.trim should include("Errate Wort:")
+    }
+
+
+    "handle UNDO event" in {
+      val controller = new MockController() {
+        override def toString: String = "MockControllerOutput"
+      }
+      val tui = new TUI(controller)
+      val output = new ByteArrayOutputStream()
+      Console.withOut(output) {
+        tui.update(Event.UNDO)
+      }
+      output.toString should include("Dein Tipp: ")
+    }
+
+    "handle WIN event" in {
+      val controller = new MockController() {
+        override def TargetwordToString(): String = "TEST"
+      }
+      val tui = new TUI(controller)
+      val output = new ByteArrayOutputStream()
+      Console.withOut(output) {
+        tui.update(Event.WIN)
+      }
+      output.toString.trim should include("Du hast gewonnen! Lösung: TEST")
+    }
+
+    "handle LOSE event" in {
+      val controller = new MockController() {
+        override def TargetwordToString(): String = "TEST"
+      }
+      val tui = new TUI(controller)
+      val output = new ByteArrayOutputStream()
+      Console.withOut(output) {
+        tui.update(Event.LOSE)
+      }
+      output.toString.trim should include("Verloren! Versuche aufgebraucht. Lösung: TEST")
+    }
+
+
+
    
     
 
