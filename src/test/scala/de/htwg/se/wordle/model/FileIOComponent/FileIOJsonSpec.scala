@@ -367,6 +367,44 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers {
       }
     }
 
+    "gameboardFromJason" should {
+      "correctly extract and use keys from JSON" in {
+        val fileIO = new FileIOJSON
+        val jsonGameBoard = Json.arr(
+          Json.obj("key" -> 1, "gamefield" -> Json.obj("1" -> "A")),
+          Json.obj("key" -> 2, "gamefield" -> Json.obj("1" -> "B"))
+        )
+
+        val result = fileIO.gameboardFromJason(jsonGameBoard.value.toSeq)
+
+        result.keys should contain allOf(1, 2)
+      }
+    }
+    "gameboardFromJason" should {
+      "correctly convert gamefield data from JSON" in {
+        val fileIO = new FileIOJSON
+        val jsonGameBoard = Json.arr(
+          Json.obj("key" -> 1, "gamefield" -> Json.obj("1" -> "X", "2" -> "Y"))
+        )
+
+        val result = fileIO.gameboardFromJason(jsonGameBoard.value.toSeq)
+
+        result(1) should contain allOf(1 -> "X", 2 -> "Y")
+      }
+    }
+    "gameboardFromJason" should {
+      "correctly apply case conversion for gamefield values" in {
+        val fileIO = new FileIOJSON
+        val jsonGameBoard = Json.arr(
+          Json.obj("key" -> 1, "gamefield" -> Json.obj("1" -> "1", "2" -> "2"))
+        )
+
+        val result = fileIO.gameboardFromJason(jsonGameBoard.value.toSeq)
+
+        result(1) should contain allOf(1 -> "1", 2 -> "2")
+      }
+    }
+
 
   }
 }
