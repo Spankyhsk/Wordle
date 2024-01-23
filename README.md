@@ -44,8 +44,8 @@ Nur was für Wordle Maestros! Bezwingst du den Wordle Olymp? Falls ja, bist du e
 sbt clean coverage test
 sbt coverageReport
 (inklusive Testklasse der GUI)
-<img src="texturengui/coverageReportAktuell1.png" width="300">
-<img src="texturengui/coverageReportAktuell2.png" width="300">
+![coverage report part 1](texturengui/coverageReportAktuell1.png)
+![coverage report part 2](texturengui/coverageReportAktuell2.png)
 
 
 
