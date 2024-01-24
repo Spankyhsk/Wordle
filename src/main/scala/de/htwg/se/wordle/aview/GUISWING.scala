@@ -41,22 +41,24 @@ class GUISWING(controll:ControllerInterface) extends Frame with Observer {
     e match
       case Event.Move =>{
         upgradeOutput()
-        NEWSPanel.updateNewsBoardText("Finde das versteckte Wort! Gib dein Tipp ab...")
+        if(editDoneEventFired) {
+          NEWSPanel.updateNewsBoardText("Finde das versteckte Wort! Gib dein Tipp ab...")
+        }
       }
       case Event.NEW =>{
         controll.setVersuche(1)
         inputTextField.enabled = true
-        editDoneEventFired = false
+        editDoneEventFired = true
       }
       case Event.WIN =>{
         NEWSPanel.updateNewsBoardText(s"Gewonnen! Lösung: ${controll.TargetwordToString()}\n Zum erneuten Spielen Schwierigkeitsgrad aussuchen")
         inputTextField.enabled = false
-        editDoneEventFired = true
+        editDoneEventFired = false
       }
       case Event.LOSE =>{
         NEWSPanel.updateNewsBoardText(s"Verloren! Lösung:  ${controll.TargetwordToString()}\n Zum erneuten Spielen Schwierigkeitsgrad aussuchen")
         inputTextField.enabled = false
-        editDoneEventFired = true
+        editDoneEventFired = false
 
       }
       case Event.UNDO => {
